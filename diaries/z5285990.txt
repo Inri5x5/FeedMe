@@ -1,0 +1,3 @@
+8th June 2022
+1. Fix and Modify user stories in regards to recipe contributors 
+2. Create flowchart for the modified user stories used for further discussions
