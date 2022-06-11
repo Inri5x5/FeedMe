@@ -1,0 +1,9 @@
+Week 1
+Group formed. Discussed and divided work about the proposal.
+
+Week 2
+8th June: I wrote the user stories for the following functionalities
+    1. Recipe explorers must be able to locate the ingredient(s) to input through a list of ingredient categories.
+    2. The system must also assist recipe explorers through suggestions on the next ingredient to input.
+
+12th June: Created the flowchart for my user stories.
