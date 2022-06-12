@@ -1,0 +1,5 @@
+Week 1:
+  Group Form. Getting the group requirment done.
+  Putting up Epic and User story from the functionalities and two novel function.
+Week 2:
+  Doing individual flowchart about the Recipe Details
