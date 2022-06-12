@@ -1,0 +1,8 @@
+Week 1
+During our lab time, we formed our groups and explored which project we wanted to complete. 
+By the end of week 1 we finalised our decision on a recipe reccomendation system and assigned each member a set of user stories to write.
+
+Week 2
+During our lab this week, we discussed the user stories we were set to write and started mapping out the flow chart.
+By the end of the week, I had finished researching and witing the project background (problem statement + existing solutions).
+The team also collaborated and agreed upon a flow chart. From this, we split up which story boards to complete for out lab meeting next week. 
