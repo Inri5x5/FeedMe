@@ -1,0 +1,5 @@
+Week 1
+We formed our group and got to know a little bit about each other in our Tuesday lab. We decided on which project we were going to do (project 1 - recipe recommendations) and that I would be the group’s scrum master. We met again Friday and divided the different functionalities between us so that we could write user stories and acceptance criteria before our next lab. I wrote mine based on the two novel functionalities of our project - tags+randomisation and ratings+reviews.
+
+Week 2
+In our lab we checked in with our tutor to see if we were on the right track. We also joined GitHub classroom and collaborated on our user stories. During this discussion we realised that our novel functionalities weren’t as novel as we thought, so we had to come up with two new ones. Before our next meeting (Sunday) we decided to finish off our user stories and acceptance criteria and draft up a flowchart based on these.
