@@ -1,3 +1,16 @@
-8th June 2022
+Week 1
 1. Fix and Modify user stories in regards to recipe contributors 
 2. Create flowchart for the modified user stories used for further discussions
+
+Week 2
+1. Create storyboards for Contributors Dashboard
+2. Delegate tasks/goals to each of the members
+3. Fix epic stories to make it more consice
+4. Decide on "Cooking skill videos" as the other noverl features
+
+Weeek 3
+1. Modify storyboards based on what we have agreed and discussed on week 2
+2. Modify flowcharts according to the new storyboards
+3. Finalize user stories/flowcharts/storyboard related to contributors
+4. Create a diagram used for system architecture
+5. Add authetication to userstories/flowchart/storyboards
