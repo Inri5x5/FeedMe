@@ -6,3 +6,10 @@ Week 2
 During our lab this week, we discussed the user stories we were set to write and started mapping out the flow chart.
 By the end of the week, I had finished researching and witing the project background (problem statement + existing solutions).
 The team also collaborated and agreed upon a flow chart. From this, we split up which story boards to complete for out lab meeting next week. 
+
+Week 3
+During our lab this week, we brainstormed a different novel idea (linking demonstration videos to recipes) and discussed our tech stack.
+Throughout the week, we worked on the project proposal. I mainly worked on the background.
+We met on Saturday to consolidate our work - we made adjustments to the flow diagram and storyboards.
+On Sunday finalisations to the storyboards were complete meaning I could finalise the flow chart and put them into the project proposal.
+We submitted the proposal Sunday night!
