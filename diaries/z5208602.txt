@@ -3,3 +3,7 @@ We formed our group and got to know a little bit about each other in our Tuesday
 
 Week 2
 In our lab we checked in with our tutor to see if we were on the right track. We also joined GitHub classroom and collaborated on our user stories. During this discussion we realised that our novel functionalities weren’t as novel as we thought, so we had to come up with two new ones. Before our next meeting (Sunday) we decided to finish off our user stories and acceptance criteria and draft up a flowchart based on these.
+
+Week 3
+In our lab we focused on collaboration so that we were all happy with each others' storyboards and they all fit together nicely. We asked our tutor about our new novel features, however, we found that one of them wasn't novel enough, so we came up with a new one (video skills dashboard). I deleted some of my tickets and redid others. When we were ready to submit, I read through everyone's user stories to edit them to ensure that they aligned with our storyboards. I combined some tickets and epics as they were similar or repetitive. We were able to do a final read-through of our proposal and submit Sunday night.
+We also delegated developer roles this week - I will be focusing on the database layer of our backend, but also offering help to both the frontend and backend wherever it is needed.
