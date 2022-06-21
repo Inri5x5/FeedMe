@@ -5,11 +5,10 @@ import styles from './styles/SearchBar.module.css'
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchBar = () => {
-
   const [showDropdown, setDropdown] = useState(false);
   const myDropdown = useRef(null);
   const clickDropdown = () => {
-    if (!showDropdown == false) {
+    if (!showDropdown === false) {
       myDropdown.current.blur();
     }
     setDropdown(!showDropdown);
