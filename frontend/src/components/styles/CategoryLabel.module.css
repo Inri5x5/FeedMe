@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css?family=Overpass");
+
+* {
+	box-sizing: border-box;
+	font-family: "Overpass", sans-serif;
+}
+.tag {
+	width: auto;
+	height: auto;
+	display: flex;
+    flex: 1 0 20%;
+	align-items: center;
+	justify-content: center;
+	color: black;
+	padding: 10px 10px;
+	font-size: 20px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+	background: #FB6090;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background: #821D30 ;
+    color: #FFF3D9;
+}
+
+.tag_title {
+    margin-top: 3px;
+}
