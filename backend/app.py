@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 from helper import create_token
-import json
-import jwt
 
 app = Flask(__name__)
 
