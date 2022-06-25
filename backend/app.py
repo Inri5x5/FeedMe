@@ -14,14 +14,10 @@ app.config['MYSQL_DB'] = 'feedme_test'
 mysql = MySQL(app)
 
 
-@app.route('/form')
-def form():
-    return render_template('form.html')
-
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return "Login via the form"
+        return render_template('form.html')
      
     if request.method == 'POST':
         email = request.json['email']
@@ -29,7 +25,8 @@ def login():
 
         cursor = mysql.connection.cursor()
 
-        cursor.execute('''SELECT 1 FROM MyTable WHERE email = %s''', email)
+        # Check if email exists
+        cursor.execute('''SELECT 1 FROM users WHERE email = %s''', email)
         info = cursor.fetchone()
         if not info:
             cursor.close()
@@ -38,7 +35,8 @@ def login():
                 "body": {"error": "Email is not registered"}
             }
 
-        cursor.execute('''SELECT 1 FROM MyTable WHERE email = %s, password = %s''', 
+        # Check password
+        cursor.execute('''SELECT 1 FROM users WHERE email = %s, password = %s''', 
                         (email, password))
         info = cursor.fetchone()
         if not info:
@@ -48,11 +46,17 @@ def login():
                 "body": {"error": "Wrong password"}
             }
 
-        # check if contributor or regular user
+        # Check if contributor or regular user
+        email, password, is_contributor = info
+        if (is_contributor):
+            # do something
+            print("Contributor")
+
+        # Create token and input to databse
+        token = create_token(email)
+        cursor.execute('''INSERT INTO tokens VALUES(%s, %s)''', (email, token))
 
         cursor.close()
-        
-        token = create_token(email)
 
         return {
             "status": 200,
@@ -61,8 +65,26 @@ def login():
 
 @app.route('/logout', methods = ['GET'])
 def logout():
+    email = request.json['email']
+    token = request.json['token']
 
-    # delete token
+    cursor = mysql.connection.cursor()
+
+    # Validate token
+    cursor.execute('''SELECT 1 FROM tokens WHERE token = %s''', token)
+    info = cursor.fetchone()
+    emailDB, tokenDB = info
+    if (not info or tokenDB != token):
+        cursor.close()
+        return {
+            "status": 400,
+            "body": {"error": "Invalid token"}
+        }
+
+    # Delete token
+    cursor.execute('''DELETE FROM tokens WHERE token = %s''', token)
+
+    cursor.close()
 
     return {
         "status": 200
