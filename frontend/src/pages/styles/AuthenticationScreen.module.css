@@ -1,0 +1,38 @@
+.box_container {
+    display: flex;
+    background-color: #FEF9A7;
+    height: 60%;
+    width: 55%;
+    align-self: center;
+    justify-content: space-evenly;
+    box-shadow: 10px 10px 40px rgba(75, 49, 2, 0.7);;
+    flex-wrap: nowrap;
+}
+
+.form_container {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
+}
+
+.form_style {
+    left: 2%;
+    top: 5%;
+}
+
+.logo_container {
+    display: flex;
+    flex-direction: column;
+    /* overflow: auto; */
+}
+
+.logo_style {
+    color: #112B3C;
+    height: 75%;
+    width: 95%;
+}
+
+.loginswitch {
+    text-decoration: underline;
+    cursor: pointer;
+}
