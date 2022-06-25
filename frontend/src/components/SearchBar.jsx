@@ -60,7 +60,7 @@ const SearchBar = () => {
 	const [categoryMenuName, setCategoryMenuName] = useState('Category');
 	const renderCategory = (list_categories) => {
 		let content = list_categories.map((name, index) => {
-			return (<CategoryLabel text={name} setMenuName={setCategoryMenuName} setDropdownState={setDropdownState}></CategoryLabel>)
+			return (<CategoryLabel text={name} setMenuName={setCategoryMenuName} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
 		})
 		return content;
 	}
