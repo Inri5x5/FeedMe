@@ -28,7 +28,7 @@ def categories():
         for i in cursor.fetchall():
             myresult.extend(i)
     
-        ret = {"status": 400,
+        ret = {"status": 200,
                 "body": {"categories": myresult}}
         print(ret)
         
@@ -47,8 +47,8 @@ def ingredients():
 
         suggestions = [i for i in myresult if ingredient in i]
 
-        ret = {"status": 400,
-                "body": {"categories": suggestions}}
+        ret = {"status": 200,
+                "body": {"suggestions": suggestions}}
         print(ret)
         
         return f"Suggestions are: {suggestions}"
