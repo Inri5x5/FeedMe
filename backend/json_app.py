@@ -28,7 +28,7 @@ def categories():
     ret = {"status": 200,
             "body": {"categories": categories}}
         
-    return f"Frontend receives: {ret}"
+    return ret
 
 @app.route('/ingredients', methods = ['GET'])
 def ingredients():
@@ -53,7 +53,7 @@ def ingredients():
     ret = {"status": 200,
             "body": {"suggestions": suggestions}}
 
-    return f"Frontend receives: {ret}"
+    return ret
 
  
 app.run(host='localhost', port=5000)
