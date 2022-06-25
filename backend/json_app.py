@@ -17,6 +17,8 @@ def categories():
     f = open('ingredients.json')
     data = json.load(f)
 
+    print(data)
+
     # Append ingredient categories into a list
     categories = []
     for n in data:
@@ -34,15 +36,18 @@ def ingredients():
     ingredient = request.args['Ingredient']
 
     # Open json file of ingredients and load data
-    f = open('ingredients.json')
+    f = open('data/ingredients_table.json')
     data = json.load(f)
 
     # Search ingredient dict for string matches
     suggestions = []
-    for c, i in data.items():
-        for n in i:
-            if ingredient in n:
-                suggestions.append(n)
+    for dict in data:
+        if ingredient in dict["name"]:
+            suggestions.append(dict["name"])
+    #for c, i in data.items():
+        #for n in i:
+            #if ingredient in n:
+                #suggestions.append(n)
     
     # Format return dict
     ret = {"status": 200,
