@@ -14,16 +14,16 @@ def form2():
 @app.route('/categories', methods = ['GET'])
 def categories():
     # Open json file of ingredients and load data
-    f = open('ingredients.json')
+    f = open('data/ingredient_categories_table.json')
     data = json.load(f)
-
-    print(data)
 
     # Append ingredient categories into a list
     categories = []
-    for n in data:
-        categories.append(n)
+    for dict in data:
+        categories.append(dict["name"])
 
+    print(categories) 
+    
     # Format return dict
     ret = {"status": 200,
             "body": {"categories": categories}}
@@ -44,11 +44,7 @@ def ingredients():
     for dict in data:
         if ingredient in dict["name"]:
             suggestions.append(dict["name"])
-    #for c, i in data.items():
-        #for n in i:
-            #if ingredient in n:
-                #suggestions.append(n)
-    
+
     # Format return dict
     ret = {"status": 200,
             "body": {"suggestions": suggestions}}
