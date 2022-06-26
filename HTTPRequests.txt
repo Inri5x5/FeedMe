@@ -8,7 +8,7 @@ frontend body:
 {
   "email": "hayden@unsw.edu.au",
   "password": "adummypassword",
-  "name": "Harry Jenkins"
+  "username": "jenkins"
 }
 
 backend response:
@@ -22,7 +22,7 @@ backend response:
 {"status": 400,
 "body":
     {
-    "error": "Invalid input, please try again"
+    "error": "Email already in use, please try again"
     }
 }
 
