@@ -11,7 +11,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SearchBar = () => {
 
-	const backendServer = `http://localhost:5000`;
+	// Data State
+	const [listIngredient, setListIngredient] = useState([]);
+	const [listSelectedIngredient, setListSelectedIngredient] = useState([]);
+	const [listCategories, setListCategories] = useState([]);
+
 	// General API-call boilerplate function
 	const APICall = (requestBody, path, methodType, headersData) => {
 		if (requestBody !== null) requestBody = JSON.stringify(requestBody);
@@ -21,7 +25,7 @@ const SearchBar = () => {
 			headers: headersData,
 			body: requestBody,
 			}
-			fetch(`${backendServer}${path}`, init)
+			fetch(`${path}`, init)
 			.then(response => {
 				if (response.status === 200) {
 				return response.json().then(resolve);
@@ -34,6 +38,18 @@ const SearchBar = () => {
 				}
 			});
 		})
+	}
+	const getAllIngredientsFromCategory = async(category) => {
+	}
+
+	const getIngredientsFromCategory = async(ingredient_query, category) => {
+	}
+
+	const getAllCategories = async() => {
+	}
+
+	const getAllIngredients = async(ingredient) => {
+
 	}
 	
 	//Dropdown Features
