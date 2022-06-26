@@ -13,6 +13,11 @@ def register():
     fp = open('data/rusers_table.json')
     ruser_data = json.load(fp)
 
+    for ruser in ruser_data:
+        if ruser['email'] == email:
+            to_return = {"status": 400, "body": {"error": "Email already in use, please enter a different email"}}
+            return to_return
+
     ruser_data.append({"ruser_id": len(fp.readlines()), "email": email, "password": password, "username": username})
 
     to_return = {"status": 200, "body": {generate_token(email)}}
