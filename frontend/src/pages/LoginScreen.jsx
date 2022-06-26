@@ -67,6 +67,7 @@ export default function LoginScreen () {
       const requestBody = {
         email: email,
         password: password,
+        is_contributor: contributor,
       };
       const headers = {
         'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function LoginScreen () {
           Log In
         </BootstrapButton>
         <FormGroup> 
-          <FormControlLabel control={<ContributorSwitch />} label="Login as Contributor" onChange={(e) => setContributor(e.target.check)}>
+          <FormControlLabel control={<ContributorSwitch />} label="Login as Contributor" onChange={(e) => setContributor(e.target.checked)}>
           </FormControlLabel>
         </FormGroup>
         <Typography sx={{ marginTop: 1, color: '#614124', fontWeight: 'bold' }}>

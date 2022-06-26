@@ -11,10 +11,10 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        is_contributor = request.form.get('is_contributor')
-        print(is_contributor)
+        req = request.get_json()
+        email = req['email']
+        password = req['password']
+        is_contributor = req['is_contributor']
 
         # Get user id
         if is_contributor:
@@ -37,7 +37,7 @@ def login():
             }
         
         # Get tokens json file
-        f = open('backend/data/tokens_table.json', 'r')
+        f = open('./data/tokens_table.json', 'r')
         tokens = json.load(f)
         f.close()
         
@@ -50,13 +50,13 @@ def login():
             "user_id": user_id,
             "is_contributor": is_contributor
             })
-        f = open('backend/data/tokens_table.json', 'w')
+        f = open('./data/tokens_table.json', 'w')
         f.write(json.dumps(tokens))
         f.close()
 
         return {
             "status": 200,
-            "body": {"token": token}
+            "body": {"token": token , "is_contributor": is_contributor}
         }
 
 @app.route('/logout', methods = ['GET'])
@@ -64,7 +64,7 @@ def logout():
     token = request.form.get('token')
 
     # Get tokens json file
-    f = open('backend/data/tokens_table.json', 'r')
+    f = open('./data/tokens_table.json', 'r')
     tokens = json.load(f)
     f.close()
 
@@ -82,7 +82,7 @@ def logout():
         
     # Delete token from tokens json file
     tokens = [i for i in tokens if not (i["token"] == token)]
-    f = open('backend/data/tokens_table.json', 'w+')
+    f = open('./data/tokens_table.json', 'w+')
     f.write(json.dumps(tokens))
     f.close()
 
@@ -93,4 +93,4 @@ def logout():
 
  
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=5000, debug=True)
