@@ -10,23 +10,22 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        data = request.get_json()
-        email = data['email']
-        password = data['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
 
         # Get users json file
-        f = open('users.json')
+        f = open('backend/data/users.json')
         users = json.load(f)
         f.close()
 
         user_exists = 0
         for user in users:
             # User exists
-            if user["email"] == email & user["password"] == password:
+            if user["email"] == email and user["password"] == password:
                 user_exists = 1
                 is_contributor = user["is_contributor"]
             # User exists but wrong password
-            elif user["email"] == email & user["password"] != password:
+            elif user["email"] == email and user["password"] != password:
                 return {
                     "status": 400,
                     "body": {"error": "Wrong password"}
@@ -40,14 +39,14 @@ def login():
             }
             
         # Get tokens json file
-        f = open('tokens.json', 'r')
+        f = open('backend/data/tokens.json', 'r')
         tokens = json.load(f)
         f.close()
         
         # Create token and update tokens json file
         token = create_token(email)
-        tokens[email] = token
-        f = open('tokens.json', 'w+')
+        tokens.append({email: token})
+        f = open('backend/data/tokens.json', 'w')
         f.write(json.dumps(tokens))
         f.close()
 
@@ -58,12 +57,11 @@ def login():
 
 @app.route('/logout', methods = ['GET'])
 def logout():
-    data = request.get_json()
-    email = data['email']
-    token = data['token']
+    email = request.form.get('email')
+    token = request.form.get('token')
 
     # Get tokens json file
-    f = open('tokens.json', 'r')
+    f = open('backend/data/tokens.json', 'r')
     tokens = json.load(f)
     f.close()
 
