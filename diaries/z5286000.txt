@@ -2,8 +2,15 @@ Week 1
 Group formed. Discussed and divided work about the proposal.
 
 Week 2
-8th June: I wrote the user stories for the following functionalities
+During lab, our group discussed planning for the proposal, mainly the about the user stories and the flowchart.
+I wrote the user stories for the following functionalities
     1. Recipe explorers must be able to locate the ingredient(s) to input through a list of ingredient categories.
     2. The system must also assist recipe explorers through suggestions on the next ingredient to input.
+along with the flowchart.
+On Sunday, our group had a meeting to discuss the stories and flowchart we've created and made a rough draft of combining them together.
 
-12th June: Created the flowchart for my user stories.
+Week 3
+In this week's lab, we discussed further about the proposal before the submission next week. We finalised our novel features and talked about the tech stack. Throughout the week, we worked on our individual parts of the proposal. I wrote the user types part of the system architecture. We had a meeting on Saturday to discuss our work and then finalised as well as submitted the proposal on Sunday.
+
+Week 4
+Unfortunately, I wasn't able to attend this week's lab. But this week we are starting Sprint 1, in which we're mainly focusing on setting up and the authentication part of the project.

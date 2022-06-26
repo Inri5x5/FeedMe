@@ -1,0 +1,6 @@
+{
+    "Protein": ["chicken breast", "chicken thigh", "roast chicken", "snapper fillet", "beef mince", "t-bone steak", "pork cutlet"],
+    "Vegetables": ["spinach", "bok choy", "cauliflower", "cabbage", "peas", "rocket", "lettuce"],
+    "Grains": ["white bread", "sourdough bread", "flatbread", "noodles"],
+    "Dairy": ["milk", "cheese", "cream", "yoghurt"]
+}
