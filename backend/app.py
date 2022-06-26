@@ -6,9 +6,10 @@ app = Flask(__name__)
 
 @app.route("/auth/register", methods = ['POST'])
 def register():
-    email = request.args['email']
-    password = request.args['password']
-    username = request.args['username']
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    username = req['username']
 
     fp1 = open('data/rusers_table.json', 'r')
     ruser_data = json.load(fp1)
