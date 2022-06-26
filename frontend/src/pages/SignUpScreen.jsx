@@ -12,6 +12,11 @@ import {
 } from '@mui/material';
 
 export default function SignupScreen () {
+  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPass] = React.useState('');
+  const [checkError, setError] = React.useState(false);
   const navigate = useNavigate();
   
   const BootstrapButton = styled(Button)({
@@ -36,10 +41,13 @@ export default function SignupScreen () {
       <Box className={styles.form_container}>
         <TextField
         required
-        margin="normal"
+        margin="none"
         label="Username"
         type="text"
         className={styles.form_style}
+        onChange={(e) => setUsername(e.target.value)}
+        error={username.length < 5}
+        helperText="Username must be more than 5 character"
         />
         <TextField
         required
@@ -47,13 +55,18 @@ export default function SignupScreen () {
         label="Email"
         type="email"
         className={styles.form_style}
+        onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
         required
-        margin="normal"
+        margin="none"
         label="Password"
         type="password"
         className={styles.form_style}
+        onChange={(e) => setPassword(e.target.value)}
+        error={password.length < 8}
+        // helperText={(checkError) ? "Password must be more than 8 character": ''}
+        helperText="Password must be more than 8 character"
         />
         <TextField
         required
@@ -61,6 +74,8 @@ export default function SignupScreen () {
         label="Confirm Password"
         type="password"
         className={styles.form_style}
+        onChange={(e) => setConfirmPass(e.target.value)}
+        error={password !== confirmPassword}
         />
         <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 }}>
           Register

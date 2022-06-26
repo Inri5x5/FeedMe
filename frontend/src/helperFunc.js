@@ -9,7 +9,7 @@ const APICall = (requestBody, path, methodType, headersData) => {
         headers: headersData,
         body: requestBody,
       }
-      fetch(`${backendServer}${path}`, init)
+      fetch(`${path}`, init)
         .then(response => {
           if (response.status === 200) {
             return response.json().then(resolve);
@@ -23,3 +23,5 @@ const APICall = (requestBody, path, methodType, headersData) => {
         });
     })
   }
+  
+export { APICall };
