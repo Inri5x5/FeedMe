@@ -12,7 +12,7 @@ def generate_token(email):
 
 def get_contributor(email):
     # Get contributors json file
-    f = open('backend/data/contributors_table.json')
+    f = open('./data/contributors_table.json')
     contributors = json.load(f)
     f.close()
 
@@ -26,7 +26,7 @@ def get_contributor(email):
 
 def get_ruser(email):
     # Get users json file
-    f = open('backend/data/rusers_table.json')
+    f = open('./data/rusers_table.json')
     users = json.load(f)
     f.close()
 
@@ -42,7 +42,7 @@ def check_password(email, password, is_contributor):
     ret = False
 
     if (is_contributor):
-        f = open('backend/data/contributors_table.json')
+        f = open('./data/contributors_table.json')
         contributors = json.load(f)
         f.close()
 
@@ -50,7 +50,7 @@ def check_password(email, password, is_contributor):
             if c["email"] == email and c["password"] == password:
                 ret = True
     else:
-        f = open('backend/data/rusers_table.json')
+        f = open('./data/rusers_table.json')
         users = json.load(f)
         f.close()
 

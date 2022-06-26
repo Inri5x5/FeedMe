@@ -37,7 +37,7 @@ def login():
             }
         
         # Get tokens json file
-        f = open('backend/data/tokens_table.json', 'r')
+        f = open('./data/tokens_table.json', 'r')
         tokens = json.load(f)
         f.close()
         
@@ -50,7 +50,7 @@ def login():
             "user_id": user_id,
             "is_contributor": is_contributor
             })
-        f = open('backend/data/tokens_table.json', 'w')
+        f = open('./data/tokens_table.json', 'w')
         f.write(json.dumps(tokens))
         f.close()
 
@@ -65,7 +65,7 @@ def logout():
     token = req['token']
 
     # Get tokens json file
-    f = open('backend/data/tokens_table.json', 'r')
+    f = open('./data/tokens_table.json', 'r')
     tokens = json.load(f)
     f.close()
 
@@ -83,7 +83,7 @@ def logout():
         
     # Delete token from tokens json file
     tokens = [i for i in tokens if not (i["token"] == token)]
-    f = open('backend/data/tokens_table.json', 'w+')
+    f = open('./data/tokens_table.json', 'w+')
     f.write(json.dumps(tokens))
     f.close()
 
