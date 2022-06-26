@@ -11,10 +11,10 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        is_contributor = request.form.get('is_contributor')
-        print(is_contributor)
+        req = request.get_json()
+        email = req['email']
+        password = req['password']
+        is_contributor = req['is_contributor']
 
         # Get user id
         if is_contributor:
@@ -61,7 +61,8 @@ def login():
 
 @app.route('/logout', methods = ['GET'])
 def logout():
-    token = request.form.get('token')
+    req = request.get_json()
+    token = req['token']
 
     # Get tokens json file
     f = open('backend/data/tokens_table.json', 'r')
