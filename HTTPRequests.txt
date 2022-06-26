@@ -117,3 +117,33 @@ backend response:
     ]
     }
 }
+
+*** Returning all ingredients belonging to a particular category ***
+
+path is search/category/ingredients
+
+GET method
+
+frontend body:
+{
+  "category": "Fruit"
+}
+
+backend response:
+{"status": 200,
+"body":
+    {
+    "ingredients" : [
+        "melon",
+        "strawberry",
+        ...
+    ]
+    }
+}
+
+{"status": 400,
+"body":
+    {
+        "error": "Invalid category name"
+    }
+}
