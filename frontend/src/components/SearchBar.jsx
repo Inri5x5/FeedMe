@@ -13,7 +13,6 @@ const SearchBar = () => {
 
 	// Data State
 	const [listIngredient, setListIngredient] = useState([]);
-	const [listSelectedIngredient, setListSelectedIngredient] = useState([]);
 	const [listCategories, setListCategories] = useState([]);
 
 	// General API-call boilerplate function
@@ -39,12 +38,22 @@ const SearchBar = () => {
 			});
 		})
 	}
-	const getAllIngredientsFromCategory = async(category) => {
+	const getIngredientsFromCategory = async(category_name) => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			data = await APICall(null, `/category/ingredients?category=${category_name}`, 'GET', headers);
+			for (let i = 0; i < data.body.ingredients.length; i++) {
+				temp.push({"i_id": data.body.ingredients[i].i_id, "name": data.body.ingredients[i].name})
+			}
+			setListIngredient(temp);
+			return temp
+		} catch (err) {
+			alert(err);
+		}
 	}
-
-	const getIngredientsFromCategory = async(ingredient_query, category) => {
-	}
-
 	const getAllCategories = async() => {
 		let data = []; let temp = [];
 		try {
@@ -60,12 +69,11 @@ const SearchBar = () => {
 			alert(err);
 		}
 	}
-
 	const getAllIngredients = async() => {
 		let data = []; let temp = [];
 		try {
 			const headers = {
-			  'Content-Type': 'application/json',
+				'Content-Type': 'application/json',
 			};
 			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
 			for (let i = 0; i < data.body.suggestions.length; i++) {
@@ -77,11 +85,6 @@ const SearchBar = () => {
 		}
 	}
 
-	React.useEffect(() => {
-		getAllCategories();
-		getAllIngredients();
-	},[]);
-
 	
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
@@ -90,11 +93,6 @@ const SearchBar = () => {
 	//3. Showing Searches
 	const [dropdownState, setDropdownState] = useState('Category');
 	const [showDropdown, setDropdown] = useState(false);
-	const resetDropdown = () => {
-		setDropdown(false);
-		setCategoryMenuName('Category');
-		setDropdownState('Category')
-	}
 	const clickDropdown = () => {
 		if (showDropdown === true) {
 			setDropdown(false)
@@ -141,7 +139,7 @@ const SearchBar = () => {
 	}
 	const removeIngredientOnClick = (object) => {
 		setSelectedIngredients(selectedIngredients.filter(selIngr => {
-			return selIngr.id !== object.id;
+			return selIngr.i_id !== object.i_id;
 		}))
 	}
 	const renderSelectedIngredient = (list_selected_ingredients) => {
@@ -160,8 +158,6 @@ const SearchBar = () => {
 	//Searching Feature
 	const [input, setInput] = useState('');
 	const [found, setFound] = useState([]);
-	
-
 	const onInput = (e) => {
 		setInput(e.target.value);
 		searchIngredient(e.target.value, listIngredient);
@@ -190,6 +186,21 @@ const SearchBar = () => {
 			</div>
 		)
 	}
+
+
+	React.useEffect(() => {
+		getAllCategories();
+	},[]);
+
+	React.useEffect(() => {
+		if ((dropdownState === 'Category') || (dropdownState === "Searches" && categoryMenuName === "Category")) {
+			getAllIngredients();
+		} else if (dropdownState === "Searches") {
+			getIngredientsFromCategory(categoryMenuName).then(data => searchIngredient(input, data))
+		} else {
+			getIngredientsFromCategory(categoryMenuName)
+		}
+	},[dropdownState]);
 		
 	return (
 		<>

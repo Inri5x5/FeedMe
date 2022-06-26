@@ -95,10 +95,41 @@ def ingredients():
 
     return ret
 
+# @app.route('/category/ingredients', methods = ['GET'])
+# def category_ingredients():
+#     # Get user input (string)
+#     category = request.args['Category']
+
+#     # Load category_id to category name mapping and get id
+#     i = open('data/ingredient_categories_table.json')
+#     category_data = json.load(i)
+#     category_id = 0
+#     for j in category_data:
+#         if category == j["name"]:
+#             category_id = j["category_id"]
+
+#     # Load ingredient data and get all ingredient in category
+#     f = open('data/ingredients_table.json')
+#     ingredient_data = json.load(f)
+#     ingredients = []
+#     for dict in ingredient_data:
+#         if category_id == dict["ingredient_category_id"]:
+#             ingredients.append(dict["name"])
+
+#     # Format return dict
+#     if len(ingredients) == 0:
+#         ret = {"status": 400,
+#                 "body": {"error": "Invalid category name"}}
+#     else:
+#         ret = {"status": 200,
+#                 "body": {"ingredients": ingredients}}
+    
+#     return ret
+
 @app.route('/category/ingredients', methods = ['GET'])
 def category_ingredients():
     # Get user input (string)
-    category = request.args['Category']
+    category = request.args.get('category')
 
     # Load category_id to category name mapping and get id
     i = open('data/ingredient_categories_table.json')
@@ -114,15 +145,11 @@ def category_ingredients():
     ingredients = []
     for dict in ingredient_data:
         if category_id == dict["ingredient_category_id"]:
-            ingredients.append(dict["name"])
+            ingredients.append({"name": dict["name"], "i_id": dict["ingredient_id"]})
 
-    # Format return dict
-    if len(ingredients) == 0:
-        ret = {"status": 400,
-                "body": {"error": "Invalid category name"}}
-    else:
-        ret = {"status": 200,
-                "body": {"ingredients": ingredients}}
+    
+    ret = {"status": 200,
+            "body": {"ingredients": ingredients}}
     
     return ret
 
