@@ -59,21 +59,22 @@ def login():
 def logout():
     email = request.form.get('email')
     token = request.form.get('token')
-
+    
     # Get tokens json file
     f = open('backend/data/tokens.json', 'r')
     tokens = json.load(f)
     f.close()
 
     # Validate token
-    if tokens[email] != token:
-        return {
-            "status": 400,
-            "body": {"error": "Invalid token"}
-        }
+    for t in tokens:
+        if email in t and t[email] != token:
+            return {
+                "status": 400,
+                "body": {"error": "Invalid token"}
+            }
         
     # Delete token from tokens json file
-    tokens.pop(email)
+    tokens = [i for i in tokens if not (i[email] == token)]
     f = open('tokens.json', 'w+')
     f.write(json.dumps(tokens))
     f.close()
