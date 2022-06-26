@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './styles/AuthenticationScreen.module.css'
 import logo from '../assets/Front_Logo.svg'
 import { useNavigate } from 'react-router-dom';
+import { APICall } from '../helperFunc'
 import { styled } from '@mui/material/styles';
 import {
   Button,
@@ -34,6 +35,25 @@ export default function SignupScreen () {
     color: '#F9D371'
   },
   });
+  
+  const register = async (username, email, password) => {
+    let data = null;
+    try {
+      const requestBody = {
+        username: username,
+        email: email,
+        password: password,
+      };
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      data = await APICall(requestBody, '/auth/register', 'POST', headers);
+      // localStorage.setItem('token', data.token);
+      console.log(data);
+    } catch (err) {
+      alert(err);
+    }
+  }
   
   return (
   <div className="signupContainer" style={{ height: '100vh' , display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -77,7 +97,7 @@ export default function SignupScreen () {
         onChange={(e) => setConfirmPass(e.target.value)}
         error={password !== confirmPassword}
         />
-        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 }}>
+        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 }} onClick={() => register(username, email, password)}>
           Register
         </BootstrapButton>
         <Typography sx={{ marginTop: 1, color: '#614124', fontWeight: 'bold' }}>

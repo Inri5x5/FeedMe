@@ -11,7 +11,7 @@ def main():
     #tokens schema: token (string), user_id (int), is_contributor (bool)
     tokens_table = []
 
-    emails_file = open("emails.txt", "r")
+    emails_file = open("./emails.txt", "r")
 
     passwords_file = open("passwords.txt", "r")
 
