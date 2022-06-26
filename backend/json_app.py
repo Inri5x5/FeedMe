@@ -1,3 +1,4 @@
+from operator import is_
 from flask import Flask, render_template, request
 from helper import get_contributor, get_ruser, check_password, generate_token
 import json
@@ -12,23 +13,21 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        user_id = -1
-        is_contributor = False
+        is_contributor = request.form.get('is_contributor')
+        print(is_contributor)
 
-        # Check user type
-        contributor = get_contributor(email)
-        ruser = get_ruser(email)
-        if (contributor < 0 and ruser < 0): # User does not exist
+        # Get user id
+        if is_contributor:
+            user_id = get_contributor(email)
+        else:
+            user_id = get_ruser(email)
+        
+        # User does not exist
+        if (user_id < 0):
             return {
                 "status": 400,
                 "body": {"error": "Email is not registered"}
             }
-        elif (contributor >= 0):            # User is a contributor
-            user_id = contributor
-            is_contributor = True
-        elif (ruser >= 0):                  # User is a regular user
-            user_id = ruser
-            is_contributor = False
 
         # Check password
         if not check_password(email, password, is_contributor):
@@ -57,7 +56,7 @@ def login():
 
         return {
             "status": 200,
-            "body": {"token": token, "is_contributor": is_contributor}
+            "body": {"token": token}
         }
 
 @app.route('/logout', methods = ['GET'])
@@ -88,7 +87,8 @@ def logout():
     f.close()
 
     return {
-        "status": 200
+        "status": 200,
+        "body": {}
     }
 
  
