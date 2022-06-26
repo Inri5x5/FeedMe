@@ -10,8 +10,9 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        email = request.json['email']
-        password = request.json['password']
+        data = request.get_json()
+        email = data['email']
+        password = data['password']
 
         # Get users json file
         f = open('users.json')
@@ -57,8 +58,9 @@ def login():
 
 @app.route('/logout', methods = ['GET'])
 def logout():
-    email = request.json['email']
-    token = request.json['token']
+    data = request.get_json()
+    email = data['email']
+    token = data['token']
 
     # Get tokens json file
     f = open('tokens.json', 'r')
