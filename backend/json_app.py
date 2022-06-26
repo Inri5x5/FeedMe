@@ -44,7 +44,6 @@ def login():
         
         # Create token 
         token = generate_token(email)
-        print(token)
 
         # Update tokens json file
         tokens.append({
