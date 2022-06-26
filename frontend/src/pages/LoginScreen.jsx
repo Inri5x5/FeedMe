@@ -18,6 +18,7 @@ import {
 export default function LoginScreen () {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [contributor, setContributor] = React.useState(false);
   const navigate = useNavigate();
   
   const BootstrapButton = styled(Button)({
@@ -102,7 +103,7 @@ export default function LoginScreen () {
           Log In
         </BootstrapButton>
         <FormGroup> 
-          <FormControlLabel control={<ContributorSwitch />} label="Login as Contributor">
+          <FormControlLabel control={<ContributorSwitch />} label="Login as Contributor" onChange={(e) => setContributor(e.target.check)}>
           </FormControlLabel>
         </FormGroup>
         <Typography sx={{ marginTop: 1, color: '#614124', fontWeight: 'bold' }}>
