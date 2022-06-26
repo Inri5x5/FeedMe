@@ -46,11 +46,42 @@ const SearchBar = () => {
 	}
 
 	const getAllCategories = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			data = await APICall(null, '/categories', 'GET', headers);
+			for (let i = 0; i < data.body.categories.length; i++) {
+				temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
+			}
+			setListCategories(temp);
+		} catch (err) {
+			alert(err);
+		}
 	}
 
-	const getAllIngredients = async(ingredient) => {
-
+	const getAllIngredients = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
+			for (let i = 0; i < data.body.suggestions.length; i++) {
+				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name})
+			}
+			setListIngredient(temp);
+		} catch (err) {
+			alert(err);
+		}
 	}
+
+	React.useEffect(() => {
+		getAllCategories();
+		getAllIngredients();
+	},[]);
+
 	
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
@@ -66,22 +97,12 @@ const SearchBar = () => {
 	}
 	const clickDropdown = () => {
 		if (showDropdown === true) {
-			// if (categoryMenuName !== "Category") {
-			// 	setDropdown(false);
-			// } else {
-			// 	resetDropdown();
-			// }
 			setDropdown(false)
 		}
 		showDropdown ? setDropdown(false) : setDropdown(true);
 	}
 	const handleBlur = (event) => {
 		if (!event.currentTarget.contains(event.relatedTarget)) {
-			// if (categoryMenuName !== "Category") {
-			// 	setDropdown(false);
-			// } else {
-			// 	resetDropdown();
-			// }
 			setDropdown(false)
 		}
 	}
@@ -100,8 +121,8 @@ const SearchBar = () => {
 	//Category Feature
 	const [categoryMenuName, setCategoryMenuName] = useState('Category');
 	const renderCategory = (list_categories) => {
-		let content = list_categories.map((name, index) => {
-			return (<CategoryLabel text={name} setMenuName={setCategoryMenuName} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
+		let content = list_categories.map((object, index) => {
+			return (<CategoryLabel text={object.name} setMenuName={setCategoryMenuName} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
 		})
 		return content;
 	}
@@ -131,7 +152,7 @@ const SearchBar = () => {
 	}
 	const checkIfSelected = (object) => {
 		for(let i = 0; i < selectedIngredients.length; i++) {
-			if (object.id === selectedIngredients[i].id) return true;
+			if (object.i_id === selectedIngredients[i].i_id) return true;
 		}
 		return false;
 	}
@@ -139,16 +160,11 @@ const SearchBar = () => {
 	//Searching Feature
 	const [input, setInput] = useState('');
 	const [found, setFound] = useState([]);
-	// const handleEnterKey = (event) => {
-	// 	if (event.key === 'Enter') {
-	// 		searchIngredient(input, ingredients);
-	// 		setDropdownState('Searches');
-	// 		setDropdown(true);
-	// 	}
-	// }
+	
+
 	const onInput = (e) => {
 		setInput(e.target.value);
-		searchIngredient(e.target.value, ingredients);
+		searchIngredient(e.target.value, listIngredient);
 		if (e.target.value === "") {
 			if (categoryMenuName !== "Category") {
 				setDropdownState('Ingredient')
@@ -174,13 +190,6 @@ const SearchBar = () => {
 			</div>
 		)
 	}
-
-	//Dummy Data
-	const categories = ['Vegetables', 'Fruits', 'Herbs & Spices', 'Pasta & Rice', 'Meat & Poultry', 'Seafood', 'Fats & Oils', 'Eggs & Dairy', 'Others']
-	let ingredients = [{"id": -1, "name":'short name'}, {"id": -2, "name": "a reallyyyy longgg nameeeeeee of ingrreedient"}];
-	for (let i = -90; i < 50; i ++) {
-		ingredients.push({"id": i, "name": "Lorem Ipsum Ingre" + i});
-	}
 		
 	return (
 		<>
@@ -197,11 +206,11 @@ const SearchBar = () => {
 						<KeyboardArrowDownIcon className={showDropdown ? styles.search_category_icon_focus : styles.search_category_icon}/>
 					</div>
 					<div className={showDropdown ? styles.category_menu_focus : styles.category_menu} tabIndex='0'>
-						{ (dropdownState === 'Category') && renderCategory(categories) }
+						{ (dropdownState === 'Category') && renderCategory(listCategories) }
 						{ (dropdownState === 'Searches') && renderSearchTitle() }
 						{ (categoryMenuName !== 'Category') && renderBackIcon() }
 						{ (categoryMenuName === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
-						{ (dropdownState === 'Ingredient') && renderIngredient(ingredients) }
+						{ (dropdownState === 'Ingredient') && renderIngredient(listIngredient) }
 						{ (dropdownState === 'Searches') && renderIngredient(found) }
 					</div>
 				</div>
