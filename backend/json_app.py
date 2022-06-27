@@ -57,11 +57,12 @@ def login():
 
         return {
             "status": 200,
-            "body": {"token": token}
+            "body": {"token": token , "is_contributor": is_contributor}
         }
 
 @app.route('/logout', methods = ['POST'])
 def logout():
+
     req = request.get_json()
     token = req['token']
 
@@ -75,7 +76,7 @@ def logout():
     f.close()
 
     tokens = [i for i in tokens if not (i["token"] == token)]
-    
+
     f = open('./data/tokens_table.json', 'w+')
     f.write(json.dumps(tokens))
     f.close()
@@ -86,4 +87,4 @@ def logout():
     }
  
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=5000, debug=True)

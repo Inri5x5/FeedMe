@@ -1,93 +1,45 @@
-from flask import Flask, render_template, request
-from flask_mysqldb import MySQL
-from helper import create_token
+from flask import Flask, request
+import json
+from data.create_token import generate_token
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'feedme_test'
- 
-mysql = MySQL(app)
+@app.route("/auth/register", methods = ['POST'])
+def register():
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    username = req['username']
+
+    fp1 = open('./data/rusers_table.json', 'r')
+    ruser_data = json.load(fp1)
+    for ruser in ruser_data:
+        if ruser['email'] == email:
+            to_return = {"status": 400, "body": {"error": "Email already in use, please enter a different email"}}
+            return to_return
+
+    ruser_id = len(ruser_data)
+    print(ruser_id)
+    ruser_data.append({"ruser_id": ruser_id, "email": email, "password": password, "username": username, "profile_picture": ''})
+    fp1.close()
+    fp = open('./data/rusers_table.json', 'w')
+    fp.write(json.dumps(ruser_data))
+    fp.close()
+
+    token = generate_token(email)
+    fp2 = open('data/tokens_table.json', 'r')
+    token_data = json.load(fp2)
+    token_data.append({"token": token, "user_id": ruser_id, "is_contributor": False})
+    fp2.close()
+    fp = open('./data/tokens_table.json', 'w')
+    json.dump(token_data, fp)
+    fp.close()
 
 
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-    if request.method == 'GET':
-        return render_template('form.html')
-     
-    if request.method == 'POST':
-        email = request.json['email']
-        password = request.json['password']
+    to_return = {"status": 200, "body": {"token": token}}
+    # error checking ? email already in use, email not a real email, password not long enough, etc.
 
-        cursor = mysql.connection.cursor()
-
-        # Check if email exists
-        cursor.execute('''SELECT 1 FROM users WHERE email = %s''', email)
-        info = cursor.fetchone()
-        if not info:
-            cursor.close()
-            return {
-                "status": 400,
-                "body": {"error": "Email is not registered"}
-            }
-
-        # Check password
-        cursor.execute('''SELECT 1 FROM users WHERE email = %s, password = %s''', 
-                        (email, password))
-        info = cursor.fetchone()
-        if not info:
-            cursor.close()
-            return {
-                "status": 400,
-                "body": {"error": "Wrong password"}
-            }
-
-        # Check if contributor or regular user
-        email, password, is_contributor = info
-        if (is_contributor):
-            # do something
-            print("Contributor")
-
-        # Create token and input to databse
-        token = create_token(email)
-        cursor.execute('''INSERT INTO tokens VALUES(%s, %s)''', (email, token))
-
-        cursor.close()
-
-        return {
-            "status": 200,
-            "body": {"token": token}
-        }
-
-@app.route('/logout', methods = ['GET'])
-def logout():
-    email = request.json['email']
-    token = request.json['token']
-
-    cursor = mysql.connection.cursor()
-
-    # Validate token
-    cursor.execute('''SELECT 1 FROM tokens WHERE token = %s''', token)
-    info = cursor.fetchone()
-    emailDB, tokenDB = info
-    if (not info or tokenDB != token):
-        cursor.close()
-        return {
-            "status": 400,
-            "body": {"error": "Invalid token"}
-        }
-
-    # Delete token
-    cursor.execute('''DELETE FROM tokens WHERE token = %s''', token)
-
-    cursor.close()
-
-    return {
-        "status": 200
-    }
-
-
+    return to_return
+    
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=5000, debug=True)
