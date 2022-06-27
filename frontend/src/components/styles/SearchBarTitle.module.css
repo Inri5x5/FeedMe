@@ -5,6 +5,7 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   margin-top: 20px;
 }
 
@@ -21,14 +22,14 @@ h1 {
   display: inline-block;
   margin-left: 20px;
   z-index: 1;
-  color: #FFF3D9;
+  color: red;
   font-family: 'Righteous', serif;
   font-size: 5em; 
   text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
-  max-width: 30vw;
+  /* max-width: 30vw; */
 }
 
-h1:after {
+/* h1:after {
   content: attr(data-shadow);
   position: absolute;
   top: 0.8em; 
@@ -54,4 +55,4 @@ h1:after {
 @keyframes shad-anim {
   0% {background-position: 0 0}
   0% {background-position: 100% -100%}
-}
+} */

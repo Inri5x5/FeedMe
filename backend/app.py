@@ -6,6 +6,7 @@ import json
 
 def defaultHandler(err):
     response = err.get_response()
+    print(response)
     print('response', err, err.get_response())
     response.data = dumps({
         "code": err.code,
@@ -14,20 +15,12 @@ def defaultHandler(err):
     })
     response.content_type = 'application/json'
     return response
-
+    
 app = Flask(__name__)
 
 app.config['TRAP_HTTP_EXCEPTIONS'] = True
 app.register_error_handler(Exception, defaultHandler)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'flask'
- 
-# mysql = MySQL(app)
- 
- 
 @app.route("/auth/register", methods = ['POST'])
 def register():
     req = request.get_json()
@@ -150,18 +143,6 @@ def logout():
         "body": {}
     }
 
-@app.route('/search/categories')
-def form1():
-    return render_template('categories.html')
-
-@app.route('/search/ingredients')
-def form2():
-    return render_template('ingredients.html')
-
-@app.route('/search/category/ingredients')
-def form3():
-    return render_template('ingredient_category.html')
- 
 @app.route('/categories', methods = ['GET'])
 def categories():
     # Open json file of ingredients and load data
@@ -171,7 +152,7 @@ def categories():
     # Append ingredient categories into a list
     categories = []
     for dict in data:
-        categories.append(dict["name"])
+        categories.append({"name": dict["name"], "c_id": dict["category_id"]})
 
     print(categories) 
 
@@ -180,11 +161,11 @@ def categories():
             "body": {"categories": categories}}
         
     return ret
-
+    
 @app.route('/ingredients', methods = ['GET'])
 def ingredients():
     # Get user input
-    ingredient = request.args['Ingredient']
+    ingredient = request.args.get('query')
 
     # Open json file of ingredients and load data
     f = open('data/ingredients_table.json')
@@ -194,45 +175,13 @@ def ingredients():
     suggestions = []
     for dict in data:
         if ingredient.lower() in dict["name"].lower():
-            suggestions.append(dict["name"])
+            suggestions.append({"name": dict["name"], "i_id": dict["ingredient_id"], "c_id": dict["ingredient_category_id"]})
 
     # Format return dict
     ret = {"status": 200,
             "body": {"suggestions": suggestions}}
 
     return ret
-
-@app.route('/category/ingredients', methods = ['GET'])
-def category_ingredients():
-    # Get user input (string)
-    category = request.args['Category']
-
-    # Load category_id to category name mapping and get id
-    i = open('data/ingredient_categories_table.json')
-    category_data = json.load(i)
-    category_id = 0
-    for j in category_data:
-        if category == j["name"]:
-            category_id = j["category_id"]
-
-    # Load ingredient data and get all ingredient in category
-    f = open('data/ingredients_table.json')
-    ingredient_data = json.load(f)
-    ingredients = []
-    for dict in ingredient_data:
-        if category_id == dict["ingredient_category_id"]:
-            ingredients.append(dict["name"])
-
-    # Format return dict
-    if len(ingredients) == 0:
-        ret = {"status": 400,
-                "body": {"error": "Invalid category name"}}
-    else:
-        ret = {"status": 200,
-                "body": {"ingredients": ingredients}}
-    
-    return ret
-
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

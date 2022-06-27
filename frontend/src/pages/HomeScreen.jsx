@@ -8,9 +8,8 @@ const HomeScreen = () => {
 
     return (
       <div style={{display: 'flex', flexDirection: 'column'}} > 
-        <NavigationBarHome style={{ alignSelf: 'start' }} isLogin={false} ></NavigationBarHome>
-        <SearchBar style={{ margin: '100px' }}></SearchBar>
-        {/* <SelectedIngredientLabel></SelectedIngredientLabel> */}
+        <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
+        <SearchBar style={{ marginTop: '30px' }}></SearchBar>
       </div>
     )
   }
