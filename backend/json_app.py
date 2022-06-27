@@ -59,7 +59,7 @@ def login():
             "body": {"token": token , "is_contributor": is_contributor}
         }
 
-@app.route('/logout', methods = ['GET'])
+@app.route('/logout', methods = ['POST'])
 def logout():
     token = request.form.get('token')
 

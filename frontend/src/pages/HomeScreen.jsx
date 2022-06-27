@@ -8,7 +8,7 @@ const HomeScreen = () => {
 
     return (
       <div style={{display: 'flex', flexDirection: 'column'}} > 
-        <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
+        <NavigationBarHome style={{ alignSelf: 'start' }} isLogin={false} ></NavigationBarHome>
         <SearchBar style={{ margin: '100px' }}></SearchBar>
         {/* <SelectedIngredientLabel></SelectedIngredientLabel> */}
       </div>

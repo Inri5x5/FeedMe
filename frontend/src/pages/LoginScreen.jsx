@@ -73,8 +73,10 @@ export default function LoginScreen () {
         'Content-Type': 'application/json',
       };
       data = await APICall(requestBody, '/login', 'POST', headers);
-      // localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.body['token']);
+      localStorage.setItem('is_contributor', data.body['is_contributor']);
       console.log(data);
+      navigate('/')
     } catch (err) {
       alert(err);
     }
@@ -100,14 +102,19 @@ export default function LoginScreen () {
         className={styles.form_style}
         onChange={(e) => setPassword(e.target.value)}
         />
-        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 }} onClick={ () => login(email, password)}>
+        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 ,fontFamily: "'Righteous', serif",}} onClick={ () => login(email, password)}>
           Log In
         </BootstrapButton>
         <FormGroup> 
-          <FormControlLabel control={<ContributorSwitch />} label="Login as Contributor" onChange={(e) => setContributor(e.target.checked)}>
+          <FormControlLabel 
+            control={<ContributorSwitch />} 
+            label={<Typography sx={{ fontFamily: "'Righteous', serif" }}> Login as Contributor</Typography>}
+            checked={contributor} 
+            onChange={(e) => setContributor(e.target.checked)}
+            >
           </FormControlLabel>
         </FormGroup>
-        <Typography sx={{ marginTop: 1, color: '#614124', fontWeight: 'bold' }}>
+        <Typography sx={{ marginTop: 1, color: '#614124', fontFamily: "'Righteous', serif" }}>
           Not a member of FeedMe! ? <span onClick={() => navigate("/register")} className={styles.loginswitch}> Sign Up </span>
         </Typography>
       </Box>
@@ -126,7 +133,7 @@ export default function LoginScreen () {
             component="a"
             sx={{
               display: 'flex' ,
-              fontFamily: "'Work Sans', sans-serif",
+              fontFamily: "'Righteous', serif",
               fontWeight: 900,
               letterSpacing: '.5rem',
               justifyContent: 'center',
@@ -137,7 +144,7 @@ export default function LoginScreen () {
           >
             FeedMe!
           </Typography>
-        <BootstrapButton sx={{ height: '5%' , width: '15%', position: 'relative'}} onClick={() => navigate('/')}>
+        <BootstrapButton sx={{ height: '5%' , width: '15%', position: 'relative', fontFamily: "'Righteous', serif" }} onClick={() => navigate('/')}>
           Home
         </BootstrapButton>
       </Box>

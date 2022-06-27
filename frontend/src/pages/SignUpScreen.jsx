@@ -48,8 +48,9 @@ export default function SignupScreen () {
         'Content-Type': 'application/json',
       };
       data = await APICall(requestBody, '/auth/register', 'POST', headers);
-      // localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.token);
       console.log(data);
+      navigate('/');
     } catch (err) {
       alert(err);
     }
@@ -97,10 +98,10 @@ export default function SignupScreen () {
         onChange={(e) => setConfirmPass(e.target.value)}
         error={password !== confirmPassword}
         />
-        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1 }} onClick={() => register(username, email, password)}>
+        <BootstrapButton sx={{ marginTop: 3, marginLeft: 1, fontFamily: "'Righteous', serif" }} onClick={() => register(username, email, password)}>
           Register
         </BootstrapButton>
-        <Typography sx={{ marginTop: 1, color: '#614124', fontWeight: 'bold' }}>
+        <Typography sx={{ marginTop: 1, color: '#614124', fontFamily: "'Righteous', serif" }}>
           A member of FeedMe! ? <span onClick={() => navigate("/login")} className={styles.loginswitch}> Log in </span>
         </Typography>
       </Box>
@@ -119,7 +120,7 @@ export default function SignupScreen () {
             component="a"
             sx={{
               display: 'flex' ,
-              fontFamily: "'Work Sans', sans-serif",
+              fontFamily: "'Righteous', serif",
               fontWeight: 900,
               letterSpacing: '.5rem',
               justifyContent: 'center',
@@ -130,7 +131,7 @@ export default function SignupScreen () {
           >
             FeedMe!
           </Typography>
-        <BootstrapButton sx={{ height: '5%' , width: '15%', position: 'relative'}} onClick={() => navigate('/')}>
+        <BootstrapButton sx={{ height: '5%' , width: '15%', position: 'relative', fontFamily: "'Righteous', serif"}} onClick={() => navigate('/')}>
           Home
         </BootstrapButton>
       </Box>
