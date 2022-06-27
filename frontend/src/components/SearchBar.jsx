@@ -70,7 +70,6 @@ const SearchBar = () => {
 		}
 	}
 
-	
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
 	//1. Showing Categories
@@ -161,15 +160,14 @@ const SearchBar = () => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
 			if (category.name === "Category"){
-				if (list_ingredients[i].name.includes(name)) {
+				if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase())) {
 					found.push(list_ingredients[i]);
 				}
 			} else {
-				if (list_ingredients[i].name.includes(name) && list_ingredients[i].c_id === category.c_id) {
+				if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase()) && list_ingredients[i].c_id === category.c_id) {
 					found.push(list_ingredients[i]);
 				}
 			}
-
 		}
 		setFound(found);
 	}
@@ -181,11 +179,10 @@ const SearchBar = () => {
 		)
 	}
 
-
 	React.useEffect(() => {
 		getAllCategories();
+		getAllIngredients();
 	},[]);
-
 	React.useEffect(() => {
 		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
 			getAllIngredients();
