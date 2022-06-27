@@ -48,8 +48,8 @@ export default function SignupScreen () {
         'Content-Type': 'application/json',
       };
       data = await APICall(requestBody, '/auth/register', 'POST', headers);
-      localStorage.setItem('token', data.token);
       console.log(data);
+      localStorage.setItem('token', data.body['token']);
       navigate('/');
     } catch (err) {
       alert(err);
