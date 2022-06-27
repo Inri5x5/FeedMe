@@ -1,9 +1,12 @@
 from operator import is_
 from flask import Flask, render_template, request
-from helper import get_contributor, get_ruser, check_password, generate_token
+from backend.helper import valid_email
+from error import AccessError, InputError
+from helper import get_contributor, get_ruser, check_password, generate_token, validate_token
 import json
 
 app = Flask(__name__)
+
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -16,6 +19,10 @@ def login():
         password = req['password']
         is_contributor = req['is_contributor']
 
+        # Check email
+        if not valid_email(email):
+            raise InputError("Invalid email")
+
         # Get user id
         if is_contributor:
             user_id = get_contributor(email)
@@ -24,17 +31,11 @@ def login():
         
         # User does not exist
         if (user_id < 0):
-            return {
-                "status": 400,
-                "body": {"error": "Email is not registered"}
-            }
+            raise InputError("User is not registered")
 
         # Check password
         if not check_password(email, password, is_contributor):
-            return {
-                "status": 400,
-                "body": {"error": "Wrong password"}
-            }
+            raise InputError("Incorrect password")
         
         # Get tokens json file
         f = open('./data/tokens_table.json', 'r')
@@ -59,30 +60,22 @@ def login():
             "body": {"token": token}
         }
 
-@app.route('/logout', methods = ['GET'])
+@app.route('/logout', methods = ['POST'])
 def logout():
     req = request.get_json()
     token = req['token']
 
-    # Get tokens json file
+    # Validate token
+    if not validate_token(token):
+        raise InputError("Invalid token")
+        
+    # Delete token from tokens json file
     f = open('./data/tokens_table.json', 'r')
     tokens = json.load(f)
     f.close()
 
-    # Validate token
-    token_exists = False
-    for t in tokens:
-        if t["token"] == token:
-            token_exists = True
-            
-    if not token_exists:
-        return {
-            "status": 400,
-            "body": {"error": "Invalid token"}
-        }
-        
-    # Delete token from tokens json file
     tokens = [i for i in tokens if not (i["token"] == token)]
+    
     f = open('./data/tokens_table.json', 'w+')
     f.write(json.dumps(tokens))
     f.close()
@@ -91,7 +84,6 @@ def logout():
         "status": 200,
         "body": {}
     }
-
  
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)
