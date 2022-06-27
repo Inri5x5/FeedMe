@@ -87,7 +87,7 @@ def ingredients():
     suggestions = []
     for dict in data:
         if ingredient.lower() in dict["name"].lower():
-            suggestions.append({"name": dict["name"], "i_id": dict["ingredient_id"]})
+            suggestions.append({"name": dict["name"], "i_id": dict["ingredient_id"], "c_id": dict["ingredient_category_id"]})
 
     # Format return dict
     ret = {"status": 200,

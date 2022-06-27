@@ -38,22 +38,7 @@ const SearchBar = () => {
 			});
 		})
 	}
-	const getIngredientsFromCategory = async(category_name) => {
-		let data = []; let temp = [];
-		try {
-			const headers = {
-			  'Content-Type': 'application/json',
-			};
-			data = await APICall(null, `/category/ingredients?category=${category_name}`, 'GET', headers);
-			for (let i = 0; i < data.body.ingredients.length; i++) {
-				temp.push({"i_id": data.body.ingredients[i].i_id, "name": data.body.ingredients[i].name})
-			}
-			setListIngredient(temp);
-			return temp
-		} catch (err) {
-			alert(err);
-		}
-	}
+
 	const getAllCategories = async() => {
 		let data = []; let temp = [];
 		try {
@@ -77,7 +62,7 @@ const SearchBar = () => {
 			};
 			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
 			for (let i = 0; i < data.body.suggestions.length; i++) {
-				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name})
+				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
 			}
 			setListIngredient(temp);
 		} catch (err) {
@@ -105,7 +90,7 @@ const SearchBar = () => {
 		}
 	}
 	const backToCategory = () => {
-		setCategoryMenuName("Category");
+		setCategory({"c_id": -1, "name": "Category"});
 		setDropdownState("Category")
 	}
 	const renderBackIcon = () => {
@@ -117,10 +102,10 @@ const SearchBar = () => {
 	}
 
 	//Category Feature
-	const [categoryMenuName, setCategoryMenuName] = useState('Category');
+	const [category, setCategory] = useState({"c_id": -1, "name": "Category"});
 	const renderCategory = (list_categories) => {
 		let content = list_categories.map((object, index) => {
-			return (<CategoryLabel text={object.name} setMenuName={setCategoryMenuName} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
+			return (<CategoryLabel object={object} setMenuName={setCategory} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
 		})
 		return content;
 	}
@@ -160,9 +145,9 @@ const SearchBar = () => {
 	const [found, setFound] = useState([]);
 	const onInput = (e) => {
 		setInput(e.target.value);
-		searchIngredient(e.target.value, listIngredient);
+		searchIngredient(e.target.value, listIngredient, category);
 		if (e.target.value === "") {
-			if (categoryMenuName !== "Category") {
+			if (category.name !== "Category") {
 				setDropdownState('Ingredient')
 			} else {
 				setDropdownState('Category');
@@ -172,17 +157,26 @@ const SearchBar = () => {
 			setDropdownState('Searches')
 		}
 	}
-	const searchIngredient = (name, list_ingredients) => {
+	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
-			if (list_ingredients[i].name.includes(name)) found.push(list_ingredients[i])
+			if (category.name === "Category"){
+				if (list_ingredients[i].name.includes(name)) {
+					found.push(list_ingredients[i]);
+				}
+			} else {
+				if (list_ingredients[i].name.includes(name) && list_ingredients[i].c_id === category.c_id) {
+					found.push(list_ingredients[i]);
+				}
+			}
+
 		}
 		setFound(found);
 	}
 	const renderSearchTitle = () => {
 		return (
 			<div style={{ width : "100%", marginBottom: "20px" }}> 
-				Searching for {input} in {(categoryMenuName === 'Category') ? "All Categories" : categoryMenuName}
+				Searching for {input} in {(category.name === 'Category') ? "All Categories" : category.name}
 			</div>
 		)
 	}
@@ -193,13 +187,11 @@ const SearchBar = () => {
 	},[]);
 
 	React.useEffect(() => {
-		if ((dropdownState === 'Category') || (dropdownState === "Searches" && categoryMenuName === "Category")) {
+		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
 			getAllIngredients();
-		} else if (dropdownState === "Searches") {
-			getIngredientsFromCategory(categoryMenuName).then(data => searchIngredient(input, data))
 		} else {
-			getIngredientsFromCategory(categoryMenuName)
-		}
+			searchIngredient(input, listIngredient, category);
+		} 
 	},[dropdownState]);
 		
 	return (
@@ -213,20 +205,20 @@ const SearchBar = () => {
 			<div className={styles.search_bar} onBlur={(e) => handleBlur(e)}>
 				<div className={styles.search_category} >
 					<div className={styles.search_category_link} tabIndex='0' onClick={() => clickDropdown()}>
-						<span>{categoryMenuName}</span>
+						<span>{category.name}</span>
 						<KeyboardArrowDownIcon className={showDropdown ? styles.search_category_icon_focus : styles.search_category_icon}/>
 					</div>
 					<div className={showDropdown ? styles.category_menu_focus : styles.category_menu} tabIndex='0'>
 						{ (dropdownState === 'Category') && renderCategory(listCategories) }
 						{ (dropdownState === 'Searches') && renderSearchTitle() }
-						{ (categoryMenuName !== 'Category') && renderBackIcon() }
-						{ (categoryMenuName === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
-						{ (dropdownState === 'Ingredient') && renderIngredient(listIngredient) }
+						{ (category.name !== 'Category') && renderBackIcon() }
+						{ (category.name === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
+						{ (dropdownState === 'Ingredient') && renderIngredient(found) }
 						{ (dropdownState === 'Searches') && renderIngredient(found) }
 					</div>
 				</div>
 				<div className={styles.input_search}>
-					<input type="text" placeholder={"Search Your Ingredient " + ((categoryMenuName === 'Category') ? "" : "in " + categoryMenuName) } value={input} onInput={(e) => onInput(e)}/>
+					<input type="text" placeholder={"Search Your Ingredient " + ((category.name === 'Category') ? "" : "in " + category.name) } value={input} onInput={(e) => onInput(e)}/>
 				</div>
 				<a href="#" className={styles.search_btn}>
 					<SearchIcon className={styles.search_btn_icon}></SearchIcon>
