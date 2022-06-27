@@ -1,12 +1,25 @@
 from operator import is_
 from flask import Flask, render_template, request
-from backend.helper import valid_email
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, generate_token, validate_token
+from helper import get_contributor, get_ruser, check_password, generate_token, validate_token, valid_email
 import json
+from json import dumps
+
+def defaultHandler(err):
+    response = err.get_response()
+    print('response', err, err.get_response())
+    response.data = dumps({
+        "code": err.code,
+        "name": "System Error",
+        "message": err.get_description(),
+    })
+    response.content_type = 'application/json'
+    return response
 
 app = Flask(__name__)
 
+app.config['TRAP_HTTP_EXCEPTIONS'] = True
+app.register_error_handler(Exception, defaultHandler)
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():

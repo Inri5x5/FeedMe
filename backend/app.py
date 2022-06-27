@@ -2,9 +2,25 @@ from flask import Flask, jsonify, request
 import json
 from data.create_token import generate_token
 from werkzeug.exceptions import HTTPException
+from json import dumps
 from error import EmailAlreadyInUse, InputError
 
+def defaultHandler(err):
+    response = err.get_response()
+    print(response)
+    print('response', err, err.get_response())
+    response.data = dumps({
+        "code": err.code,
+        "name": "System Error",
+        "message": err.get_description(),
+    })
+    response.content_type = 'application/json'
+    return response
+    
 app = Flask(__name__)
+
+app.config['TRAP_HTTP_EXCEPTIONS'] = True
+app.register_error_handler(Exception, defaultHandler)
 
 @app.route("/auth/register", methods = ['POST'])
 def register():
@@ -20,7 +36,9 @@ def register():
     ruser_data = json.load(fp1)
     for ruser in ruser_data:
         if ruser['email'] == email:
-            raise EmailAlreadyInUse
+            print('ERRORR')
+            # raise EmailAlreadyInUse
+            raise InputError("Email already in use!")
 
     ruser_id = len(ruser_data)
     print(ruser_id)
@@ -48,24 +66,6 @@ def register():
     }
 
     return jsonify(response), status_code
-
-# @app.errorhandler(HTTPException)
-# def handle_error(error):
-#     message = error.message
-#     status_code = error.status_code
-#     success = False
-#     response = {
-#         'success': success,
-#         'error': {
-#             'type': error.__class__.__name__,
-#             'message': message
-#         }
-#     }
-#     print(error)
-
-#     return jsonify(response), status_code
-
-    
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

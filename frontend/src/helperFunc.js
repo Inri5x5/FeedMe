@@ -11,13 +11,11 @@ const APICall = (requestBody, path, methodType, headersData) => {
       }
       fetch(`${path}`, init)
         .then(response => {
-          console.log(response)
           if (response.status === 200) {
             return response.json().then(resolve);
           } else if (response.status === 400) {
-            console.log(response.status)
             return response.json().then(obj => {
-              reject(obj.error);
+              reject(obj.message);
             });
           } else {
             throw new Error(`${response.status} Error with API call`);

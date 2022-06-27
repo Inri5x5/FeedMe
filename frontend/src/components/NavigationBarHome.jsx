@@ -23,7 +23,7 @@ const NavigationBarHome = (props) => {
   const checkUser = () => {
     if(!token) {
       navigate('/login');
-    } else if(is_contributor) {
+    } else if(is_contributor === 'true') {
       navigate('/contributorProfile');
     } else {
       navigate('/userProfile')
