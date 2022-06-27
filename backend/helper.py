@@ -39,8 +39,6 @@ def get_ruser(email):
     return user_id
 
 def check_password(email, password, is_contributor):
-    ret = False
-
     if (is_contributor):
         f = open('./data/contributors_table.json')
         contributors = json.load(f)
@@ -48,7 +46,7 @@ def check_password(email, password, is_contributor):
 
         for c in contributors:
             if c["email"] == email and c["password"] == password:
-                ret = True
+                return True
     else:
         f = open('./data/rusers_table.json')
         users = json.load(f)
@@ -56,7 +54,7 @@ def check_password(email, password, is_contributor):
 
         for u in users:
             if u["email"] == email and u["password"] == password:
-                ret = True
+                return True
 
-    return ret
+    return False
 
