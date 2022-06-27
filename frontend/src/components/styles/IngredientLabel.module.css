@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css?family=Overpass");
+
+* {
+	box-sizing: border-box;
+	font-family: "Overpass", sans-serif;
+}
+.tag {
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #FF5412;
+	padding: 10px 10px;
+	font-size: 15px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+	background: #FFB85D;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background: #FF5412 ;
+    color: #FFB85D;
+}
+
+.tag_selected {
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 10px;
+	font-size: 15px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+    cursor: pointer;
+	background: #FF5412 ;
+    color: #FFB85D;
+}
+
+.tag_title {
+    margin-top: 3px;
+}
