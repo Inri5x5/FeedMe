@@ -1,6 +1,8 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import json
 from data.create_token import generate_token
+from werkzeug.exceptions import HTTPException
+from error import EmailAlreadyInUse, InputError
 
 app = Flask(__name__)
 
@@ -11,12 +13,14 @@ def register():
     password = req['password']
     username = req['username']
 
+    if not email or not password or not username:
+        raise InputError
+
     fp1 = open('./data/rusers_table.json', 'r')
     ruser_data = json.load(fp1)
     for ruser in ruser_data:
         if ruser['email'] == email:
-            to_return = {"status": 400, "body": {"error": "Email already in use, please enter a different email"}}
-            return to_return
+            raise EmailAlreadyInUse
 
     ruser_id = len(ruser_data)
     print(ruser_id)
@@ -35,11 +39,33 @@ def register():
     json.dump(token_data, fp)
     fp.close()
 
+    status_code = 200
+    response = {
+        "success": True,
+        "body": {
+            "token": token
+        }
+    }
 
-    to_return = {"status": 200, "body": {"token": token}}
-    # error checking ? email already in use, email not a real email, password not long enough, etc.
+    return jsonify(response), status_code
 
-    return to_return
+# @app.errorhandler(HTTPException)
+# def handle_error(error):
+#     message = error.message
+#     status_code = error.status_code
+#     success = False
+#     response = {
+#         'success': success,
+#         'error': {
+#             'type': error.__class__.__name__,
+#             'message': message
+#         }
+#     }
+#     print(error)
+
+#     return jsonify(response), status_code
+
     
+
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
