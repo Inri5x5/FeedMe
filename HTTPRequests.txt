@@ -1,0 +1,119 @@
+*** Authenticate (for registered users only) ***
+
+POST method
+
+path is auth/register
+
+frontend body:
+{
+  "email": "hayden@unsw.edu.au",
+  "password": "adummypassword",
+  "username": "jenkins"
+}
+
+backend response:
+{"status": 200,
+"body":
+    {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhheWRlbkB1bnN3LmVkdS5hdSIsImlhdCI6MTYwMzk0MzIzMH0.b37PfwlcH_cue6yhgvDt2IiNvhRACf79hTNtacYB94Q"
+    }
+}
+
+{"status": 400,
+"body":
+    {
+    "error": "Email already in use, please try again"
+    }
+}
+
+*** Login ***
+
+POST method
+
+path is auth/login
+
+frontend body:
+{
+  "email": "hayden@unsw.edu.au",
+  "password": "adummypassword",
+  "is_contributor": False
+}
+
+backend response:
+{"status": 200,
+"body":
+    {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhheWRlbkB1bnN3LmVkdS5hdSIsImlhdCI6MTYwMzk0MzIzMH0.b37PfwlcH_cue6yhgvDt2IiNvhRACf79hTNtacYB94Q"
+    }
+}
+
+{"status": 400,
+"body":
+    {
+    "error": "Invalid input, please try again"
+    }
+}
+
+*** Logout ***
+
+path is auth/logout
+
+POST method
+
+frontend body:
+no body needed, but pass the token in the header
+
+backend response:
+{"status": 200,
+"body": {}
+}
+
+{"status": 400,
+"body":
+    {
+    "error": "Invalid token"
+    }
+}
+
+
+*** Categories ***
+
+path is search/categories
+GET method
+frontend body:
+no body necessary, and no token needed
+
+backend response:
+{"status": 200,
+"body":
+    {
+    "categories" : [
+        "meat",
+        "veggies",
+        ...
+    ]
+    }
+}
+
+*** Seaching a particular ingredient ***
+
+path is search/ingredient
+
+GET method
+
+frontend body:
+{
+  "search": "chicke"
+}
+
+backend response:
+{"status": 200,
+"body":
+    {
+    "suggestions" : [
+        "chicken",
+        "chicken thigh",
+        ...
+    ]
+    }
+}
