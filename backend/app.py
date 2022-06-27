@@ -1,58 +1,71 @@
-from flask import Flask,render_template, request
-from flask_mysqldb import MySQL
+from flask import Flask, jsonify, request
+import json
+from data.create_token import generate_token
+from werkzeug.exceptions import HTTPException
+from json import dumps
+from error import EmailAlreadyInUse, InputError
 
+def defaultHandler(err):
+    response = err.get_response()
+    print(response)
+    print('response', err, err.get_response())
+    response.data = dumps({
+        "code": err.code,
+        "name": "System Error",
+        "message": err.get_description(),
+    })
+    response.content_type = 'application/json'
+    return response
+    
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'flask'
- 
-mysql = MySQL(app)
- 
+app.config['TRAP_HTTP_EXCEPTIONS'] = True
+app.register_error_handler(Exception, defaultHandler)
 
-@app.route('/search/categories')
-def form1():
-    return render_template('categories.html')
+@app.route("/auth/register", methods = ['POST'])
+def register():
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    username = req['username']
 
-@app.route('/search/ingredients')
-def form2():
-    return render_template('ingredients.html')
- 
-@app.route('/categories', methods = ['GET'])
-def categories():
-    if request.method == 'GET':
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'dummy_data' ORDER BY ORDINAL_POSITION")
-        myresult = []
-        for i in cursor.fetchall():
-            myresult.extend(i)
-    
-        ret = {"status": 200,
-                "body": {"categories": myresult}}
-        print(ret)
-        
-        return f"Categories are: {myresult}"
+    if not email or not password or not username:
+        raise InputError
 
-@app.route('/ingredients', methods = ['GET'])
-def ingredients():
-    if request.method == 'GET':
-        ingredient = request.args['Ingredient']
-        print(ingredient)
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM dummy_data")
-        myresult = []
-        for i in cursor.fetchall():
-            myresult.extend(i)
+    fp1 = open('./data/rusers_table.json', 'r')
+    ruser_data = json.load(fp1)
+    for ruser in ruser_data:
+        if ruser['email'] == email:
+            print('ERRORR')
+            # raise EmailAlreadyInUse
+            raise InputError("Email already in use!")
 
-        suggestions = [i for i in myresult if ingredient in i]
+    ruser_id = len(ruser_data)
+    print(ruser_id)
+    ruser_data.append({"ruser_id": ruser_id, "email": email, "password": password, "username": username, "profile_picture": ''})
+    fp1.close()
+    fp = open('./data/rusers_table.json', 'w')
+    fp.write(json.dumps(ruser_data))
+    fp.close()
 
-        ret = {"status": 200,
-                "body": {"suggestions": suggestions}}
-        print(ret)
-        
-        return f"Suggestions are: {suggestions}"
+    token = generate_token(email)
+    fp2 = open('data/tokens_table.json', 'r')
+    token_data = json.load(fp2)
+    token_data.append({"token": token, "user_id": ruser_id, "is_contributor": False})
+    fp2.close()
+    fp = open('./data/tokens_table.json', 'w')
+    json.dump(token_data, fp)
+    fp.close()
 
- 
-app.run(host='localhost', port=5000)
+    status_code = 200
+    response = {
+        "success": True,
+        "body": {
+            "token": token
+        }
+    }
 
+    return jsonify(response), status_code
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=5000, debug=True)

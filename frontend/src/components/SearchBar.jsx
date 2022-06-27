@@ -10,7 +10,6 @@ import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SearchBar = () => {
-
 	// Data State
 	const [listIngredient, setListIngredient] = useState([]);
 	const [listCategories, setListCategories] = useState([]);
@@ -77,6 +76,7 @@ const SearchBar = () => {
 	//3. Showing Searches
 	const [dropdownState, setDropdownState] = useState('Category');
 	const [showDropdown, setDropdown] = useState(false);
+
 	const clickDropdown = () => {
 		if (showDropdown === true) {
 			setDropdown(false)
@@ -89,6 +89,7 @@ const SearchBar = () => {
 		}
 	}
 	const backToCategory = () => {
+
 		setCategory({"c_id": -1, "name": "Category"});
 		setDropdownState("Category")
 	}
@@ -156,6 +157,7 @@ const SearchBar = () => {
 			setDropdownState('Searches')
 		}
 	}
+  
 	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
@@ -215,6 +217,7 @@ const SearchBar = () => {
 					</div>
 				</div>
 				<div className={styles.input_search}>
+
 					<input type="text" placeholder={"Search Your Ingredient " + ((category.name === 'Category') ? "" : "in " + category.name) } value={input} onInput={(e) => onInput(e)}/>
 				</div>
 				<a href="#" className={styles.search_btn}>
