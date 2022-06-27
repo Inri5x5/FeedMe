@@ -10,7 +10,65 @@ import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SearchBar = () => {
-	
+	// Data State
+	const [listIngredient, setListIngredient] = useState([]);
+	const [listCategories, setListCategories] = useState([]);
+
+	// General API-call boilerplate function
+	const APICall = (requestBody, path, methodType, headersData) => {
+		if (requestBody !== null) requestBody = JSON.stringify(requestBody);
+		return new Promise((resolve, reject) => {
+			const init = {
+			method: methodType,
+			headers: headersData,
+			body: requestBody,
+			}
+			fetch(`${path}`, init)
+			.then(response => {
+				if (response.status === 200) {
+				return response.json().then(resolve);
+				} else if (response.status === 400) {
+				return response.json().then(obj => {
+					reject(obj.error);
+				});
+				} else {
+				throw new Error(`${response.status} Error with API call`);
+				}
+			});
+		})
+	}
+
+	const getAllCategories = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			data = await APICall(null, '/categories', 'GET', headers);
+			for (let i = 0; i < data.body.categories.length; i++) {
+				temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
+			}
+			setListCategories(temp);
+		} catch (err) {
+			alert(err);
+		}
+	}
+	const getAllIngredients = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+				'Content-Type': 'application/json',
+			};
+			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
+			for (let i = 0; i < data.body.suggestions.length; i++) {
+				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
+			}
+			setListIngredient(temp);
+		} catch (err) {
+			alert(err);
+		}
+	}
+
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
 	//1. Showing Categories
@@ -18,34 +76,21 @@ const SearchBar = () => {
 	//3. Showing Searches
 	const [dropdownState, setDropdownState] = useState('Category');
 	const [showDropdown, setDropdown] = useState(false);
-	const resetDropdown = () => {
-		setDropdown(false);
-		setCategoryMenuName('Category');
-		setDropdownState('Category')
-	}
+
 	const clickDropdown = () => {
 		if (showDropdown === true) {
-			// if (categoryMenuName !== "Category") {
-			// 	setDropdown(false);
-			// } else {
-			// 	resetDropdown();
-			// }
 			setDropdown(false)
 		}
 		showDropdown ? setDropdown(false) : setDropdown(true);
 	}
 	const handleBlur = (event) => {
 		if (!event.currentTarget.contains(event.relatedTarget)) {
-			// if (categoryMenuName !== "Category") {
-			// 	setDropdown(false);
-			// } else {
-			// 	resetDropdown();
-			// }
 			setDropdown(false)
 		}
 	}
 	const backToCategory = () => {
-		setCategoryMenuName("Category");
+
+		setCategory({"c_id": -1, "name": "Category"});
 		setDropdownState("Category")
 	}
 	const renderBackIcon = () => {
@@ -57,10 +102,10 @@ const SearchBar = () => {
 	}
 
 	//Category Feature
-	const [categoryMenuName, setCategoryMenuName] = useState('Category');
+	const [category, setCategory] = useState({"c_id": -1, "name": "Category"});
 	const renderCategory = (list_categories) => {
-		let content = list_categories.map((name, index) => {
-			return (<CategoryLabel text={name} setMenuName={setCategoryMenuName} setDropdownState={setDropdownState}></CategoryLabel>)
+		let content = list_categories.map((object, index) => {
+			return (<CategoryLabel object={object} setMenuName={setCategory} setDropdownState={(input === '') ? () => setDropdownState("Ingredient") : () => setDropdownState("Searches")}></CategoryLabel>)
 		})
 		return content;
 	}
@@ -79,7 +124,7 @@ const SearchBar = () => {
 	}
 	const removeIngredientOnClick = (object) => {
 		setSelectedIngredients(selectedIngredients.filter(selIngr => {
-			return selIngr.id !== object.id;
+			return selIngr.i_id !== object.i_id;
 		}))
 	}
 	const renderSelectedIngredient = (list_selected_ingredients) => {
@@ -90,7 +135,7 @@ const SearchBar = () => {
 	}
 	const checkIfSelected = (object) => {
 		for(let i = 0; i < selectedIngredients.length; i++) {
-			if (object.id === selectedIngredients[i].id) return true;
+			if (object.i_id === selectedIngredients[i].i_id) return true;
 		}
 		return false;
 	}
@@ -98,18 +143,11 @@ const SearchBar = () => {
 	//Searching Feature
 	const [input, setInput] = useState('');
 	const [found, setFound] = useState([]);
-	// const handleEnterKey = (event) => {
-	// 	if (event.key === 'Enter') {
-	// 		searchIngredient(input, ingredients);
-	// 		setDropdownState('Searches');
-	// 		setDropdown(true);
-	// 	}
-	// }
 	const onInput = (e) => {
 		setInput(e.target.value);
-		searchIngredient(e.target.value, ingredients);
+		searchIngredient(e.target.value, listIngredient, category);
 		if (e.target.value === "") {
-			if (categoryMenuName !== "Category") {
+			if (category.name !== "Category") {
 				setDropdownState('Ingredient')
 			} else {
 				setDropdownState('Category');
@@ -119,27 +157,41 @@ const SearchBar = () => {
 			setDropdownState('Searches')
 		}
 	}
-	const searchIngredient = (name, list_ingredients) => {
+  
+	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
-			if (list_ingredients[i].name.includes(name)) found.push(list_ingredients[i])
+			if (category.name === "Category"){
+				if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase())) {
+					found.push(list_ingredients[i]);
+				}
+			} else {
+				if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase()) && list_ingredients[i].c_id === category.c_id) {
+					found.push(list_ingredients[i]);
+				}
+			}
 		}
 		setFound(found);
 	}
 	const renderSearchTitle = () => {
 		return (
 			<div style={{ width : "100%", marginBottom: "20px" }}> 
-				Searching for {input} in {(categoryMenuName === 'Category') ? "All Categories" : categoryMenuName}
+				Searching for {input} in {(category.name === 'Category') ? "All Categories" : category.name}
 			</div>
 		)
 	}
 
-	//Dummy Data
-	const categories = ['Vegetables', 'Fruits', 'Herbs & Spices', 'Pasta & Rice', 'Meat & Poultry', 'Seafood', 'Fats & Oils', 'Eggs & Dairy', 'Others']
-	let ingredients = [{"id": -1, "name":'short name'}, {"id": -2, "name": "a reallyyyy longgg nameeeeeee of ingrreedient"}];
-	for (let i = 0; i < 50; i ++) {
-		ingredients.push({"id": i, "name": "Lorem Ipsum Ingre" + i});
-	}
+	React.useEffect(() => {
+		getAllCategories();
+		getAllIngredients();
+	},[]);
+	React.useEffect(() => {
+		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
+			getAllIngredients();
+		} else {
+			searchIngredient(input, listIngredient, category);
+		} 
+	},[dropdownState]);
 		
 	return (
 		<>
@@ -152,20 +204,21 @@ const SearchBar = () => {
 			<div className={styles.search_bar} onBlur={(e) => handleBlur(e)}>
 				<div className={styles.search_category} >
 					<div className={styles.search_category_link} tabIndex='0' onClick={() => clickDropdown()}>
-						<span>{categoryMenuName}</span>
+						<span>{category.name}</span>
 						<KeyboardArrowDownIcon className={showDropdown ? styles.search_category_icon_focus : styles.search_category_icon}/>
 					</div>
 					<div className={showDropdown ? styles.category_menu_focus : styles.category_menu} tabIndex='0'>
-						{ (dropdownState === 'Category') && renderCategory(categories) }
+						{ (dropdownState === 'Category') && renderCategory(listCategories) }
 						{ (dropdownState === 'Searches') && renderSearchTitle() }
-						{ (categoryMenuName !== 'Category') && renderBackIcon() }
-						{ (categoryMenuName === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
-						{ (dropdownState === 'Ingredient') && renderIngredient(ingredients) }
+						{ (category.name !== 'Category') && renderBackIcon() }
+						{ (category.name === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
+						{ (dropdownState === 'Ingredient') && renderIngredient(found) }
 						{ (dropdownState === 'Searches') && renderIngredient(found) }
 					</div>
 				</div>
 				<div className={styles.input_search}>
-					<input type="text" placeholder={"Search Your Ingredient " + ((categoryMenuName === 'Category') ? "" : "in " + categoryMenuName) } value={input} onInput={(e) => onInput(e)}/>
+
+					<input type="text" placeholder={"Search Your Ingredient " + ((category.name === 'Category') ? "" : "in " + category.name) } value={input} onInput={(e) => onInput(e)}/>
 				</div>
 				<a href="#" className={styles.search_btn}>
 					<SearchIcon className={styles.search_btn_icon}></SearchIcon>

@@ -14,3 +14,10 @@ Weeek 3
 3. Finalize user stories/flowcharts/storyboard related to contributors
 4. Create a diagram used for system architecture
 5. Add authetication to userstories/flowchart/storyboards
+
+Week 4
+1. Create design and code for HomeScreen Title
+2. Create design and code for HomeScreen SearchBar
+3. Create design and code for HomeScreen Dropdown
+4. Code User Interaction Feature on using both the SearchBar and Dropdown
+5. Integrate Frontend with Backend
