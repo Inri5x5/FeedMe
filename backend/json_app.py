@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
-from backend.helper import valid_email
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, generate_token, validate_token
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
 import json
 
 def defaultHandler(err):
