@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
 from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
-from werkzeug.exceptions import HTTPException
 from json import dumps
 import json
 
@@ -26,7 +25,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'flask'
  
-mysql = MySQL(app)
+# mysql = MySQL(app)
  
  
 @app.route("/auth/register", methods = ['POST'])
@@ -43,7 +42,9 @@ def register():
     ruser_data = json.load(fp1)
     for ruser in ruser_data:
         if ruser['email'] == email:
-            raise EmailAlreadyInUse
+            print('ERRORR')
+            # raise EmailAlreadyInUse
+            raise InputError("Email already in use!")
 
     ruser_id = len(ruser_data)
     print(ruser_id)
@@ -66,7 +67,8 @@ def register():
     response = {
         "success": True,
         "body": {
-            "token": token    
+            "token": token
+        }
     }
 
     return jsonify(response), status_code
@@ -77,67 +79,77 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        email = request.json['email']
-        password = request.json['password']
+        req = request.get_json()
+        email = req['email']
+        password = req['password']
+        is_contributor = req['is_contributor']
 
-        cursor = mysql.connection.cursor()
+        # Check email
+        if not valid_email(email):
+            raise InputError("Invalid email")
 
-        # Check if email exists
-        cursor.execute('''SELECT 1 FROM users WHERE email = %s''', email)
-        info = cursor.fetchone()
-        if not info:
-            cursor.close()
-            return {
-                "status": 400,
-                "body": {"error": "Email is not registered"}
-            }
+        # Get user id
+        if is_contributor:
+            user_id = get_contributor(email)
+        else:
+            user_id = get_ruser(email)
+        
+        # User does not exist
+        if (user_id < 0):
+            raise InputError("User is not registered")
 
         # Check password
-        cursor.execute('''SELECT 1 FROM users WHERE email = %s, password = %s''', 
-                        (email, password))
-        info = cursor.fetchone()
-        if not info:
-            cursor.close()
-            return {
-                "status": 400,
-                "body": {"error": "Wrong password"}
-            }
+        if not check_password(email, password, is_contributor):
+            raise InputError("Incorrect password")
+        
+        # Get tokens json file
+        f = open('./data/tokens_table.json', 'r')
+        tokens = json.load(f)
+        f.close()
+        
+        # Create token 
+        token = generate_token(email)
 
-        # Check if contributor or regular user
-        email, password, is_contributor = info
-        if (is_contributor):
-            # do something
-            print("Contributor")
-
-        # Create token and input to databse
-        token = create_token(email)
-        cursor.execute('''INSERT INTO tokens VALUES(%s, %s)''', (email, token))
-
-        cursor.close()
+        # Update tokens json file
+        tokens.append({
+            "token": token,
+            "user_id": user_id,
+            "is_contributor": is_contributor
+            })
+        f = open('./data/tokens_table.json', 'w')
+        f.write(json.dumps(tokens))
+        f.close()
 
         return {
             "status": 200,
-            "body": {"token": token}
+            "body": {"token": token , "is_contributor": is_contributor}
         }
 
-@app.route('/logout', methods = ['GET'])
+@app.route('/logout', methods = ['POST'])
 def logout():
-    email = request.json['email']
-    token = request.json['token']
-
-    cursor = mysql.connection.cursor()
+    req = request.get_json()
+    token = req['token']
 
     # Validate token
-    cursor.execute('''SELECT 1 FROM tokens WHERE token = %s''', token)
-    info = cursor.fetchone()
-    emailDB, tokenDB = info
-    if (not info or tokenDB != token):
-        cursor.close()
-        return {
-            "status": 400,
-            "body": {"error": "Invalid token"}
-        }
-    
+    if not validate_token(token):
+        raise InputError("Invalid token")
+        
+    # Delete token from tokens json file
+    f = open('./data/tokens_table.json', 'r')
+    tokens = json.load(f)
+    f.close()
+
+    tokens = [i for i in tokens if not (i["token"] == token)]
+
+    f = open('./data/tokens_table.json', 'w+')
+    f.write(json.dumps(tokens))
+    f.close()
+
+    return {
+        "status": 200,
+        "body": {}
+    }
+
 @app.route('/search/categories')
 def form1():
     return render_template('categories.html')
@@ -145,42 +157,82 @@ def form1():
 @app.route('/search/ingredients')
 def form2():
     return render_template('ingredients.html')
+
+@app.route('/search/category/ingredients')
+def form3():
+    return render_template('ingredient_category.html')
  
 @app.route('/categories', methods = ['GET'])
 def categories():
-    if request.method == 'GET':
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'dummy_data' ORDER BY ORDINAL_POSITION")
-        myresult = []
-        for i in cursor.fetchall():
-            myresult.extend(i)
-    
-        ret = {"status": 200,
-                "body": {"categories": myresult}}
-        print(ret)
+    # Open json file of ingredients and load data
+    f = open('data/ingredient_categories_table.json')
+    data = json.load(f)
+
+    # Append ingredient categories into a list
+    categories = []
+    for dict in data:
+        categories.append(dict["name"])
+
+    print(categories) 
+
+    # Format return dict
+    ret = {"status": 200,
+            "body": {"categories": categories}}
         
-        return f"Categories are: {myresult}"
+    return ret
 
 @app.route('/ingredients', methods = ['GET'])
 def ingredients():
-    if request.method == 'GET':
-        ingredient = request.args['Ingredient']
-        print(ingredient)
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM dummy_data")
-        myresult = []
-        for i in cursor.fetchall():
-            myresult.extend(i)
+    # Get user input
+    ingredient = request.args['Ingredient']
 
-        suggestions = [i for i in myresult if ingredient in i]
+    # Open json file of ingredients and load data
+    f = open('data/ingredients_table.json')
+    data = json.load(f)
 
+    # Search ingredient dict for string matches
+    suggestions = []
+    for dict in data:
+        if ingredient.lower() in dict["name"].lower():
+            suggestions.append(dict["name"])
+
+    # Format return dict
+    ret = {"status": 200,
+            "body": {"suggestions": suggestions}}
+
+    return ret
+
+@app.route('/category/ingredients', methods = ['GET'])
+def category_ingredients():
+    # Get user input (string)
+    category = request.args['Category']
+
+    # Load category_id to category name mapping and get id
+    i = open('data/ingredient_categories_table.json')
+    category_data = json.load(i)
+    category_id = 0
+    for j in category_data:
+        if category == j["name"]:
+            category_id = j["category_id"]
+
+    # Load ingredient data and get all ingredient in category
+    f = open('data/ingredients_table.json')
+    ingredient_data = json.load(f)
+    ingredients = []
+    for dict in ingredient_data:
+        if category_id == dict["ingredient_category_id"]:
+            ingredients.append(dict["name"])
+
+    # Format return dict
+    if len(ingredients) == 0:
+        ret = {"status": 400,
+                "body": {"error": "Invalid category name"}}
+    else:
         ret = {"status": 200,
-                "body": {"suggestions": suggestions}}
-        print(ret)
-        
-        return f"Suggestions are: {suggestions}"
-
+                "body": {"ingredients": ingredients}}
     
+    return ret
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

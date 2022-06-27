@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
 from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
 from json import dumps
@@ -35,7 +35,9 @@ def register():
     ruser_data = json.load(fp1)
     for ruser in ruser_data:
         if ruser['email'] == email:
-            raise EmailAlreadyInUse
+            print('ERRORR')
+            # raise EmailAlreadyInUse
+            raise InputError("Email already in use!")
 
     ruser_id = len(ruser_data)
     print(ruser_id)
@@ -60,6 +62,9 @@ def register():
         "body": {
             "token": token
         }
+    }
+
+    return jsonify(response), status_code
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
