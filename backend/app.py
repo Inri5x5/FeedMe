@@ -1,9 +1,8 @@
-from flask import Flask, jsonify, request
-import json
-from data.create_token import generate_token
-from werkzeug.exceptions import HTTPException
+from flask import Flask, jsonify, render_template, request
+from error import AccessError, InputError
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
 from json import dumps
-from error import EmailAlreadyInUse, InputError
+import json
 
 def defaultHandler(err):
     response = err.get_response()
@@ -66,6 +65,83 @@ def register():
     }
 
     return jsonify(response), status_code
+    
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+    if request.method == 'GET':
+        return render_template('form.html')
+     
+    if request.method == 'POST':
+        req = request.get_json()
+        email = req['email']
+        password = req['password']
+        is_contributor = req['is_contributor']
+
+        # Check email
+        if not valid_email(email):
+            raise InputError("Invalid email")
+
+        # Get user id
+        if is_contributor:
+            user_id = get_contributor(email)
+        else:
+            user_id = get_ruser(email)
+        
+        # User does not exist
+        if (user_id < 0):
+            raise InputError("User is not registered")
+
+        # Check password
+        if not check_password(email, password, is_contributor):
+            raise InputError("Incorrect password")
+        
+        # Get tokens json file
+        f = open('./data/tokens_table.json', 'r')
+        tokens = json.load(f)
+        f.close()
+        
+        # Create token 
+        token = generate_token(email)
+
+        # Update tokens json file
+        tokens.append({
+            "token": token,
+            "user_id": user_id,
+            "is_contributor": is_contributor
+            })
+        f = open('./data/tokens_table.json', 'w')
+        f.write(json.dumps(tokens))
+        f.close()
+
+        return {
+            "status": 200,
+            "body": {"token": token , "is_contributor": is_contributor}
+        }
+
+@app.route('/logout', methods = ['POST'])
+def logout():
+    req = request.get_json()
+    token = req['token']
+
+    # Validate token
+    if not validate_token(token):
+        raise InputError("Invalid token")
+        
+    # Delete token from tokens json file
+    f = open('./data/tokens_table.json', 'r')
+    tokens = json.load(f)
+    f.close()
+
+    tokens = [i for i in tokens if not (i["token"] == token)]
+
+    f = open('./data/tokens_table.json', 'w+')
+    f.write(json.dumps(tokens))
+    f.close()
+
+    return {
+        "status": 200,
+        "body": {}
+    }
 
 @app.route('/categories', methods = ['GET'])
 def categories():
