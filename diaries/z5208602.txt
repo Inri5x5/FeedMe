@@ -7,3 +7,12 @@ In our lab we checked in with our tutor to see if we were on the right track. We
 Week 3
 In our lab we focused on collaboration so that we were all happy with each others' storyboards and they all fit together nicely. We asked our tutor about our new novel features, however, we found that one of them wasn't novel enough, so we came up with a new one (video skills dashboard). I deleted some of my tickets and redid others. When we were ready to submit, I read through everyone's user stories to edit them to ensure that they aligned with our storyboards. I combined some tickets and epics as they were similar or repetitive. We were able to do a final read-through of our proposal and submit Sunday night.
 We also delegated developer roles this week - I will be focusing on the database layer of our backend, but also offering help to both the frontend and backend wherever it is needed.
+
+Week 4
+In our lab we split tasks and made a plan for our first sprint. I told the team that I would set up the database and create the table schemas, before meeting with the backend devs to define what they would need to do and the routes they would need to write. However, I had a lot of difficulties setting up the XAMPP MySQL database on my laptop (I found out that it was because my macOS version was not supported by the mysql package). However, in the meantime, I was able to create the table schemas and routes for the backend to get started on their code.
+After realising that the database server was not going to work on my laptop, I switched gears and tried to set it up on VLAB. However, this proved even more impossible as the permission settings did not allow me to install the application.
+At this point, I made the decision to switch to using simple JSON files for our data in our first sprint. This proved to work really well. I formatted internet data to the correct schema format and added the JSON files to our repo for the backend to use.
+Then, I wrote the backend '/auth/register' route, which we merged with the frontend when we did our backend-frontend merge.
+
+Week 5
+To come!
