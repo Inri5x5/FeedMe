@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from './styles/SearchBar.module.css'
 import textStyles from './styles/SearchBarTitle.module.css'
@@ -9,7 +9,7 @@ import IngredientLabel from './IngredientLabel';
 import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-const SearchBar = () => {
+const SearchBar = (props) => {
 	// Data State
 	const [listIngredient, setListIngredient] = useState([]);
 	const [listCategories, setListCategories] = useState([]);
@@ -111,7 +111,6 @@ const SearchBar = () => {
 	}
 
 	//Ingredient Feature
-	const [selectedIngredients, setSelectedIngredients] = useState([]); 
 	const renderIngredient = (list_ingredients) => {
 		let content = list_ingredients.map((object, index) => {
 			const isSelected = checkIfSelected(object);
@@ -120,10 +119,10 @@ const SearchBar = () => {
 		return content;
 	}
 	const addIngredientOnClick = (object) => {
-		setSelectedIngredients([...selectedIngredients, object]);
+		props.setSelectedIngredients([...props.selectedIngredients, object]);
 	}
 	const removeIngredientOnClick = (object) => {
-		setSelectedIngredients(selectedIngredients.filter(selIngr => {
+		props.setSelectedIngredients(props.selectedIngredients.filter(selIngr => {
 			return selIngr.i_id !== object.i_id;
 		}))
 	}
@@ -134,8 +133,8 @@ const SearchBar = () => {
 		return content;
 	}
 	const checkIfSelected = (object) => {
-		for(let i = 0; i < selectedIngredients.length; i++) {
-			if (object.i_id === selectedIngredients[i].i_id) return true;
+		for(let i = 0; i < props.selectedIngredients.length; i++) {
+			if (object.i_id === props.selectedIngredients[i].i_id) return true;
 		}
 		return false;
 	}
@@ -198,7 +197,7 @@ const SearchBar = () => {
 			<div className={textStyles.container}>
 				<h1 className={textStyles} data-shadow="Today I have">Today I have</h1>
 				<div className={styles.selected_ingredient_container}>
-					{renderSelectedIngredient(selectedIngredients)}
+					{renderSelectedIngredient(props.selectedIngredients)}
 				</div>
 			</div>
 			<div className={styles.search_bar} onBlur={(e) => handleBlur(e)}>
