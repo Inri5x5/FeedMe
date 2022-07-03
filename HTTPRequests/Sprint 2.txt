@@ -62,15 +62,41 @@ frontend body:
 backend response:
 {
     "recipes": [
-        {recipe_id: 1,
-        details: [
-
-        ]
+        {
+            "recipe_id": (-1 if recipe is new),
+            "title": "Cake",
+            "description": "this is a tasty cake!",
+            "img": (in base_64 png format),
+            "video": youtube link (this is different to the skills videos, but optional)
+            "time_required": 100,
+            "steps": [
+                {"step_id": 0, "description": "throw everything in the pot"},
+                ...
+            ],
+            tags: [
+                {"name": "Breakfast", "tag_id": 30},
+                {"name": "Lunch", "tag_id": 13},
+                ...
+            ],
+            "author": "Angeline", (this may not be the same as the person making the edit)
+            "public_state": "public",
+            "ingredients": [
+                {"name": "Egg", "ingredient_id": 10},
+                {"name": "Potato", "ingredient_id": 17},
+                ...
+            ],
+            "skill_videos": [
+                "youtube URL 1",
+                "youtube URL 2",
+                ...
+            ]
+        },
+        {
+            ...
         }
     ]
 }
-ERIVAN WHAT RECIPE DETAILS WOULD YOU LIKE TO DISPLAY ON THE HOMEPAGE? maybe just the title and image thumbnail ? description also?
-(if the ingredient list is empty, thent return all recipes)
+(if the ingredient list is empty, then return all recipes)
 
 errors:
 none
