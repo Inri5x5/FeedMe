@@ -2,6 +2,7 @@ import React from 'react';
 
 import SearchBar from '../components/SearchBar';
 import NavigationBarHome from '../components/NavigationBarHome';
+import SelectedIngredientLabel from '../components/SelectedIngredientLabel';
 
 const HomeScreen = () => {
 

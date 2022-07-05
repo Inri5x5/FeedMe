@@ -1,9 +1,12 @@
 from werkzeug.exceptions import HTTPException
 
 class AccessError(HTTPException):
-    code = 403
-    message = 'No message specified'
+    status = 403
+    statusText = 'No message specified'
 
 class InputError(HTTPException):
     code = 400
-    message = 'No message specified'
+    massage = 'No message specified'
+
+class EmailAlreadyInUse(InputError):
+    statusText = 'Email already in use, please enter a different email'

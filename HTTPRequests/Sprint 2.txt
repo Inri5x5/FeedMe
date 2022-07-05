@@ -1,0 +1,303 @@
+******        Getting Tag categories       ******
+
+path is search/tag/categories
+
+GET method
+
+frontend body:
+(none because it's a get method)
+
+backend response:
+{
+    "tag_categories" : [
+        {"name": "Meal Type", "category_id": 0},
+        {"name": "Dietary Requirements", "category_id": 1},
+        ...
+    ]
+}
+
+errors:
+none
+
+
+******          Getting Tags           ******
+
+path is search/tag/tags
+
+GET method
+
+frontend body:
+(none because it's a get method)
+but frontend will pass in a param, i.e. {"tag_category_id" : 0}
+
+backend response:
+{
+    "tags" : [
+        {"name": "Breakfast", "tag_id": 0},
+        {"name": "Lunch", "tag_id": 1},
+        ...
+    ]
+}
+
+errors:
+none
+
+
+******          Get Recipe List from Search           ******
+
+path is search/recipes
+
+POST method
+
+frontend body:
+{
+    "ingredients_id": [
+        13,
+        17,
+        23,
+        ...
+    ]
+}
+
+backend response:
+{
+    "recipes": [
+        {
+            "recipe_id": (-1 if recipe is new),
+            "title": "Cake",
+            "description": "this is a tasty cake!",
+            "img": (in base_64 png format),
+            "video": youtube link (this is different to the skills videos, but optional)
+            "time_required": 100,
+            "steps": [
+                {"step_id": 0, "description": "throw everything in the pot"},
+                ...
+            ],
+            tags: [
+                {"name": "Breakfast", "tag_id": 30},
+                {"name": "Lunch", "tag_id": 13},
+                ...
+            ],
+            "author": "Angeline", (this may not be the same as the person making the edit)
+            "public_state": "public",
+            "ingredients": [
+                {"name": "Egg", "ingredient_id": 10},
+                {"name": "Potato", "ingredient_id": 17},
+                ...
+            ],
+            "skill_videos": [
+                "youtube URL 1",
+                "youtube URL 2",
+                ...
+            ]
+        },
+        {
+            ...
+        }
+    ]
+}
+(if the ingredient list is empty, then return all recipes)
+
+errors:
+none
+
+******          Adding/Updating Recipe Details           ******
+
+path is recipe_details/update
+
+PUT method
+
+frontend body:
+{
+    "recipe_id": (-1 if recipe is new),
+    "title": "Cake",
+    "description": "this is a tasty cake!",
+    "img": (in base_64 png format),
+    "video": youtube link (this is different to the skills videos, but optional)
+    "time_required": 100,
+    "steps": [
+        {"step_id": 0, "description": "throw everything in the pot"},
+        ...
+    ],
+    tags: [
+        {"name": "Breakfast", "tag_id": 30},
+        {"name": "Lunch", "tag_id": 13},
+        ...
+    ],
+    "author": "Angeline", (this may not be the same as the person making the edit)
+    "public_state": "public",
+    "ingredients": [
+        {"name": "Egg", "ingredient_id": 10},
+        {"name": "Potato", "ingredient_id": 17},
+        ...
+    ],
+    "skill_videos": [
+        "youtube URL 1",
+        "youtube URL 2",
+        ...
+    ]
+}
+we also need to pass in the token as a header!!!
+
+backend response:
+{}
+(empty response, but the data row should be created if it's a new recipe, otherwise updated if it already exists)
+(also, if the user is an ruser but the recipe_id has a contributor as the author, this should also create a new recipe
+in the database with a different id, to represent that this is the ruser's personal version of the recipe)
+
+errors:
+-invalid token!
+-an ruser shouldn't be allowed to set the state as public
+-we need the recipe id, even if it's -1!
+-if the recipe status is public, then we need some fields to be populated: basically everything other than video (which is optional)
+
+
+******          Viewing Recipe Details           ******
+
+path is recipe_details/view
+
+GET method
+
+frontend body:
+none
+but we need the recipe id as a param, i.e. {"recipe_id" : 20}
+
+backend response:
+{
+    "title": "Cake",
+    "description": "this is a tasty cake!",
+    "img": (in base_64 png format),
+    "video": youtube link (this is different to the skills videos, but optional)
+    "time_required": 100,
+    "steps": [
+        {"step_id": 0, "description": "throw everything in the pot"},
+        ...
+    ],
+    tags: [
+        {"name": "Breakfast", "tag_id": 0},
+        {"name": "Lunch", "tag_id": 1},
+        ...
+    ],
+    "author": "Angeline", (this may not be the same as the person making the edit)
+    "public_state": "public",
+    "ingredients": [
+        {"name": "Egg", "ingredient_id": 10},
+        {"name": "Potato", "ingredient_id": 17},
+        ...
+    ],
+    "skill_videos": [
+        "youtube URL 1",
+        "youtube URL 2",
+        ...
+    ]
+    "avg_rating": 2.5
+}
+
+errors:
+-invalid or blank recipe id
+
+
+******          Recipe Statistics           ******
+
+path is /statistics
+
+GET method
+
+frontend body:
+we need the token in the header
+
+backend response:
+{
+    "statistics": [
+        {"recipe_id": 3,
+        "stats": {
+            "one star": 20,
+            "two star": 3,
+            "three star": 1000,
+            "avg rating": 300,
+            'num_saves": 50
+            }
+        },
+        {"recipe_id": 7,
+        "stats": {
+            "one star": 20,
+            "two star": 3,
+            "three star": 1000,
+            "avg rating": 300,
+            'num_saves": 50
+            }
+        },
+        ...
+    ]
+}
+(these are all recipes that the contributor is the author of, i.e. has a contributor_id match in the database)
+
+errors:
+-invalid token (needs to be a contributor!)
+
+
+******          Save Recipe           ******
+
+path is save_and_rate/save
+
+POST method
+
+frontend body:
+{
+    "recipe_id": 10
+}
+we also need the token in the header
+
+backend response:
+{}
+empty
+if the user has already saved the recipe, then this should remove the save in the database
+
+errors:
+invalid or blank recipe id
+invalid token!
+should a contributor be allowed to save recipes? I think so
+
+
+******          Rate Recipe           ******
+
+path is save_and_rate/rate
+
+POST method
+
+frontend body:
+{
+    "recipe_id": 10,
+    "rating": 1
+}
+we also need the token in the header
+
+backend response:
+{}
+empty
+if the user has already rated this recipe, then we should change the rating in the database rather than create a new one
+
+errors:
+-invalid or blank recipe id
+-rating isn't in the correct range
+-invalid token
+should a contributor be allowed to rate recipes? I think so
+
+
+******          Delete Recipe           ******
+
+path is recipe_details/delete
+
+DELETE method
+
+frontend body:
+we need the token in the header
+we also need the recipe_id as a param i.e. {"recipe_id" : 0}
+
+backend response:
+{}
+empty
+
+errors:
+-invalid or blank recipe id
+-invalid token
