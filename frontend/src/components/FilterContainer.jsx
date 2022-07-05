@@ -16,23 +16,6 @@ const FilterContainer = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: '40vw',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    maxHeight: '50vh',
-    overflow: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent:'center'
-  };
   
   React.useEffect(() => {
     //Fetch all tag categories
@@ -103,7 +86,7 @@ const FilterContainer = (props) => {
           }}
         >
           <Fade in={open}>
-            <Box sx={style}>
+            <Box className={styles.modal}>
               {renderTags()}
             </Box>
           </Fade>

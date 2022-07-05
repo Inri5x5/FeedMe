@@ -1,0 +1,78 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 20vw;
+    border-radius: 5px;
+    background-color: pink;
+}
+
+.profile_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 20vw;
+    background-color: pink;
+}
+
+.user_name {
+    font-family: monospace;
+    font-size: 1.5em;
+}
+
+.button {
+    position: relative;
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    width: 18vw;
+    padding: 20px 40px;
+    border-radius: 8px;
+    background-color: red;
+    color: #212121;
+    font-family: monospace;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.4s;
+    border: 3px solid #FE4880;
+    background-image: linear-gradient(to right, transparent 50%, #FE4880 50%);
+    background-size: 200%;
+    background-position: 0%;
+}
+  
+.button:hover {
+    color: #FFF;
+    background-position: 100%;
+}
+
+.button_focus {
+    position: relative;
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    width: 18vw;
+    padding: 20px 40px;
+    border-radius: 8px;
+    background-color: red;
+    font-family: monospace;
+
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.4s;
+    border: 3px solid #FE4880;
+    background-image: linear-gradient(to right, transparent 50%, #FE4880 50%);
+    background-size: 200%;
+    color: #FFF;
+    background-position: 100%;
+}
