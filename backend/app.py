@@ -1,7 +1,8 @@
-from unicodedata import category
+from os import times_result
+from reprlib import recursive_repr
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, add_token, delete_token, db_connection
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_recipe_steps, get_tag_categories, get_tags
 from json import dumps
 import json
 
@@ -101,7 +102,7 @@ def login():
             raise InputError("Incorrect password")
         
         # Create token 
-        token = generate_token(email)
+        token = generate_token(email, is_contributor)
 
         # Update tokens json file
         add_token(token, user_id, is_contributor)
@@ -120,7 +121,7 @@ def logout():
 
     # Validate token
     if not validate_token(conn, token):
-        raise InputError("Invalid token")
+        raise AccessError("Invalid token")
         
     # Delete token from tokens json file
     delete_token(conn, token)
@@ -172,44 +173,126 @@ def ingredients():
 
 ########################## SPRINT 2 ##########################
 
-# Getting tag categories
 @app.route('/search/tag/categories', methods = ['GET'])
 def search_tag_categories():
-    tag_categories = []
-
     conn = db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM Tag_Categories')
-    info = cur.fetchall()
-    for i in info: 
-        tag_category_id, name = i
-        tag_categories.append(
-            {"name": name, "category_id": tag_category_id}
-        )
-    cur.close()
+
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get tag categories
+    tag_categories = get_tag_categories(conn)
 
     return {
         "tag_categories": tag_categories
     }
 
-# Getting tags
-@app.route('search/tag/tags', methods = ['GET'])
+@app.route('/search/tag/tags', methods = ['GET'])
 def search_tag_tags():
-    tags = []
-
     conn = db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM Tags')
-    info = cur.fetchall()
-    for i in info:
-        tag_id, tag_category_id, name = i
-        tags.append(
-            {"name": name, "tag_id": tag_id}
-        )
-    cur.close()
+
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    tag_category_id = req['tag_category_id']
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get tags
+    tags = get_tags(conn, tag_category_id)
 
     return {
         "tags": tags
+    }
+
+@app.route('/search/recipes', methods = ['POST'])
+def search_recipes():
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    ingredients_id = req['ingredients_id']
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    recipes = []
+
+    # cur.execute('''
+    #     SELECT *, GROUP_CONCAT(i.ingredient_id)
+    #     FROM    Recipes r
+    #             LEFT JOIN Steps s on s.recipe_id = r.recipe_id
+    #             LEFT JOIN Ingredient_In_Recipe ir on ir.recipe_id = r.recipe_id
+    #             LEFT JOIN Ingredients i on i.ingredient_id = ir.ingredient_id
+    #     GROUP BY r.recipe_id
+    # ''')
+    # info = cur.fetchall()
+    # cur.close()
+
+    # recipes = []
+    # for i in info:
+    #     recipes.append({
+    #         "recipe_id": recipe_id,
+    #         "title": title,
+    #         "description": description,
+    #         "img": img,
+    #         "video": video,
+    #         "time_required": time_required,
+    #         "steps": steps,
+    #         "tags": get_tags(conn, None),
+    #         "author": author,
+    #         "public_state": public_state,
+    #         "ingredients": ingredients,
+    #         "skill_videos": skill_vidoes
+    #     })
+    
+    return {
+        "recipes": recipes
+    }
+
+@app.route('/statistics', methods = ['GET'])
+def statistics():
+    conn = db_connection()
+
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Check if user is a contributor
+    user_details = decode_token(conn, token)
+    if user_details["is_contributor"] is False:
+        raise AccessError("User is not a Contributor")
+
+    # Get contributor id
+    contributor_id = user_details["user_id"]
+
+    cur = conn.cursor()
+    qry = '''
+        SELECT r.recipe_id
+        FROM recipes r
+            JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
+            JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
+        WHERE pr.contributor_id = %s
+        GROUP BY r.recipe_id
+    '''
+    cur.execute(qry, [contributor_id])
+    info = cur.fetchall()
+    cur.close()
+
+    statistics = []
+
+    return {
+        "statistics": statistics
     }
 
 
