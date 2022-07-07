@@ -22,8 +22,7 @@ def generate_token(email):
     payload = {"email": email, "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")}
     return jwt.encode(payload, "", algorithm="HS256")
 
-def validate_token(token):
-    conn = db_connection()
+def validate_token(conn, token):
     cur = conn.cursor()
     cur.execute('SELECT 1 FROM Tokens WHERE token = %s', [token])
     info = cur.fetchone()
@@ -34,14 +33,27 @@ def validate_token(token):
     else:
         return True
 
+def add_token(conn, token, user_id, is_contributor):
+    cur = conn.cursor()
+    cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, is_contributor))
+    cur.close()
+
+    return 0
+
+def delete_token(conn, token):
+    cur = conn.cursor()
+    cur.execute('DELETE FROM Tokens WHERE token = %s', [token])
+    cur.close()
+
+    return 0
+
 def valid_email(email):
     if not re.search(regex, email):
         return False
     else:
         return True
 
-def get_contributor(email):
-    conn = db_connection()
+def get_contributor(conn, email):
     cur = conn.cursor()
     cur.execute('SELECT contributor_id FROM Contributors WHERE email = %s', [email])
     info = cur.fetchone()
@@ -52,8 +64,7 @@ def get_contributor(email):
     else: 
         return info
 
-def get_ruser(email):
-    conn = db_connection()
+def get_ruser(conn, email):
     cur = conn.cursor()
     cur.execute('SELECT ruser_id FROM RUsers WHERE email = %s', [email])
     info = cur.fetchone()
@@ -64,8 +75,7 @@ def get_ruser(email):
     else: 
         return info
 
-def check_password(email, password, is_contributor):
-    conn = db_connection()
+def check_password(conn, email, password, is_contributor):
     cur = conn.cursor()
     
     if (is_contributor):

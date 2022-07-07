@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, add_token, delete_token, db_connection
 from json import dumps
 import json
+
 
 def defaultHandler(err):
     response = err.get_response()
@@ -21,6 +22,7 @@ app = Flask(__name__)
 app.config['TRAP_HTTP_EXCEPTIONS'] = True
 app.register_error_handler(Exception, defaultHandler)
 
+########################## SPRINT 1 ##########################
 @app.route("/auth/register", methods = ['POST'])
 def register():
     req = request.get_json()
@@ -72,6 +74,8 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
+        conn = db_connection()
+
         req = request.get_json()
         email = req['email']
         password = req['password']
@@ -83,35 +87,23 @@ def login():
 
         # Get user id
         if is_contributor:
-            user_id = get_contributor(email)
+            user_id = get_contributor(conn, email)
         else:
-            user_id = get_ruser(email)
+            user_id = get_ruser(conn, email)
         
         # User does not exist
         if (user_id < 0):
             raise InputError("User is not registered")
 
         # Check password
-        if not check_password(email, password, is_contributor):
+        if not check_password(conn, email, password, is_contributor):
             raise InputError("Incorrect password")
-        
-        # Get tokens json file
-        f = open('./data/tokens_table.json', 'r')
-        tokens = json.load(f)
-        f.close()
         
         # Create token 
         token = generate_token(email)
 
         # Update tokens json file
-        tokens.append({
-            "token": token,
-            "user_id": user_id,
-            "is_contributor": is_contributor
-            })
-        f = open('./data/tokens_table.json', 'w')
-        f.write(json.dumps(tokens))
-        f.close()
+        add_token(token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -120,23 +112,17 @@ def login():
 
 @app.route('/logout', methods = ['POST'])
 def logout():
+    conn = db_connection()
+
     req = request.get_json()
     token = req['token']
 
     # Validate token
-    if not validate_token(token):
+    if not validate_token(conn, token):
         raise InputError("Invalid token")
         
     # Delete token from tokens json file
-    f = open('./data/tokens_table.json', 'r')
-    tokens = json.load(f)
-    f.close()
-
-    tokens = [i for i in tokens if not (i["token"] == token)]
-
-    f = open('./data/tokens_table.json', 'w+')
-    f.write(json.dumps(tokens))
-    f.close()
+    delete_token(conn, token)
 
     return {
         "status": 200,
@@ -182,6 +168,24 @@ def ingredients():
             "body": {"suggestions": suggestions}}
 
     return ret
+
+########################## SPRINT 2 ##########################
+
+# Getting tag categories
+@app.route('/search/tag/categories')
+def search_tag_categories():
+
+    return {
+        "tag_categories": []
+    }
+
+# Getting tags
+@app.route('search/tag/tags')
+def search_tag_tags():
+
+    return {
+        "tags": []
+    }
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
