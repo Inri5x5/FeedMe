@@ -56,6 +56,13 @@ frontend body:
         17,
         23,
         ...
+    ],
+    "filter_list": [
+        "category_1" : [
+            "Vegan",
+            ...
+        ],
+        "category_2": [...]
     ]
 }
 
