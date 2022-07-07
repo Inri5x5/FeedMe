@@ -1,3 +1,4 @@
+from unicodedata import category
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
 from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, add_token, delete_token, db_connection
@@ -172,20 +173,45 @@ def ingredients():
 ########################## SPRINT 2 ##########################
 
 # Getting tag categories
-@app.route('/search/tag/categories')
+@app.route('/search/tag/categories', methods = ['GET'])
 def search_tag_categories():
+    tag_categories = []
+
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM Tag_Categories')
+    info = cur.fetchall()
+    for i in info: 
+        tag_category_id, name = i
+        tag_categories.append(
+            {"name": name, "category_id": tag_category_id}
+        )
+    cur.close()
 
     return {
-        "tag_categories": []
+        "tag_categories": tag_categories
     }
 
 # Getting tags
-@app.route('search/tag/tags')
+@app.route('search/tag/tags', methods = ['GET'])
 def search_tag_tags():
+    tags = []
+
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM Tags')
+    info = cur.fetchall()
+    for i in info:
+        tag_id, tag_category_id, name = i
+        tags.append(
+            {"name": name, "tag_id": tag_id}
+        )
+    cur.close()
 
     return {
-        "tags": []
+        "tags": tags
     }
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
