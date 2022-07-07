@@ -13,4 +13,13 @@ Week 3
 In this week's lab, we discussed further about the proposal before the submission next week. We finalised our novel features and talked about the tech stack. Throughout the week, we worked on our individual parts of the proposal. I wrote the user types part of the system architecture. We had a meeting on Saturday to discuss our work and then finalised as well as submitted the proposal on Sunday.
 
 Week 4
-Unfortunately, I wasn't able to attend this week's lab. But this week we are starting Sprint 1, in which we're mainly focusing on setting up and the authentication part of the project.
+Unfortunately, I wasn't able to attend this week's lab. 
+But this week we are starting Sprint 1, in which we're mainly focusing on setting up and the authentication part of the project, especially for the progressive demo next week. 
+We worked according to our respective areas. I did the login and logout paths for the backend. 
+We did standups almost everyday to update each other on our work, and nearing the lab we connected the frontend and backend together.
+
+Week 5
+We had our progressive demo A in this week's lab. Everything went smoothly and we also did our retrospective together during the lab. I would say that we are doing very well with time and we have great teamwork/communication. This week we are going easy with the meetings (a break after the demo). Angeline has organised the sprint 2 work division and I plan to start working on it next week on Week 6.
+
+Week 6
+Started working on sprint 2. Started by modifying the code to adjust to MySQL as we only used JSON in the first sprint.
