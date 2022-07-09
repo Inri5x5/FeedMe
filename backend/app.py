@@ -2,7 +2,7 @@ from os import times_result
 from reprlib import recursive_repr
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_recipe_steps, get_tag_categories, get_tags
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_tag_categories, get_tags, get_recipe_details
 from json import dumps
 import json
 
@@ -218,41 +218,34 @@ def search_recipes():
     # Get params
     req = request.get_json()
     token = req['token']
-    ingredients_id = req['ingredients_id']
+    ingredients_req = req['ingredients_id']
+    filter_list = req['filter list']
+    filter_req = [i for j in filter_list.values() for i in j]
 
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
+    cur.execute('''
+        SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id), GROUP_CONCAT(t.name)
+        FROM    Recipes r
+                JOIN Ingredient_in_Recipe ir on ir.recipe_id = r.recipe_id
+                JOIN Tag_in_Recipe tr on tr.recipe_id = r.recipe_id
+                JOIN Tags t on t.tag_id = tr.tag_id
+        GROUP BY r.recipe_id
+    ''')
+    info = cur.fetchall()
+    cur.close()
+
     recipes = []
+    for i in info:
+        recipe_id, ingredients, filters = i
+        ingredients.split(",")
+        filters.split(",")
 
-    # cur.execute('''
-    #     SELECT *, GROUP_CONCAT(i.ingredient_id)
-    #     FROM    Recipes r
-    #             LEFT JOIN Steps s on s.recipe_id = r.recipe_id
-    #             LEFT JOIN Ingredient_In_Recipe ir on ir.recipe_id = r.recipe_id
-    #             LEFT JOIN Ingredients i on i.ingredient_id = ir.ingredient_id
-    #     GROUP BY r.recipe_id
-    # ''')
-    # info = cur.fetchall()
-    # cur.close()
-
-    # recipes = []
-    # for i in info:
-    #     recipes.append({
-    #         "recipe_id": recipe_id,
-    #         "title": title,
-    #         "description": description,
-    #         "img": img,
-    #         "video": video,
-    #         "time_required": time_required,
-    #         "steps": steps,
-    #         "tags": get_tags(conn, None),
-    #         "author": author,
-    #         "public_state": public_state,
-    #         "ingredients": ingredients,
-    #         "skill_videos": skill_vidoes
-    #     })
+        if (set(ingredients) <= set(ingredients_req) or ingredients_req is None) and (set(filters) <= set(filter_req) or filter_req is None):
+            recipe_details = get_recipe_details(conn, recipe_id)
+            recipes.append(recipe_details)
     
     return {
         "recipes": recipes
@@ -298,12 +291,12 @@ def statistics():
             # Add previous recipe id's dictionary to list 
             if not recipe_dict: 
                 # Update average rating
-                recipe_dict["stats"]["avg rating"] = count_rating/count_recipe
+                recipe_dict.update({"stats": {"avg rating": count_rating/count_recipe}})
 
                 # Update number of saves
                 cur = conn.cursor()
                 cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [cur_id])
-                recipe_dict["stats"]["num saves"] = info
+                recipe_dict.update({"stats": {"num saves": info}})
                 cur.close()
 
                 statistics.append(recipe_dict)
@@ -311,14 +304,14 @@ def statistics():
             # Refresh count and dictionary
             count_recipe = count_rating = 0
             cur_id = recipe_id
-            recipe_dict["recipe_id"] = recipe_id
-            recipe_dict["stats"] = {
+            recipe_dict.update({"recipe_id": recipe_id})
+            recipe_dict.update({"stats": {
                 "one star": 0,
                 "two star": 0,
                 "three star": 0,
                 "avg rating": 0,
                 "num saves": 0
-            }
+            }})
 
         if rating is 1:
             recipe_dict["stats"]["one star"] += 1

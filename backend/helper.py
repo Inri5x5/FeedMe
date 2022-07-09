@@ -180,3 +180,72 @@ def get_recipe_steps(conn, recipe_id):
         })
 
     return steps
+
+def get_recipe_details(conn, recipe_id):
+    c = conn.cursor()
+    
+    # initialise return dict
+    ret = {}
+
+    # Get General Recipe details
+    c.execute("SELECT * FROM Recipe WHERE recipe_id = ?", [recipe_id])
+    recipe = c.fetchone()
+    ret.update({'recipe_id' : recipe[0]})
+    ret.update({'title' : recipe[1]})
+    ret.update({'description' : recipe[2]})
+    ret.update({'img' : recipe[3]})
+    ret.update({'video' : recipe[4]})
+    ret.update({'time_required' : recipe[5]})
+    ret.update({'servings' : recipe[6]})
+
+    # Get steps
+    c.execute("SELECT * FROM Steps WHERE recipe_id = ?", [recipe_id])
+    steps = c.fetchall()
+    ret_steps = []
+    for row in steps:
+        ret_steps.append({'step_number': row[1], 'description' : row[2]})
+    ret.update({'steps' : ret_steps})
+
+    # Get tags
+    tags = []
+    c.execute("SELECT * FROM Tag_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    tag_ids = c.fetchall()
+    for row in tag_ids:
+        c.execute("SELECT * FROM Tags WHERE tag_id = ?", [row[1]])
+        tag_data = c.fetchone()
+        tags.append({'tag_id': tag_data[0], 'name' : tag_data[2]})
+    ret.update({'tags' : tags})
+
+    # Get author and public state
+    c.execute("SELECT author_id FROM Public_Recipes WHERE recipe_id = ?", [recipe_id])
+    if c.fetchone() != None:
+        author_id = c.fetchone()[0]
+        c.execute("SELECT username FROM Contributors WHERE contributor_id = ?", [author_id])
+        author_name = c.fetchone()[0]
+        ret.update({'author' : author_name, 'public_state' : 'public'})
+    else:
+        c.execute("SELECT ruser_id FROM Personal_Recipes WHERE recipe_id = ?", [recipe_id])
+        author_id = c.fetchone()[0]
+        c.execute("SELECT username FROM RUSers WHERE ruser_id = ?", [author_id])
+        author_name = c.fetchone()[0]
+        ret.update({'author' : author_name, 'public_state' : 'private'})
+
+    # Get ingredients
+    ingredients = []
+    c.execute("SELECT * FROM Ingredient_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    i = c.fetchall()
+    for row in i:
+        c.execute("SELECT name FROM ingredients_table WHERE ingredient_id = ?", [row[1]])
+        ingredients.append({'name' : c.fetchone()[0], 'ingredient_id' : row[1], 'amount' : row[2]})
+    ret.update({'ingredients' : ingredients})
+
+    # get skill videos
+    skill_videos = []
+    c.execute("SELECT * FROM Skill_Video_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    vids = c.fetchall()
+    for row in vids:
+        c.execute("SELECT link FROM Skill_Videos WHERE video_id = ?", [row[1]])
+        skill_videos.append(c.fetchone()[0])
+    ret.update({'skill_videos' : skill_videos})
+    
+    return ret
