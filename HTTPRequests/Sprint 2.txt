@@ -56,8 +56,17 @@ frontend body:
         17,
         23,
         ...
+    ],
+    "filter_list": [
+        "category_1" : [
+            "Vegan",
+            ...
+        ],
+        "category_2": [...]
     ]
 }
+
+OPTIONAL TOKEN IN THE FRONTEND HEADER!!!
 
 backend response:
 {
@@ -69,6 +78,7 @@ backend response:
             "img": (in base_64 png format),
             "video": youtube link (this is different to the skills videos, but optional)
             "time_required": 100,
+            "servings": 20,
             "steps": [
                 {"step_id": 0, "description": "throw everything in the pot"},
                 ...
@@ -97,6 +107,9 @@ backend response:
     ]
 }
 (if the ingredient list is empty, then return all recipes)
+(if the frontend has supplied a valid token, then this means that the user is logged in and has the ability to like a recipe straight from the homepage
+so in these cases, add an extra boolean field to each recipe metadata called 'is_liked')
+(some of this metadata will be deleted, but for now let's return everything until we know what exactly will be displayed on the homepage!)
 
 errors:
 none
@@ -115,6 +128,7 @@ frontend body:
     "img": (in base_64 png format),
     "video": youtube link (this is different to the skills videos, but optional)
     "time_required": 100,
+    "servings": 20,
     "steps": [
         {"step_id": 0, "description": "throw everything in the pot"},
         ...
@@ -127,8 +141,8 @@ frontend body:
     "author": "Angeline", (this may not be the same as the person making the edit)
     "public_state": "public",
     "ingredients": [
-        {"name": "Egg", "ingredient_id": 10},
-        {"name": "Potato", "ingredient_id": 17},
+        {"name": "Egg", "ingredient_id": 10, "amount": "50kg"},
+        {"name": "Potato", "ingredient_id": 17, "amount": 100g},
         ...
     ],
     "skill_videos": [
@@ -169,6 +183,7 @@ backend response:
     "img": (in base_64 png format),
     "video": youtube link (this is different to the skills videos, but optional)
     "time_required": 100,
+    "servings": 20,
     "steps": [
         {"step_id": 0, "description": "throw everything in the pot"},
         ...
@@ -199,7 +214,7 @@ errors:
 
 ******          Recipe Statistics           ******
 
-path is /statistics
+path is /dash/statistics
 
 GET method
 
@@ -256,7 +271,7 @@ if the user has already saved the recipe, then this should remove the save in th
 errors:
 invalid or blank recipe id
 invalid token!
-should a contributor be allowed to save recipes? I think so
+a contributor is allowed to save recipes!
 
 
 ******          Rate Recipe           ******
@@ -281,7 +296,7 @@ errors:
 -invalid or blank recipe id
 -rating isn't in the correct range
 -invalid token
-should a contributor be allowed to rate recipes? I think so
+a contributor is allowed to rate recipes!
 
 
 ******          Delete Recipe           ******
@@ -300,4 +315,167 @@ empty
 
 errors:
 -invalid or blank recipe id
+-invalid token
+
+
+******          Get All of a User's Saved Recipes           ******
+
+path is dash/saved
+
+GET method
+
+frontend body:
+we need the token in the header
+
+backend response:
+{
+    "recipes": [
+        {
+            "recipe_id": (-1 if recipe is new),
+            "title": "Cake",
+            "description": "this is a tasty cake!",
+            "img": (in base_64 png format),
+            "video": youtube link (this is different to the skills videos, but optional)
+            "time_required": 100,
+            "servings": 20,
+            "steps": [
+                {"step_id": 0, "description": "throw everything in the pot"},
+                ...
+            ],
+            tags: [
+                {"name": "Breakfast", "tag_id": 30},
+                {"name": "Lunch", "tag_id": 13},
+                ...
+            ],
+            "author": "Angeline", (this may not be the same as the person making the edit)
+            "public_state": "public",
+            "ingredients": [
+                {"name": "Egg", "ingredient_id": 10},
+                {"name": "Potato", "ingredient_id": 17},
+                ...
+            ],
+            "skill_videos": [
+                "youtube URL 1",
+                "youtube URL 2",
+                ...
+            ]
+        },
+        {
+            ...
+        }
+    ]
+}
+(some of this metadata will be deleted, but for now let's return everything until we know what exactly will be displayed in saved recipes!)
+
+errors:
+-invalid token
+(will a contributor have saved recipes?)
+
+
+******          Get All of a User's Rated Recipes           ******
+
+path is dash/rated
+
+GET method
+
+frontend body:
+we need the token in the header
+
+backend response:
+{
+    "1-star recipes": [
+        {
+            "recipe_id": (-1 if recipe is new),
+            "title": "Cake",
+            "description": "this is a tasty cake!",
+            "img": (in base_64 png format),
+            "video": youtube link (this is different to the skills videos, but optional)
+            "time_required": 100,
+            "servings": 20,
+            "steps": [
+                {"step_id": 0, "description": "throw everything in the pot"},
+                ...
+            ],
+            tags: [
+                {"name": "Breakfast", "tag_id": 30},
+                {"name": "Lunch", "tag_id": 13},
+                ...
+            ],
+            "author": "Angeline", (this may not be the same as the person making the edit)
+            "public_state": "public",
+            "ingredients": [
+                {"name": "Egg", "ingredient_id": 10},
+                {"name": "Potato", "ingredient_id": 17},
+                ...
+            ],
+            "skill_videos": [
+                "youtube URL 1",
+                "youtube URL 2",
+                ...
+            ]
+        },
+        {
+            ...
+        }
+    ],
+    "two-star recipes": [{...}, ...],
+    "three-star recipes": [{...}, ...]
+}
+(some of this metadata will be deleted, but for now let's return everything until we know what exactly will be displayed in rated recipes!)
+
+errors:
+-invalid token
+(will a contributor have rated recipes?)
+
+
+******          Get All of a User's Own Recipes           ******
+
+path is dash/my_recipes
+
+GET method
+
+frontend body:
+we need the token in the header
+
+backend response:
+{
+    "recipes": [
+        {
+            "recipe_id": (-1 if recipe is new),
+            "title": "Cake",
+            "description": "this is a tasty cake!",
+            "img": (in base_64 png format),
+            "video": youtube link (this is different to the skills videos, but optional)
+            "time_required": 100,
+            "servings": 20,
+            "steps": [
+                {"step_id": 0, "description": "throw everything in the pot"},
+                ...
+            ],
+            tags: [
+                {"name": "Breakfast", "tag_id": 30},
+                {"name": "Lunch", "tag_id": 13},
+                ...
+            ],
+            "author": "Angeline", (this may not be the same as the person making the edit)
+            "public_state": "public",
+            "ingredients": [
+                {"name": "Egg", "ingredient_id": 10},
+                {"name": "Potato", "ingredient_id": 17},
+                ...
+            ],
+            "skill_videos": [
+                "youtube URL 1",
+                "youtube URL 2",
+                ...
+            ]
+        },
+        {
+            ...
+        }
+    ]
+}
+(some of this metadata will be deleted, but for now let's return everything until we know what exactly will be displayed in my recipes!)
+
+errors:
 -invalid token
