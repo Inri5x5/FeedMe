@@ -2,12 +2,13 @@ from cmath import atanh
 from flask import Flask, render_template, request
 from helper import valid_email
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, generate_token, validate_token
+from helper import get_contributor, get_ruser, check_password, generate_token, validate_token, get_recipe_details
 import json
 import sqlite3
 import os.path
 
 db_path = os.path.join("./data/", "nepka.db")
+regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$'
 
 def defaultHandler(err):
     response = err.get_response()
@@ -85,25 +86,11 @@ def ingredients():
 def recipe_details():
     # how to get input in reality?
     recipe_id = request.args['Recipe']
-    print(recipe_id)
+
+    # throw errors
 
     
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-    c.execute("SELECT * FROM recipe")
-    all_recipes = c.fetchall()
-    print(all_recipes)
-
-    ret = {}
-    for (a, b, c, d, e) in all_recipes:
-        print(a)
-        if int(recipe_id) == int(a):
-            ret.update({'title' : a})
-            ret.update({'description' : b})
-            ret.update({'image' : c})
-            ret.update({'video' : d})
-            ret.update({'time_required' : e})
-            break
+    ret = get_recipe_details(db_path, recipe_id)
     print(ret)
     return f'done'
 

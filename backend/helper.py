@@ -5,26 +5,47 @@ Helper functions
 import json
 import jwt
 import re
+import sqlite3
 from datetime import datetime
 
 regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$'
+
+def db_connection():
+    conn = None
+    try:
+        conn = sqlite3.connect('feedme.sqlite')
+    except sqlite3.error as e:
+        print(e)
+    return conn
 
 def generate_token(email):
     payload = {"email": email, "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")}
     return jwt.encode(payload, "", algorithm="HS256")
 
-def validate_token(token):
-    # Get tokens json file
-    f = open('./data/tokens_table.json', 'r')
-    tokens = json.load(f)
-    f.close()
+def validate_token(conn, token):
+    cur = conn.cursor()
+    cur.execute('SELECT 1 FROM Tokens WHERE token = %s', [token])
+    info = cur.fetchone()
+    cur.close()
 
-    # Validate token
-    for t in tokens:
-        if t["token"] == token:
-            return True
-            
-    return False
+    if not info:
+        return False
+    else:
+        return True
+
+def add_token(conn, token, user_id, is_contributor):
+    cur = conn.cursor()
+    cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, is_contributor))
+    cur.close()
+
+    return 0
+
+def delete_token(conn, token):
+    cur = conn.cursor()
+    cur.execute('DELETE FROM Tokens WHERE token = %s', [token])
+    cur.close()
+
+    return 0
 
 def valid_email(email):
     if not re.search(regex, email):
@@ -32,51 +53,113 @@ def valid_email(email):
     else:
         return True
 
-def get_contributor(email):
-    # Get contributors json file
-    f = open('./data/contributors_table.json')
-    contributors = json.load(f)
-    f.close()
+def get_contributor(conn, email):
+    cur = conn.cursor()
+    cur.execute('SELECT contributor_id FROM Contributors WHERE email = %s', [email])
+    info = cur.fetchone()
+    cur.close()
 
-    user_id = -1
-    for c in contributors:
-        # Contributor exists
-        if c["email"] == email:
-            user_id = c["contributor_id"]
+    if not info: 
+        return -1
+    else: 
+        return info
 
-    return user_id
+def get_ruser(conn, email):
+    cur = conn.cursor()
+    cur.execute('SELECT ruser_id FROM RUsers WHERE email = %s', [email])
+    info = cur.fetchone()
+    cur.close()
 
-def get_ruser(email):
-    # Get users json file
-    f = open('./data/rusers_table.json')
-    users = json.load(f)
-    f.close()
+    if not info: 
+        return -1
+    else: 
+        return info
 
-    user_id = -1
-    for u in users:
-        # User exists
-        if u["email"] == email:
-            user_id = u["ruser_id"]
-
-    return user_id
-
-def check_password(email, password, is_contributor):
+def check_password(conn, email, password, is_contributor):
+    cur = conn.cursor()
+    
     if (is_contributor):
-        f = open('./data/contributors_table.json')
-        contributors = json.load(f)
-        f.close()
-
-        for c in contributors:
-            if c["email"] == email and c["password"] == password:
-                return True
+        cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s')
+        info = cur.fetchone()
     else:
-        f = open('./data/rusers_table.json')
-        users = json.load(f)
-        f.close()
+        cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s')
+        info = cur.fetchone()
 
-        for u in users:
-            if u["email"] == email and u["password"] == password:
-                return True
+    if not info: 
+        return False
+    else:
+        return True
 
-    return False
+def get_recipe_details(db_path, recipe_id):
+    # initialise return dict
+    ret = {}
 
+    # initialise db connection
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    # Get General Recipe details
+    c.execute("SELECT * FROM Recipe WHERE recipe_id = ?", [recipe_id])
+    recipe = c.fetchone()
+    ret.update({'recipe_id' : recipe[0]})
+    ret.update({'title' : recipe[1]})
+    ret.update({'description' : recipe[2]})
+    ret.update({'image' : recipe[3]})
+    ret.update({'video' : recipe[4]})
+    ret.update({'time_required' : recipe[5]})
+    ret.update({'servings' : recipe[6]})
+
+    # Get steps
+    c.execute("SELECT * FROM Steps WHERE recipe_id = ?", [recipe_id])
+    steps = c.fetchall()
+    ret_steps = []
+    for row in steps:
+        ret_steps.append({'step_number': row[1], 'description' : row[2]})
+    ret.update({'steps' : ret_steps})
+
+    # Get tags
+    tags = []
+    c.execute("SELECT * FROM Tag_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    tag_ids = c.fetchall()
+    for row in tag_ids:
+        c.execute("SELECT * FROM Tags WHERE tag_id = ?", [row[1]])
+        tag_data = c.fetchone()
+        tags.append({'tag_id': tag_data[0], 'name' : tag_data[2]})
+    ret.update({'tags' : tags})
+
+    # Get author and public state
+    c.execute("SELECT author_id FROM Public_Recipes WHERE recipe_id = ?", [recipe_id])
+    if c.fetchone() != None:
+        author_id = c.fetchone()[0]
+        c.execute("SELECT username FROM Contributors WHERE contributor_id = ?", [author_id])
+        author_name = c.fetchone()[0]
+        ret.update({'author' : author_name, 'public_state' : 'public'})
+    else:
+        c.execute("SELECT ruser_id FROM Personal_Recipes WHERE recipe_id = ?", [recipe_id])
+        author_id = c.fetchone()[0]
+        c.execute("SELECT username FROM RUSers WHERE ruser_id = ?", [author_id])
+        author_name = c.fetchone()[0]
+        ret.update({'author' : author_name, 'public_state' : 'private'})
+
+    # Get ingredients
+    ingredients = []
+    c.execute("SELECT * FROM Ingredient_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    i = c.fetchall()
+    for row in i:
+        c.execute("SELECT name FROM ingredients_table WHERE ingredient_id = ?", [row[1]])
+        ingredients.append({'name' : c.fetchone()[0], 'ingredient_id' : row[1], 'amount' : row[2]})
+    ret.update({'ingredients' : ingredients})
+
+    # get skill videos
+    skill_videos = []
+    c.execute("SELECT * FROM Skill_Video_in_Recipe WHERE recipe_id = ?", [recipe_id])
+    vids = c.fetchall()
+    for row in vids:
+        c.execute("SELECT link FROM Skill_Videos WHERE video_id = ?", [row[1]])
+        skill_videos.append(c.fetchone()[0])
+    ret.update({'skill_videos' : skill_videos})
+    
+    # get ratings
+
+
+    return ret
