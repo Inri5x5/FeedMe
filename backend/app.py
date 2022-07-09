@@ -3,6 +3,7 @@ from error import AccessError, InputError
 from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token
 from json import dumps
 import json
+import sqlite3
 
 def defaultHandler(err):
     response = err.get_response()
@@ -146,21 +147,25 @@ def logout():
 @app.route('/categories', methods = ['GET'])
 def categories():
     # Open json file of ingredients and load data
-    f = open('data/ingredient_categories_table.json')
-    data = json.load(f)
+    # f = open('./data/ingredient_categories_table.json')
+    # data = json.load(f)
 
     # Append ingredient categories into a list
-    categories = []
-    for dict in data:
-        categories.append({"name": dict["name"], "c_id": dict["category_id"]})
+    # categories = []
+    # for dict in data:
+    #     categories.append({"name": dict["name"], "c_id": dict["category_id"]})
 
-    print(categories) 
+    # print(categories) 
 
     # Format return dict
-    ret = {"status": 200,
-            "body": {"categories": categories}}
-        
-    return ret
+    # ret = {"status": 200,
+    #         "body": {"categories": categories}}
+    conn = sqlite3.connect('nepka.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM ingredient_categories")
+    print(c.fetchall())
+
+    return f'done'
     
 @app.route('/ingredients', methods = ['GET'])
 def ingredients():
@@ -168,7 +173,7 @@ def ingredients():
     ingredient = request.args.get('query')
 
     # Open json file of ingredients and load data
-    f = open('data/ingredients_table.json')
+    f = open('./data/ingredients_table.json')
     data = json.load(f)
 
     # Search ingredient dict for string matches
