@@ -277,31 +277,92 @@ def statistics():
     contributor_id = user_details["user_id"]
 
     cur = conn.cursor()
-    qry = '''
+    cur.execute('''
         SELECT r.recipe_id, rr.rating
         FROM recipes r
             JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
             JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
-        WHERE pr.contributor_id = %s
-        GROUP BY r.recipe_id
-    '''
-    cur.execute(qry, [contributor_id])
+        WHERE pr.author_id = %s
+        ORDER BY r.recipe_id ASC
+    ''', [contributor_id])
     info = cur.fetchall()
-    cur.close()
 
-    # TODO fix rating and add num_saves
     statistics = []
+    recipe_dict = {}
+    cur_id = count_recipe = count_rating = 0
     for i in info:
-        recipe_id, rating = info
-        statistics.append({
-            "recipe_id": recipe_id,
-            "rating": rating,
-        })
+        recipe_id, rating = i
+
+        # Different recipe id
+        if recipe_id > cur_id:
+            # Add previous recipe id's dictionary to list 
+            if not recipe_dict: 
+                # Update average rating
+                recipe_dict["stats"]["avg rating"] = count_rating/count_recipe
+
+                # Update number of saves
+                cur = conn.cursor()
+                cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [cur_id])
+                recipe_dict["stats"]["num saves"] = info
+                cur.close()
+
+                statistics.append(recipe_dict)
+
+            # Refresh count and dictionary
+            count_recipe = count_rating = 0
+            cur_id = recipe_id
+            recipe_dict["recipe_id"] = recipe_id
+            recipe_dict["stats"] = {
+                "one star": 0,
+                "two star": 0,
+                "three star": 0,
+                "avg rating": 0,
+                "num saves": 0
+            }
+
+        if rating is 1:
+            recipe_dict["stats"]["one star"] += 1
+        elif rating is 2:
+            recipe_dict["stats"]["two star"] += 1
+        else: # rating is 3
+            recipe_dict["stats"]["three star"] += 1
+
+        count_rating += rating
+        count_recipe += 1
 
     return {
         "statistics": statistics
     }
 
+@app.route('/recipe_details/delete', methods = ['DELETE'])
+def recipe_details_delete():
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    recipe_id = req['recipe_id']
+
+    # Error if blank recipe id
+    if not recipe_id: 
+        raise InputError("Recipe ID cannot be empty")
+
+    # Error if recipe does not exist
+    cur.execute('SELECT * FROM recipe WHERE recipe_id = %s LIMIT 1', [recipe_id])
+    info = cur.fetchall()
+    if not info:
+        raise InputError("Recipe ID does not exist")
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    cur.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+    conn.commit()
+    cur.close()
+
+    return {}
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
