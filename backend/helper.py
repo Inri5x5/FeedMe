@@ -163,7 +163,7 @@ def get_recipe_steps(conn, recipe_id):
     cur = conn.cursor()
     qry = '''
         SELECT * 
-        FROM Steps s
+        FROM Steps
         WHERE recipe_id = %s
         ORDER BY step_number ASC
     '''
@@ -173,7 +173,7 @@ def get_recipe_steps(conn, recipe_id):
     
     steps = []
     for i in info:
-        recipe_id_DB, step_id, description, image = i
+        recipe_id, step_id, description, image = i
         steps.append({
             "step_id": step_id,
             "description": description

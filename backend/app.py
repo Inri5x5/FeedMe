@@ -258,7 +258,7 @@ def search_recipes():
         "recipes": recipes
     }
 
-@app.route('/statistics', methods = ['GET'])
+@app.route('/dash/statistics', methods = ['GET'])
 def statistics():
     conn = db_connection()
 
@@ -278,7 +278,7 @@ def statistics():
 
     cur = conn.cursor()
     qry = '''
-        SELECT r.recipe_id
+        SELECT r.recipe_id, rr.rating
         FROM recipes r
             JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
             JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
@@ -289,7 +289,14 @@ def statistics():
     info = cur.fetchall()
     cur.close()
 
+    # TODO fix rating and add num_saves
     statistics = []
+    for i in info:
+        recipe_id, rating = info
+        statistics.append({
+            "recipe_id": recipe_id,
+            "rating": rating,
+        })
 
     return {
         "statistics": statistics
