@@ -313,9 +313,9 @@ def statistics():
                 "num saves": 0
             }})
 
-        if rating is 1:
+        if rating == 1:
             recipe_dict["stats"]["one star"] += 1
-        elif rating is 2:
+        elif rating == 2:
             recipe_dict["stats"]["two star"] += 1
         else: # rating is 3
             recipe_dict["stats"]["three star"] += 1
