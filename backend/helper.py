@@ -160,6 +160,27 @@ def get_recipe_details(db_path, recipe_id):
     ret.update({'skill_videos' : skill_videos})
     
     # get ratings
+    c.execute("SELECT * FROM Recipe_Ratings WHERE recipe_id = ?", [recipe_id])
+    ratings = c.fetchall()
+    counter = 0
+    total = 0
+    for row in ratings:
+        counter = counter + 1
+        total = total + row[2]
+    avg_rating = total / counter
+    ret.update({'avg_rating' : avg_rating})
 
-
+    conn.close()
+    
     return ret
+
+def valid_recipe_id(db_path, recipe_id):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe WHERE recipe_id = ?", [recipe_id])
+    recipe = c.fetchall()
+    if recipe == None: 
+        print("was here")
+        return False
+    
+    return True

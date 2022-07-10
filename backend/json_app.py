@@ -1,9 +1,9 @@
 from cmath import atanh
 from flask import Flask, render_template, request
-from helper import valid_email
+from helper import *
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, generate_token, validate_token, get_recipe_details
 import json
+from json import dumps
 import sqlite3
 import os.path
 
@@ -22,6 +22,9 @@ def defaultHandler(err):
     return response
 
 app = Flask(__name__)
+
+app.config['TRAP_HTTP_EXCEPTIONS'] = True
+app.register_error_handler(Exception, defaultHandler)
 
 @app.route('/search/categories')
 def form1():
@@ -79,7 +82,7 @@ def ingredients():
     
     ret = {"status": 200,
             "body": {"suggestions": suggestions}}
-
+    
     return ret
 
 @app.route('/view', methods = ['GET'])
@@ -87,12 +90,84 @@ def recipe_details():
     # how to get input in reality?
     recipe_id = request.args['Recipe']
 
-    # throw errors
-
+    # throw errors === Doesn't really work rn and i don't know why
+    if valid_recipe_id(db_path, recipe_id) == False:
+        raise InputError("No such recipe id")
     
     ret = get_recipe_details(db_path, recipe_id)
-    print(ret)
-    return f'done'
+
+    return ret
+
+@app.route('/save_and_rate/save', method = ['POST'])
+def save():
+    db_path = os.path.join("./data/", "nepka.db")
+    conn = sqlite3.connect(db_path)
+
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Validate recipe_id
+    if not valid_recipe_id(db_path, recipe_id):
+        raise InputError("No such recipe id")
+    
+    # Get user id
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
+
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+    if c.fetchall() == None:
+        c.execute("INSERT INTO Recipe_Saves VALUES (?, ?)", (recipe_id, id))
+    else:
+        c.execute("DELETE FROM Recipe_Saves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+    
+    conn.commit()
+    conn.close()
+    return
+
+@app.route('/save_and_rate/rate', method = ['POST'])
+def rate():
+    db_path = os.path.join("./data/", "nepka.db")
+    conn = sqlite3.connect(db_path)
+
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
+    rating = req['rating']
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Validate recipe_id
+    if not valid_recipe_id(db_path, recipe_id):
+        raise InputError("No such recipe id")
+
+    #validate rating
+    if rating > 5 or rating < 0:
+        raise InputError("Rating our of range.")
+    
+    # Get user id
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
+
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+    if c.fetchall() != None:
+        c.execute("DELETE FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+        c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    else:
+        c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    
+    conn.commit()
+    conn.close()
+
+    return
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)
