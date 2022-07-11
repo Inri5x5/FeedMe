@@ -5,13 +5,13 @@ import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea, CardActions } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
-import styles from './styles/RecipeCard.module.css'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
+import styles from './styles/RecipeCard.module.css'
 
 export default function RecipeCard() {
 
@@ -26,13 +26,13 @@ export default function RecipeCard() {
 
   return (
     <Card sx={{ maxWidth: 345, m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
-      <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
+      {/* <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
         <MoreHorizIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
-      </Menu>
+      </Menu> */}
       <CardActionArea>
         <CardMedia
           component="img"

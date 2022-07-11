@@ -5,10 +5,17 @@ import NavigationBarHome from '../components/NavigationBarHome';
 import FilterContainer from '../components/FilterContainer';
 import RecipeContainer from '../components/RecipeContainer';
 
+
 const HomeScreen = () => {
     const [selectedIngredients, setSelectedIngredients] = React.useState([]);
     const [selectedTags, setSelectedTags] = React.useState([]);
     const [foundRecipes, setFoundRecipes] = React.useState([]);
+
+    //Dummy Recipes Set Up
+    let dummyRecipes = [];
+    for (let i = 0; i < 15; i++) {
+      dummyRecipes.push({"id": i, "image": null, "time_required": 100})
+    }
 
     React.useEffect(() => {
       if (localStorage.getItem('fm-ingredients')) {
@@ -21,6 +28,7 @@ const HomeScreen = () => {
       // Filter the recipe based on Tags
       // Set the Recipe
     },[])
+
     React.useEffect(() => {
       if(selectedIngredients.length > 0) {
         localStorage.setItem('fm-ingredients', JSON.stringify(selectedIngredients))
