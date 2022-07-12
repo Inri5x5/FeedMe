@@ -217,8 +217,6 @@ def search_recipes():
     req = request.get_json()
     token = req['token']
     ingredients_req = req['ingredients_id']
-    filter_list = req['filter list']
-    filter_req = [i for j in filter_list.values() for i in j]
 
     # Validate token
     if not validate_token(conn, token):
@@ -239,9 +237,8 @@ def search_recipes():
     for i in info:
         recipe_id, ingredients, filters = i
         ingredients.split(",")
-        filters.split(",")
 
-        if (set(ingredients) <= set(ingredients_req) or ingredients_req is None) and (set(filters) <= set(filter_req) or filter_req is None):
+        if set(ingredients) <= set(ingredients_req) or ingredients_req is None:
             recipe_details = get_recipe_details(conn, recipe_id)
             recipes.append(recipe_details)
     
