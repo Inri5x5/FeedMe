@@ -1,4 +1,3 @@
-from base64 import decode
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
 from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_tag_categories, get_tags, get_recipe_details
