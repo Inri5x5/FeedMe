@@ -247,7 +247,7 @@ def search_recipes():
     }
 
 @app.route('/dash/statistics', methods = ['GET'])
-def statistics():
+def dash_statistics():
     conn = db_connection()
 
     # Validate token
@@ -321,6 +321,14 @@ def statistics():
     return {
         "statistics": statistics
     }
+
+@app.route('/dash/saved', methods = ['GET'])
+def dash_saved():
+    return 0
+
+@app.route('/dash/rated', methods = ['GET'])
+def dash_rated():
+    return 0
 
 @app.route('/recipe_details/delete', methods = ['DELETE'])
 def recipe_details_delete():
