@@ -88,17 +88,18 @@ def ingredients():
 @app.route('/view', methods = ['GET'])
 def recipe_details():
     # how to get input in reality?
-    recipe_id = request.args['Recipe']
+    recipe_id = request.args.get('query')
+    # recipe_id = request.args['Recipe']
 
     # throw errors === Doesn't really work rn and i don't know why
-    if valid_recipe_id(db_path, recipe_id) == False:
+    if not valid_recipe_id(db_path, recipe_id):
         raise InputError("No such recipe id")
     
     ret = get_recipe_details(db_path, recipe_id)
 
     return ret
 
-@app.route('/save_and_rate/save', method = ['POST'])
+@app.route('/save_and_rate/save', methods = ['POST'])
 def save():
     db_path = os.path.join("./data/", "nepka.db")
     conn = sqlite3.connect(db_path)
@@ -128,9 +129,9 @@ def save():
     
     conn.commit()
     conn.close()
-    return
+    return f'done'
 
-@app.route('/save_and_rate/rate', method = ['POST'])
+@app.route('/save_and_rate/rate', methods = ['POST'])
 def rate():
     db_path = os.path.join("./data/", "nepka.db")
     conn = sqlite3.connect(db_path)
