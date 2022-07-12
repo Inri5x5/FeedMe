@@ -261,6 +261,8 @@ def get_recipe_details(db_path, recipe_id):
     avg_rating = total / counter
     ret.update({'avg_rating' : avg_rating})
 
+    # get saved or not 
+
     conn.close()
 
     return ret
@@ -271,7 +273,6 @@ def valid_recipe_id(db_path, recipe_id):
     c.execute("SELECT * FROM Recipe WHERE recipe_id = ?", [recipe_id])
     recipe = c.fetchall()
     if recipe == None: 
-        print("was here")
         return False
     
     return True
