@@ -1,4 +1,4 @@
-******        Getting Tag categories       ******
+******        Getting Tag categories       ****** NADYA + ERIVAN
 
 path is search/tag/categories
 
@@ -20,7 +20,7 @@ errors:
 none
 
 
-******          Getting Tags           ******
+******          Getting Tags           ****** NADYA + ERIVAN
 
 path is search/tag/tags
 
@@ -43,7 +43,7 @@ errors:
 none
 
 
-******          Get Recipe List from Search           ******
+******          Get Recipe List from Search           ****** NADYA + ERIVAN
 
 path is search/recipes
 
@@ -56,13 +56,6 @@ frontend body:
         17,
         23,
         ...
-    ],
-    "filter_list": [
-        "category_1" : [
-            "Vegan",
-            ...
-        ],
-        "category_2": [...]
     ]
 }
 
@@ -114,7 +107,7 @@ so in these cases, add an extra boolean field to each recipe metadata called 'is
 errors:
 none
 
-******          Adding/Updating Recipe Details           ******
+******          Adding/Updating Recipe Details           ******  KAYLEE + PIO
 
 path is recipe_details/update
 
@@ -166,7 +159,7 @@ errors:
 -if the recipe status is public, then we need some fields to be populated: basically everything other than video (which is optional)
 
 
-******          Viewing Recipe Details           ******
+******          Viewing Recipe Details           ****** KAYLEE + PIO
 
 path is recipe_details/view
 
@@ -196,8 +189,8 @@ backend response:
     "author": "Angeline", (this may not be the same as the person making the edit)
     "public_state": "public",
     "ingredients": [
-        {"name": "Egg", "ingredient_id": 10},
-        {"name": "Potato", "ingredient_id": 17},
+        {"name": "Egg", "ingredient_id": 10, "amount": "50kg"},
+        {"name": "Potato", "ingredient_id": 17, "amount": 100g},
         ...
     ],
     "skill_videos": [
@@ -212,7 +205,7 @@ errors:
 -invalid or blank recipe id
 
 
-******          Recipe Statistics           ******
+******          Recipe Statistics           ****** NADYA + ERIVAN
 
 path is /dash/statistics
 
@@ -251,7 +244,7 @@ errors:
 -invalid token (needs to be a contributor!)
 
 
-******          Save Recipe           ******
+******          Save Recipe           ****** KAYLEE + ERIVAN + PIO
 
 path is save_and_rate/save
 
@@ -274,7 +267,7 @@ invalid token!
 a contributor is allowed to save recipes!
 
 
-******          Rate Recipe           ******
+******          Rate Recipe           ****** KAYLEE + PIO + ERIVAN
 
 path is save_and_rate/rate
 
@@ -299,7 +292,7 @@ errors:
 a contributor is allowed to rate recipes!
 
 
-******          Delete Recipe           ******
+******          Delete Recipe           ****** NADYA + ERIVAN
 
 path is recipe_details/delete
 
@@ -318,7 +311,7 @@ errors:
 -invalid token
 
 
-******          Get All of a User's Saved Recipes           ******
+******          Get All of a User's Saved Recipes           ****** ERIVAN + NADYA
 
 path is dash/saved
 
@@ -372,7 +365,7 @@ errors:
 (will a contributor have saved recipes?)
 
 
-******          Get All of a User's Rated Recipes           ******
+******          Get All of a User's Rated Recipes           ****** ERIVAN + NADYA
 
 path is dash/rated
 
@@ -428,7 +421,7 @@ errors:
 (will a contributor have rated recipes?)
 
 
-******          Get All of a User's Own Recipes           ******
+******          Get All of a User's Own Recipes           ****** KAYLEE + ERIVAN
 
 path is dash/my_recipes
 
