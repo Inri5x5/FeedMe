@@ -15,7 +15,7 @@ import PersonIcon from '@mui/icons-material/Person';
 
 import styles from './styles/ContributorRecipeCard.module.css'
 
-export default function ContributorRecipeCard() {
+export default function ContributorRecipeCard(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,45 +27,33 @@ export default function ContributorRecipeCard() {
 
   return (
     <Card sx={{ width:'100%', m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
-      {/* <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
+      {(props.isEditable) && <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
         <MoreHorizIcon />
-      </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+      </IconButton>}
+      {(props.isEditable) && <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
-      </Menu> */}
+      </Menu>}
       <CardActionArea>
         <div style={{display:'flex', flexDirection:'row', width:'100%', alignItems:'center'}}>
             <div style={{flex: 1, maxWidth: '50%', paddingRight:'40px'}}>
               <CardMedia
               component="img"
-              height="200"
-              image="/static/images/cards/contemplative-reptile.jpg"
-              alt="green iguana"
+              height="250"
+              image={props.object.recipe_image}
+              alt={props.object.recipe_name}
+              sx={{
+                borderRadius: '30px'
+              }}
               />
               <CardContent>
                 <div className={styles.card_title}>
-                  Lizard jdfvsdfg jsdfgsdg 
+                  {props.object.recipe_name}
                 </div>
                 <div className={styles.card_desc}>
-                  Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica safasfasf asdasfas dfgdfg d sdg sdfgdfdf df dfg dfg df dfghdfg df
+                  {props.object.recipe_desc}
                 </div>
               </CardContent>
-              {/* <CardActions className={styles.card_action}>
-                <div>
-                  <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton aria-label="rates recipe">
-                    <GradeIcon/>
-                  </IconButton>
-                </div>
-                <div className={styles.card_time}>
-                  <AccessTimeIcon></AccessTimeIcon>
-                  <span>216 mins</span>
-                </div>
-              </CardActions> */}
             </div>
             <div style={{flex: 1, display:'flex'}}>
                 <RatingsField />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import { APICall } from '../helperFunc';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from './styles/SearchBar.module.css'
 import textStyles from './styles/SearchBarTitle.module.css'
@@ -8,35 +9,12 @@ import CategoryLabel from './CategoryLabel';
 import IngredientLabel from './IngredientLabel';
 import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import homeChef from '../assets/homeChef.png'
 
 const SearchBar = (props) => {
 	// Data State
 	const [listIngredient, setListIngredient] = useState([]);
 	const [listCategories, setListCategories] = useState([]);
-
-	// General API-call boilerplate function
-	const APICall = (requestBody, path, methodType, headersData) => {
-		if (requestBody !== null) requestBody = JSON.stringify(requestBody);
-		return new Promise((resolve, reject) => {
-			const init = {
-			method: methodType,
-			headers: headersData,
-			body: requestBody,
-			}
-			fetch(`${path}`, init)
-			.then(response => {
-				if (response.status === 200) {
-				return response.json().then(resolve);
-				} else if (response.status === 400) {
-				return response.json().then(obj => {
-					reject(obj.error);
-				});
-				} else {
-				throw new Error(`${response.status} Error with API call`);
-				}
-			});
-		})
-	}
 
 	const getAllCategories = async() => {
 		let data = []; let temp = [];
@@ -156,7 +134,6 @@ const SearchBar = (props) => {
 			setDropdownState('Searches')
 		}
 	}
-  
 	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
@@ -180,6 +157,14 @@ const SearchBar = (props) => {
 		)
 	}
 
+	const renderHomeTitle = () => {
+		if (props.selectedIngredients.length == 0){
+			return "Let's Start Cooking!"
+		} else {
+			return "Today I have"
+		}
+	}
+
 	React.useEffect(() => {
 		getAllCategories();
 		getAllIngredients();
@@ -195,7 +180,12 @@ const SearchBar = (props) => {
 	return (
 		<>
 			<div className={textStyles.container}>
-				<h1 className={textStyles} data-shadow="Today I have">Today I have</h1>
+				<div className={textStyles.wrapper}>
+					<img style={{width: '30vw', aspectRatio:'1/1', objectFit:'cover'}} src={homeChef} alt="ChefHomeScreen"></img>
+					<h1 className={textStyles}>
+						{renderHomeTitle()}
+					</h1>
+				</div>
 				<div className={styles.selected_ingredient_container}>
 					{renderSelectedIngredient(props.selectedIngredients)}
 				</div>

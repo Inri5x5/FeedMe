@@ -18,17 +18,12 @@ const FilterContainer = (props) => {
   const handleClose = () => setOpen(false);
   
   React.useEffect(() => {
-    //Fetch all tag categories
-    let temp = []
-    for(let i = 0; i < 4; i++) {
-      temp.push({"id":i, "name":"TagCategory"+i, "tags":[]})
-    }
-    //Fetch tags on each category
-    for (let i = 0; i < temp.length; i++) {
-      for (let j = 0; j < 10; j++) {
-        temp[i].tags.push({"id":j, "name":"Tag"+j})
-      }
-    }
+    //Fetch all tags
+    let temp = [
+      {"tag_category_id" : 1, "tag_category_name": "Cuisine", "tags": [{"tag_id" : 1, "tag_name" : "Australian"},{"tag_id" : 2, "tag_name" : "Asian"},{"tag_id" : 3, "tag_name" : "Europe"}]},
+      {"tag_category_id" : 2, "tag_category_name": "Meal type", "tags": [{"tag_id" : 4, "tag_name" : "Breakfast"},{"tag_id" : 5, "tag_name" : "Lunch"},{"tag_id" : 6, "tag_name" : "Dinner"}]},
+      {"tag_category_id" : 3, "tag_category_name": "Difficulty", "tags": [{"tag_id" : 7, "tag_name" : "Easy"},{"tag_id" : 8, "tag_name" : "Medium"},{"tag_id" : 9, "tag_name" : "Hard"}]}
+    ]
     setTagData(temp)
   }, [])
 
@@ -40,8 +35,8 @@ const FilterContainer = (props) => {
         return(<TagLabel object={object} isSelected={isSelected} clickFunction={isSelected ? removeTag : selectTag}></TagLabel>)
       })
       content.push(
-        <div style={{marginTop:'20px'}}>
-          <div>{tagData[i].name}</div>
+        <div style={{marginTop:'10px'}}>
+          <div>{tagData[i].tag_category_name}</div>
           <div className={styles.tag_container}>{tagsContent}</div>
         </div>
       )
@@ -51,7 +46,7 @@ const FilterContainer = (props) => {
 
   const checkIfSelected = (object) => {
 		for(let i = 0; i < props.selectedTags.length; i++) {
-			if (object.id === props.selectedTags[i].id) return true;
+			if (object.tag_id === props.selectedTags[i].tag_id) return true;
 		}
 		return false;
 	}
@@ -60,7 +55,7 @@ const FilterContainer = (props) => {
   }
   const removeTag = (object) => {
 		props.setSelectedTags(props.selectedTags.filter(selTag => {
-			return selTag.id !== object.id;
+			return selTag.tag_id !== object.tag_id;
 		}))
 	}
   const renderSelectedTags = (list_selected_tags) => {
@@ -70,12 +65,12 @@ const FilterContainer = (props) => {
 		return content;
   }
   const renderAddTagButton = () => {
-    return (<TagLabel object={{"id":-1, "name":"+"}} clickFunction={handleOpen}></TagLabel>)
+    return (<TagLabel object={{"tag_id":-1, "tag_name":"+"}} clickFunction={handleOpen}></TagLabel>)
   }
 
   return (
     <>
-      <div>
+      <div >
         <Modal
           open={open}
           onClose={() => handleClose()}

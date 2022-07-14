@@ -3,7 +3,9 @@ import EditProfileModal from './EditProfileModal';
 import Avatar from '@mui/material/Avatar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import GradeIcon from '@mui/icons-material/Grade';
 import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
@@ -42,7 +44,7 @@ const ContributorDashboard = (props) => {
   const handleChange = (event, newValue) => {
     props.setTabValue(newValue);
   };
-  const matches = useMediaQuery('(min-width:500px)');
+  const matches = useMediaQuery('(min-width:1075px)');
 
   return (
     <>
@@ -84,8 +86,10 @@ const ContributorDashboard = (props) => {
                 },
               }}
             >
-              <Tab icon={<FavoriteIcon />} iconPosition="start" label={ (matches) ? "Published Recipe" : "" } value="Published"/>
-              <Tab icon={<GradeIcon />} iconPosition="start" label={ (matches) ? "Recipe Draft" : "" } value="Drafted"/>
+              <Tab icon={<UploadFileIcon />} iconPosition="start" label={ (matches) ? "Published Recipe" : "" } value="Published"/>
+              <Tab icon={<ModeEditIcon />} iconPosition="start" label={ (matches) ? "Recipe Draft" : "" } value="Drafted"/>
+              <Tab icon={<FavoriteIcon />} iconPosition="start" label={ (matches) ? "Saved Recipe" : "" } value="Saved"/>
+              <Tab icon={<GradeIcon />} iconPosition="start" label={ (matches) ? "Rated Recipe" : "" } value="Rated"/>
               <Tab icon={<PersonIcon />} iconPosition="start" label={ (matches) ? "Published Video" : "" } value="Video"/>
             </Tabs>
           </div>

@@ -1,6 +1,5 @@
 import React from 'react'
 import styles from './styles/RecipeDashboard.module.css'
-import RecipeContainer from './RecipeContainer'
 import RecipeCard from './RecipeCard'
 
 const RecipeDashboard = (props) => {

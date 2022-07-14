@@ -4,7 +4,7 @@ import styles from './styles/TagLabel.module.css'
 const TagLabel = (props) => {
   let style;
   
-  if (props.object.name === '+') {
+  if (props.object.tag_name === '+') {
     style = styles.add_tag
   } else if (props.isSelected) {
     style = styles.tag_focus
@@ -13,8 +13,8 @@ const TagLabel = (props) => {
   }
 
   return (
-    <div className={style} onClick={() => {(props.object.name === '+') ? props.clickFunction() : props.clickFunction(props.object)}}> 
-        <span className={styles.tag_title}> {props.object.name} </span>
+    <div className={style} onClick={() => {(props.object.tag_name === '+') ? props.clickFunction() : props.clickFunction(props.object)}}> 
+        <span className={styles.tag_title}> {props.object.tag_name} </span>
     </div>
   )
 }
