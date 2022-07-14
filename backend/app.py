@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_tag_categories, get_tags, get_recipe_details
+from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_tag_categories, get_tags, get_recipe_details, get_tags_and_categories
 from json import dumps
 import json
 
@@ -176,8 +176,7 @@ def search_tag_categories():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
-    token = req['token']
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -192,14 +191,14 @@ def search_tag_categories():
 def search_tag_tags():
     conn = db_connection()
 
-    # Get params
-    req = request.get_json()
-    token = req['token']
-    tag_category_id = req['tag_category_id']
-
     # Validate token
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
+
+    # Get params
+    req = request.get_json()
+    tag_category_id = req['tag_category_id']
 
     # Get tags
     tags = get_tags(conn, tag_category_id)
@@ -425,6 +424,28 @@ def recipe_details_delete():
     cur.close()
 
     return {}
+
+# Erivan here u go
+@app.route('/get/tags', methods = ['GET'])
+def get_all_tags():
+    conn = db_connection()
+
+    # Validate token
+    token = request.args.get('req')['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get params
+    req = request.get_json()
+    tag_category_id = req['tag_category_id']
+
+    # Get tags
+    tags = get_tags_and_categories(conn)
+
+    return {
+        "tags": tags
+    }
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

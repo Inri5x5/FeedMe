@@ -138,48 +138,40 @@ def get_tag_categories(conn):
 def get_tags(conn, tag_category_id):
     cur = conn.cursor()
 
-    if tag_category_id is None:
-        cur.execute('SELECT name, tag_id FROM Tags')
-    else:
-        cur.execute('''
-        SELECT name, tag_id 
-        FROM Tags 
-        WHERE tag_category_id = %s''', [tag_category_id]
-        )
-
+    # Get tags of the given tag category
+    cur.execute('''SELECT name, tag_id FROM Tags 
+        WHERE tag_category_id = %s''', [tag_category_id])
     info = cur.fetchall()
     cur.close()
 
     tags = []
     for i in info:
-        tag_id, name = i
+        name, tag_id = i
         tags.append(
             {"name": name, "tag_id": tag_id}
         )
 
     return tags
 
-def get_recipe_steps(conn, recipe_id):
+def get_tags_and_categories(conn):
     cur = conn.cursor()
-    qry = '''
-        SELECT * 
-        FROM Steps
-        WHERE recipe_id = %s
-        ORDER BY step_number ASC
-    '''
-    cur.execute(qry, [recipe_id])
+    cur.execute('''
+        SELECT tc.id, tc.name, 
+        FROM Tag_Categories tc
+            JOIN Tags t on t.tag_category_id = tc.tag_category_id
+    ''')
     info = cur.fetchall()
     cur.close()
     
-    steps = []
-    for i in info:
-        recipe_id, step_id, description, image = i
-        steps.append({
-            "step_id": step_id,
-            "description": description
-        })
-
-    return steps
+    tag_categories = []
+    for i in info: 
+        tc_id, tc_name = i
+        tags = get_tags(conn, tc_id)
+        tag_categories.append(
+            {"tag_category_id": tc_id, "tag_category_name": tc_name, "tags": tags}
+        )
+    
+    return tag_categories
 
 def get_recipe_details(conn, recipe_id):
     c = conn.cursor()
