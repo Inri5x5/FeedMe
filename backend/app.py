@@ -435,10 +435,6 @@ def get_all_tags():
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    # Get params
-    req = request.get_json()
-    tag_category_id = req['tag_category_id']
-
     # Get tags
     tags = get_tags_and_categories(conn)
 
