@@ -10,10 +10,10 @@ from datetime import datetime
 
 regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$'
 
-def db_connection():
+def db_connection(sqlite_file):
     conn = None
     try:
-        conn = sqlite3.connect('feedme.sqlite')
+        conn = sqlite3.connect(sqlite_file)
     except sqlite3.error as e:
         print(e)
     return conn
@@ -23,7 +23,10 @@ def generate_token(email):
     payload = {"email": email, "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")}
     return jwt.encode(payload, "", algorithm="HS256")
 
-def decode_token(conn, token):
+def decode_token(token):
+    conn = sqlite3.connect('tokens.sqlite')
+    cur = conn.cursor()
+
     # Get email
     payload = jwt.decode(token, "", algorithms=["HS256"])
     email = payload["email"]
@@ -46,7 +49,10 @@ def decode_token(conn, token):
         "is_contributor": is_contributor
     }
 
-def validate_token(conn, token):
+def validate_token(token):
+    conn = sqlite3.connect('tokens.sqlite')
+    cur = conn.cursor()
+
     cur = conn.cursor()
     cur.execute('SELECT 1 FROM Tokens WHERE token = %s', [token])
     info = cur.fetchone()
@@ -57,14 +63,16 @@ def validate_token(conn, token):
     else:
         return True
 
-def add_token(conn, token, user_id, is_contributor):
+def add_token(token, user_id, is_contributor):
+    conn = sqlite3.connect('tokens.sqlite')
     cur = conn.cursor()
     cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, is_contributor))
     cur.close()
 
     return 0
 
-def delete_token(conn, token):
+def delete_token(token):
+    conn = sqlite3.connect('tokens.sqlite')
     cur = conn.cursor()
     cur.execute('DELETE FROM Tokens WHERE token = %s', [token])
     cur.close()
@@ -79,13 +87,15 @@ def valid_email(email):
     else:
         return True
 
-def check_password(conn, email, password, is_contributor):
-    cur = conn.cursor()
-    
+def check_password(email, password, is_contributor):
     if (is_contributor):
+        conn = sqlite3.connect('contributors.sqlite')
+        cur = conn.cursor()
         cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s')
         info = cur.fetchone()
     else:
+        conn = sqlite3.connect('rusers.sqlite')
+        cur = conn.cursor()
         cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s')
         info = cur.fetchone()
 
@@ -96,7 +106,8 @@ def check_password(conn, email, password, is_contributor):
     else:
         return True
     
-def get_contributor(conn, email):
+def get_contributor(email):
+    conn = sqlite3.connect('contributors.sqlite')
     cur = conn.cursor()
     cur.execute('SELECT contributor_id FROM Contributors WHERE email = %s', [email])
     info = cur.fetchone()
@@ -108,6 +119,7 @@ def get_contributor(conn, email):
         return info
 
 def get_ruser(conn, email):
+    conn = sqlite3.connect('rusers.sqlite')
     cur = conn.cursor()
     cur.execute('SELECT ruser_id FROM RUsers WHERE email = %s', [email])
     info = cur.fetchone()

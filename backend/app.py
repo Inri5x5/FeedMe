@@ -74,8 +74,6 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
-        conn = db_connection()
-
         req = request.get_json()
         email = req['email']
         password = req['password']
@@ -87,16 +85,16 @@ def login():
 
         # Get user id
         if is_contributor:
-            user_id = get_contributor(conn, email)
+            user_id = get_contributor(email)
         else:
-            user_id = get_ruser(conn, email)
+            user_id = get_ruser(email)
         
         # User does not exist
         if (user_id < 0):
             raise InputError("User is not registered")
 
         # Check password
-        if not check_password(conn, email, password, is_contributor):
+        if not check_password(email, password, is_contributor):
             raise InputError("Incorrect password")
         
         # Create token 
@@ -112,17 +110,15 @@ def login():
 
 @app.route('/logout', methods = ['POST'])
 def logout():
-    conn = db_connection()
-
     req = request.get_json()
     token = req['token']
 
     # Validate token
-    if not validate_token(conn, token):
+    if not validate_token(token):
         raise AccessError("Invalid token")
         
     # Delete token from tokens json file
-    delete_token(conn, token)
+    delete_token(token)
 
     return {
         "status": 200,
