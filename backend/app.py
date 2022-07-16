@@ -519,6 +519,7 @@ def recipe_details_view():
 def recipe_details_update():
     # Connect to db
     conn = db_connection()
+    c = conn.cursor()
 
     # Validate token
     req = request.get_json()
@@ -534,24 +535,20 @@ def recipe_details_update():
     req = request.get_json()
 
     # Get recipe id
+    recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id
+    if recipe_id == -1:
+        c.execute("SELECT * FROM Recipe ORDER BY recipe_id DESC LIMIT 1")
+        recipe_id = c.fetchall()[0]
+        recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
         # delete existing data first 
+    else:
+        c.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
     
-    # Update data in "Recipe"
+    update_recipe_details(conn, user_details, recipe_id, req)
 
-    # Update data in "Ingredient in Recipe"
-
-    # Update data in "Tag in Recipe"
-
-    # Update data in "Steps"
-
-    # if contributor has public_state = public it should go into "Public Recipes"
-    # if contributor has public_state = private it should go into "Draft Recipes"
-    # If update request is made my ruser, it should go into personal recipes with new recipe id
-
-
-    return f'done'
+    return 
 
 @app.route('/dash/my_recipes', methods = ['GET'])
 def dash_my_recipes():
