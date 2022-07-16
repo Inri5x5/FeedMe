@@ -74,6 +74,8 @@ def login():
         return render_template('form.html')
      
     if request.method == 'POST':
+        conn = db_connection()
+
         req = request.get_json()
         email = req['email']
         password = req['password']
@@ -85,23 +87,23 @@ def login():
 
         # Get user id
         if is_contributor:
-            user_id = get_contributor(email)
+            user_id = get_contributor(conn, email)
         else:
-            user_id = get_ruser(email)
+            user_id = get_ruser(conn, email)
         
         # User does not exist
         if (user_id < 0):
             raise InputError("User is not registered")
 
         # Check password
-        if not check_password(email, password, is_contributor):
+        if not check_password(conn, email, password, is_contributor):
             raise InputError("Incorrect password")
         
         # Create token 
         token = generate_token(email, is_contributor)
 
         # Update tokens json file
-        add_token(token, user_id, is_contributor)
+        add_token(conn, token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -260,11 +262,11 @@ def dash_statistics():
     cur = conn.cursor()
     qry = '''
         SELECT r.recipe_id, 
-            SUM(CASE WHEN rr.rating = '1' THEN 1 ELSE 0 END) AS one_rating,
-            SUM(CASE WHEN rr.rating = '2' THEN 1 ELSE 0 END) AS two_rating,
-            SUM(CASE WHEN rr.rating = '3' THEN 1 ELSE 0 END) AS three_rating,
-            SUM(CASE WHEN rr.rating = '4' THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = '5' THEN 1 ELSE 0 END) AS five_rating,
+            SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
+            SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
+            SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
+            SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
+            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
         FROM recipes r
             JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
             JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
