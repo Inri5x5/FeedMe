@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INSERT INTO 
 recipes (id,title,description,image,video,time_required,servings)
 VALUES

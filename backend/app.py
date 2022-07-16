@@ -103,7 +103,7 @@ def login():
         token = generate_token(email, is_contributor)
 
         # Update tokens json file
-        add_token(token, user_id, is_contributor)
+        add_token(conn, token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -112,17 +112,15 @@ def login():
 
 @app.route('/logout', methods = ['POST'])
 def logout():
-    conn = db_connection()
-
     req = request.get_json()
     token = req['token']
 
     # Validate token
-    if not validate_token(conn, token):
+    if not validate_token(token):
         raise AccessError("Invalid token")
         
     # Delete token from tokens json file
-    delete_token(conn, token)
+    delete_token(token)
 
     return {
         "status": 200,
@@ -173,8 +171,7 @@ def search_tag_categories():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
-    token = req['token']
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -189,14 +186,14 @@ def search_tag_categories():
 def search_tag_tags():
     conn = db_connection()
 
-    # Get params
-    req = request.get_json()
-    token = req['token']
-    tag_category_id = req['tag_category_id']
-
     # Validate token
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
+
+    # Get params
+    req = request.get_json()
+    tag_category_id = req['tag_category_id']
 
     # Get tags
     tags = get_tags(conn, tag_category_id)
@@ -262,11 +259,11 @@ def dash_statistics():
     cur = conn.cursor()
     qry = '''
         SELECT r.recipe_id, 
-            SUM(CASE WHEN rr.rating = '1' THEN 1 ELSE 0 END) AS one_rating,
-            SUM(CASE WHEN rr.rating = '2' THEN 1 ELSE 0 END) AS two_rating,
-            SUM(CASE WHEN rr.rating = '3' THEN 1 ELSE 0 END) AS three_rating,
-            SUM(CASE WHEN rr.rating = '4' THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = '5' THEN 1 ELSE 0 END) AS five_rating,
+            SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
+            SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
+            SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
+            SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
+            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
         FROM recipes r
             JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
             JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
@@ -533,24 +530,6 @@ def recipe_details_update():
     # Get user input
     req = request.get_json()
 
-    # Get recipe id
-    # If recipe id == -1, assign new recipe id
-    # if recipe id != -1, update the recipe
-        # delete existing data first 
-    
-    # Update data in "Recipe"
-
-    # Update data in "Ingredient in Recipe"
-
-    # Update data in "Tag in Recipe"
-
-    # Update data in "Steps"
-
-    # if contributor has public_state = public it should go into "Public Recipes"
-    # if contributor has public_state = private it should go into "Draft Recipes"
-    # If update request is made my ruser, it should go into personal recipes with new recipe id
-
-
     return f'done'
 
 @app.route('/dash/my_recipes', methods = ['GET'])
@@ -592,6 +571,23 @@ def dash_my_recipes():
     ret = {"recipes" : recipes}
 
     return ret
+# Erivan here u go
+@app.route('/get/tags', methods = ['GET'])
+def get_all_tags():
+    conn = db_connection()
+
+    # Validate token
+    token = request.args.get('req')['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get tags
+    tags = get_tags_and_categories(conn)
+
+    return {
+        "tags": tags
+    }
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

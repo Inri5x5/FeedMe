@@ -13,7 +13,7 @@ regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$'
 def db_connection():
     conn = None
     try:
-        conn = sqlite3.connect('feedme.sqlite')
+        conn = sqlite3.connect("database.sqlite")
     except sqlite3.error as e:
         print(e)
     return conn
@@ -24,6 +24,8 @@ def generate_token(email):
     return jwt.encode(payload, "", algorithm="HS256")
 
 def decode_token(conn, token):
+    cur = conn.cursor()
+
     # Get email
     payload = jwt.decode(token, "", algorithms=["HS256"])
     email = payload["email"]
@@ -47,6 +49,8 @@ def decode_token(conn, token):
     }
 
 def validate_token(conn, token):
+    cur = conn.cursor()
+
     cur = conn.cursor()
     cur.execute('SELECT 1 FROM Tokens WHERE token = %s', [token])
     info = cur.fetchone()
@@ -81,12 +85,11 @@ def valid_email(email):
 
 def check_password(conn, email, password, is_contributor):
     cur = conn.cursor()
-    
     if (is_contributor):
-        cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s')
+        cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s', [email, password])
         info = cur.fetchone()
     else:
-        cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s')
+        cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s', [email, password])
         info = cur.fetchone()
 
     cur.close()
@@ -138,48 +141,40 @@ def get_tag_categories(conn):
 def get_tags(conn, tag_category_id):
     cur = conn.cursor()
 
-    if tag_category_id is None:
-        cur.execute('SELECT name, tag_id FROM Tags')
-    else:
-        cur.execute('''
-        SELECT name, tag_id 
-        FROM Tags 
-        WHERE tag_category_id = %s''', [tag_category_id]
-        )
-
+    # Get tags of the given tag category
+    cur.execute('''SELECT name, tag_id FROM Tags 
+        WHERE tag_category_id = %s''', [tag_category_id])
     info = cur.fetchall()
     cur.close()
 
     tags = []
     for i in info:
-        tag_id, name = i
+        name, tag_id = i
         tags.append(
             {"name": name, "tag_id": tag_id}
         )
 
     return tags
 
-def get_recipe_steps(conn, recipe_id):
+def get_tags_and_categories(conn):
     cur = conn.cursor()
-    qry = '''
-        SELECT * 
-        FROM Steps
-        WHERE recipe_id = %s
-        ORDER BY step_number ASC
-    '''
-    cur.execute(qry, [recipe_id])
+    cur.execute('''
+        SELECT tc.id, tc.name, 
+        FROM Tag_Categories tc
+            JOIN Tags t on t.tag_category_id = tc.tag_category_id
+    ''')
     info = cur.fetchall()
     cur.close()
     
-    steps = []
-    for i in info:
-        recipe_id, step_id, description, image = i
-        steps.append({
-            "step_id": step_id,
-            "description": description
-        })
-
-    return steps
+    tag_categories = []
+    for i in info: 
+        tc_id, tc_name = i
+        tags = get_tags(conn, tc_id)
+        tag_categories.append(
+            {"tag_category_id": tc_id, "tag_category_name": tc_name, "tags": tags}
+        )
+    
+    return tag_categories
 
 def get_recipe_details(conn, recipe_id):
     # initialise return dict
