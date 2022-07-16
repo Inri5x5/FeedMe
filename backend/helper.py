@@ -158,8 +158,8 @@ def get_tags_and_categories(conn):
     cur = conn.cursor()
     cur.execute('''
         SELECT tc.id, tc.name, 
-        FROM Tag_Categories tc
-            JOIN Tags t on t.tag_category_id = tc.tag_category_id
+        FROM tagCategories tc
+            JOIN Tags t on t.tag_category_id = tc.id
     ''')
     info = cur.fetchall()
     cur.close()

@@ -23,50 +23,48 @@ app.config['TRAP_HTTP_EXCEPTIONS'] = True
 app.register_error_handler(Exception, defaultHandler)
 
 ########################## SPRINT 1 ##########################
-# @app.route("/auth/register", methods = ['POST'])
-# def register():
-#     req = request.get_json()
-#     email = req['email']
-#     password = req['password']
-#     username = req['username']
+@app.route("/auth/register", methods = ['POST'])
+def register():
+    conn = db_connection()
+    cur = conn.cursor()
 
-#     if not email or not password or not username:
-#         raise InputError
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    username = req['username']
 
-#     fp1 = open('./data/rusers_table.json', 'r')
-#     ruser_data = json.load(fp1)
-#     for ruser in ruser_data:
-#         if ruser['email'] == email:
-#             print('ERRORR')
-#             # raise EmailAlreadyInUse
-#             raise InputError("Email already in use!")
+    if not email or not password or not username:
+        raise InputError
 
-#     ruser_id = len(ruser_data)
-#     print(ruser_id)
-#     ruser_data.append({"ruser_id": ruser_id, "email": email, "password": password, "username": username, "profile_picture": ''})
-#     fp1.close()
-#     fp = open('./data/rusers_table.json', 'w')
-#     fp.write(json.dumps(ruser_data))
-#     fp.close()
+    # Check if email already exists
+    cur.execute('SELECT * FROM rusers WHERE email = ?', [email])
+    info = cur.fetchall()
+    if info is not None:
+        raise InputError("Email is already in use!")
 
-#     token = generate_token(email)
-#     fp2 = open('data/tokens_table.json', 'r')
-#     token_data = json.load(fp2)
-#     token_data.append({"token": token, "user_id": ruser_id, "is_contributor": False})
-#     fp2.close()
-#     fp = open('./data/tokens_table.json', 'w')
-#     json.dump(token_data, fp)
-#     fp.close()
+    # Get new ruser_id
+    cur.execute('SELECT COUNT(*) FROM rusers')
+    ruser_id = cur.fetchall() + 1
 
-#     status_code = 200
-#     response = {
-#         "success": True,
-#         "body": {
-#             "token": token
-#         }
-#     }
+    # Input new user into databse
+    cur.execute('INSERT INTO rusers VALUES(?, ?, ?, ?, ?)', 
+    [ruser_id, email, username, password, ''])
 
-#     return jsonify(response), status_code
+    # Create token 
+    token = generate_token(email)
+
+    # Update tokens json file
+    add_token(conn, token, ruser_id, False)
+    
+    status_code = 200
+    response = {
+        "success": True,
+        "body": {
+            "token": token
+        }
+    }
+
+    return jsonify(response), status_code
     
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
