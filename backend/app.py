@@ -133,7 +133,7 @@ def logout():
 def categories():
     conn = db_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM ingredient_categories")
+    c.execute("SELECT * FROM ingredientCategories")
     data = c.fetchall()
     conn.close()
 
@@ -152,7 +152,7 @@ def ingredients():
 
     conn = db_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM ingredients_table")
+    c.execute("SELECT * FROM ingredients")
     data = c.fetchall()
     conn.close()
 
@@ -554,13 +554,13 @@ def recipe_details_update():
     # check public state = if public state publish to public if not go to personal
     # if positive num, update recipe that could be public or private
     if recipe_id == -1:
-        c.execute("SELECT * FROM Recipes ORDER BY recipe_id DESC LIMIT 1")
+        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
         recipe_id = c.fetchall()[0]
         recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipe WHERE recipe_id = ?', [recipe_id])
+        c.execute('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id])
     
     update_recipe_details(conn, user_details, recipe_id, req)
 
