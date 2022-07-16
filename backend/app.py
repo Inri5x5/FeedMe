@@ -23,50 +23,50 @@ app.config['TRAP_HTTP_EXCEPTIONS'] = True
 app.register_error_handler(Exception, defaultHandler)
 
 ########################## SPRINT 1 ##########################
-@app.route("/auth/register", methods = ['POST'])
-def register():
-    req = request.get_json()
-    email = req['email']
-    password = req['password']
-    username = req['username']
+# @app.route("/auth/register", methods = ['POST'])
+# def register():
+#     req = request.get_json()
+#     email = req['email']
+#     password = req['password']
+#     username = req['username']
 
-    if not email or not password or not username:
-        raise InputError
+#     if not email or not password or not username:
+#         raise InputError
 
-    fp1 = open('./data/rusers_table.json', 'r')
-    ruser_data = json.load(fp1)
-    for ruser in ruser_data:
-        if ruser['email'] == email:
-            print('ERRORR')
-            # raise EmailAlreadyInUse
-            raise InputError("Email already in use!")
+#     fp1 = open('./data/rusers_table.json', 'r')
+#     ruser_data = json.load(fp1)
+#     for ruser in ruser_data:
+#         if ruser['email'] == email:
+#             print('ERRORR')
+#             # raise EmailAlreadyInUse
+#             raise InputError("Email already in use!")
 
-    ruser_id = len(ruser_data)
-    print(ruser_id)
-    ruser_data.append({"ruser_id": ruser_id, "email": email, "password": password, "username": username, "profile_picture": ''})
-    fp1.close()
-    fp = open('./data/rusers_table.json', 'w')
-    fp.write(json.dumps(ruser_data))
-    fp.close()
+#     ruser_id = len(ruser_data)
+#     print(ruser_id)
+#     ruser_data.append({"ruser_id": ruser_id, "email": email, "password": password, "username": username, "profile_picture": ''})
+#     fp1.close()
+#     fp = open('./data/rusers_table.json', 'w')
+#     fp.write(json.dumps(ruser_data))
+#     fp.close()
 
-    token = generate_token(email)
-    fp2 = open('data/tokens_table.json', 'r')
-    token_data = json.load(fp2)
-    token_data.append({"token": token, "user_id": ruser_id, "is_contributor": False})
-    fp2.close()
-    fp = open('./data/tokens_table.json', 'w')
-    json.dump(token_data, fp)
-    fp.close()
+#     token = generate_token(email)
+#     fp2 = open('data/tokens_table.json', 'r')
+#     token_data = json.load(fp2)
+#     token_data.append({"token": token, "user_id": ruser_id, "is_contributor": False})
+#     fp2.close()
+#     fp = open('./data/tokens_table.json', 'w')
+#     json.dump(token_data, fp)
+#     fp.close()
 
-    status_code = 200
-    response = {
-        "success": True,
-        "body": {
-            "token": token
-        }
-    }
+#     status_code = 200
+#     response = {
+#         "success": True,
+#         "body": {
+#             "token": token
+#         }
+#     }
 
-    return jsonify(response), status_code
+#     return jsonify(response), status_code
     
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -80,10 +80,6 @@ def login():
         email = req['email']
         password = req['password']
         is_contributor = req['is_contributor']
-
-        # Check email
-        if not valid_email(email):
-            raise InputError("Invalid email")
 
         # Get user id
         if is_contributor:
@@ -218,10 +214,10 @@ def search_recipes():
         raise AccessError("Invalid token")
 
     cur.execute('''
-        SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id)
+        SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
         FROM    Recipes r
-                JOIN Ingredient_in_Recipe ir on ir.recipe_id = r.recipe_id
-        GROUP BY r.recipe_id
+                JOIN ingredientInRecipe ir on ir.recipe_id = r.id
+        GROUP BY r.id
     ''')
     info = cur.fetchall()
     cur.close()
@@ -259,17 +255,17 @@ def dash_statistics():
 
     cur = conn.cursor()
     qry = '''
-        SELECT r.recipe_id, 
+        SELECT r.id, 
             SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
             SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
             SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
             SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
             SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
         FROM recipes r
-            JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
-            JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
-        WHERE pr.author_id = %s
-        GROUP BY r.recipe_id
+            JOIN publicRecipes pr ON pr.recipe_id = r.id
+            JOIN recipeRatings rr ON rr.recipe_id = r.id
+        WHERE pr.contributor_id = ?
+        GROUP BY r.id
     '''
     cur.execute(qry, [contributor_id])
     info = cur.fetchall()
@@ -283,7 +279,7 @@ def dash_statistics():
         avg_rating = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)/(one_rating + two_rating + three_rating + four_rating + five_rating)
 
         # Number of recipe saves
-        cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [recipe_id])
+        cur.execute('SELECT COUNT(*) FROM recipeSaves WHERE recipe_id = ?', [recipe_id])
         info = cur.fetchone()
         if not info:
             num_saves = 0
@@ -326,9 +322,9 @@ def dash_saved():
 
     cur = conn.cursor()
     if user["is_contributor"]:  # Contributor
-        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE contributor_id = %s', [user["user_id"]])
+        cur.execute('SELECT recipe_id FROM recipeSaves WHERE contributor_id = ?', [user["user_id"]])
     else: # RUser
-        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE ruser_id = %s', [user["user_id"]])
+        cur.execute('SELECT recipe_id FROM recipeSaves WHERE ruser_id = ?', [user["user_id"]])
     info = cur.fetchall()
     cur.close()
 
@@ -356,11 +352,11 @@ def dash_rated():
 
     cur = conn.cursor()
     if user["is_contributor"]:  # Contributor
-        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-            WHERE contributor_id = %s''', [user["user_id"]])
+        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
+            WHERE contributor_id = ?''', [user["user_id"]])
     else: # RUser
-        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-            WHERE ruser_id = %s''', [user["user_id"]])
+        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
+            WHERE ruser_id = ?''', [user["user_id"]])
     info = cur.fetchall()
     cur.close()
 
@@ -406,16 +402,14 @@ def recipe_details_delete():
         raise InputError("Recipe ID cannot be empty")
 
     # Error if recipe does not exist
-    cur.execute('SELECT * FROM recipe WHERE recipe_id = %s LIMIT 1', [recipe_id])
-    info = cur.fetchall()
-    if not info:
+    if not valid_recipe_id(conn, recipe_id):
         raise InputError("Recipe ID does not exist")
 
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    cur.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+    cur.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
     conn.commit()
     cur.close()
 
@@ -542,7 +536,7 @@ def recipe_details_update():
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+        c.execute('DELETE FROM recipe WHERE recipe_id = ?', [recipe_id])
     
     update_recipe_details(conn, user_details, recipe_id, req)
 
@@ -587,6 +581,7 @@ def dash_my_recipes():
     ret = {"recipes" : recipes}
 
     return ret
+
 # Erivan here u go
 @app.route('/get/tags', methods = ['GET'])
 def get_all_tags():
