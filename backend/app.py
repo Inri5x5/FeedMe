@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
-from helper import get_contributor, get_ruser, check_password, valid_email, generate_token, validate_token, decode_token, add_token, delete_token, db_connection, get_tag_categories, get_tags, get_recipe_details
+from helper import *
 from json import dumps
 import json
 
@@ -131,42 +131,39 @@ def logout():
 
 @app.route('/categories', methods = ['GET'])
 def categories():
-    # Open json file of ingredients and load data
-    f = open('data/ingredient_categories_table.json')
-    data = json.load(f)
+    conn = db_connection()
+    c = conn.cursor()
+    c.execute("SELECT * FROM ingredient_categories")
+    data = c.fetchall()
+    conn.close()
 
-    # Append ingredient categories into a list
     categories = []
-    for dict in data:
-        categories.append({"name": dict["name"], "c_id": dict["category_id"]})
-
-    print(categories) 
-
-    # Format return dict
+    for (i, j) in data:
+        categories.append({"name": j, "c_id": i})
+        
     ret = {"status": 200,
             "body": {"categories": categories}}
-        
+
     return ret
     
 @app.route('/ingredients', methods = ['GET'])
 def ingredients():
-    # Get user input
     ingredient = request.args.get('query')
 
-    # Open json file of ingredients and load data
-    f = open('data/ingredients_table.json')
-    data = json.load(f)
+    conn = db_connection()
+    c = conn.cursor()
+    c.execute("SELECT * FROM ingredients_table")
+    data = c.fetchall()
+    conn.close()
 
-    # Search ingredient dict for string matches
     suggestions = []
-    for dict in data:
-        if ingredient.lower() in dict["name"].lower():
-            suggestions.append({"name": dict["name"], "i_id": dict["ingredient_id"], "c_id": dict["ingredient_category_id"]})
-
-    # Format return dict
+    for (i, j, k) in data:
+        if ingredient.lower() in k.lower():
+            suggestions.append({"name": k, "i_id": i, "c_id": j})
+    
     ret = {"status": 200,
             "body": {"suggestions": suggestions}}
-
+    
     return ret
 
 ########################## SPRINT 2 ##########################
@@ -425,6 +422,176 @@ def recipe_details_delete():
     cur.close()
 
     return {}
+
+@app.route('/save_and_rate/save', methods = ['POST'])
+def save():
+    # Get user input
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
+
+    # Connect to db 
+    conn = db_connection()
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Validate recipe_id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
+
+    # Get user id
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
+    
+    c = conn.cursor()
+    if has_saved(conn, recipe_id, id) == False:
+        c.execute("INSERT INTO Recipe_Saves VALUES (?, ?)", (recipe_id, id))
+    else:
+        c.execute("DELETE FROM Recipe_Saves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+    
+    conn.commit()
+    conn.close()
+    
+    return
+
+@app.route('/save_and_rate/rate', methods = ['POST'])
+def rate():
+    # Get user input
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
+    rating = req['rating']
+
+    # Connect to db 
+    conn = db_connection()
+
+     # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Validate recipe_id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
+
+    #validate rating
+    if rating > 5 or rating < 0:
+        raise InputError("Rating out of range.")
+    
+    # Get user details 
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
+
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+    if has_rated(conn, recipe_id, id) == True:
+        c.execute("DELETE FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+        c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    else:
+        c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    
+    conn.commit()
+    conn.close()
+
+    return
+
+@app.route('/recipe_details/view', methods = ['GET'])
+def recipe_details_view():
+    # Get usr input
+    recipe_id = request.args.get('query')
+
+    # Connect to db 
+    conn = db_connection()
+
+    # Validate recipe id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
+    
+    # Get recipe details 
+    ret = get_recipe_details(conn, recipe_id)
+    
+    conn.close()
+
+    return ret
+
+@app.route('/recipe_details/update', methods = ['PUT'])
+def recipe_details_update():
+    # Connect to db
+    conn = db_connection()
+
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Decode token to get user details
+    user_details = decode_token(conn, token)
+    user_id = user_details["user_id"]
+
+    # Get user input
+    req = request.get_json()
+
+    # Get recipe id
+    # If recipe id == -1, assign new recipe id
+    # if recipe id != -1, update the recipe
+        # delete existing data first 
+    
+    # Update data in "Recipe"
+
+    # Update data in "Ingredient in Recipe"
+
+    # Update data in "Tag in Recipe"
+
+    # Update data in "Steps"
+
+    # if contributor has public_state = public it should go into "Public Recipes"
+    # if contributor has public_state = private it should go into "Draft Recipes"
+    # If update request is made my ruser, it should go into personal recipes with new recipe id
+
+
+    return f'done'
+
+@app.route('/dash/my_recipes', methods = ['GET'])
+def dash_my_recipes():
+    # Connect to db
+    conn = db_connection()
+    c = conn.cursor()
+
+    # Get user input
+    req = request.get_json()
+    token = req['token']
+    # token = request.args.get('query')
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Gey user_id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+
+    # Get all Personal Recipes. For contributor this includes their drafts
+    recipes = []
+    if user["is_contributor"]:  # Contributor
+        c.execute("SELECT recipe_id FROM Deaft_Recipes WHERE contributor_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id))
+
+    c.execute("SELECT recipe_id FROM Personal_Recipes WHERE ruser_id = ?", [user_id])
+    recipe_ids = c.fetchall()
+    for i in recipe_ids:
+        r_id = i
+        recipes.append(get_recipe_details(conn, r_id))
+
+    conn.close()
+
+    ret = {"recipes" : recipes}
+
+    return ret
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

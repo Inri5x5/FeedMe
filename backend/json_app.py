@@ -7,7 +7,7 @@ from json import dumps
 import sqlite3
 import os.path
 
-db_path = os.path.join("./data/", "nepka.db")
+db_path = os.path.join("./database/", "nepka.db")
 regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$'
 
 def defaultHandler(err):

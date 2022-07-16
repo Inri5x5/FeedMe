@@ -181,12 +181,11 @@ def get_recipe_steps(conn, recipe_id):
 
     return steps
 
-def get_recipe_details(db_path, recipe_id):
+def get_recipe_details(conn, recipe_id):
     # initialise return dict
     ret = {}
 
     # initialise db connection
-    conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
     # Get General Recipe details
@@ -201,12 +200,22 @@ def get_recipe_details(db_path, recipe_id):
     ret.update({'servings' : recipe[6]})
 
     # Get steps
-    c.execute("SELECT * FROM Steps WHERE recipe_id = ?", [recipe_id])
-    steps = c.fetchall()
-    ret_steps = []
-    for row in steps:
-        ret_steps.append({'step_number': row[1], 'description' : row[2]})
-    ret.update({'steps' : ret_steps})
+    qry = '''
+        SELECT * 
+        FROM Steps
+        WHERE recipe_id = %s
+        ORDER BY step_number ASC
+    '''
+    c.execute(qry, [recipe_id])
+    info = c.fetchall()
+    steps = []
+    for i in info:
+        recipe_id, step_id, description, image = i
+        steps.append({
+            "step_id": step_id,
+            "description": description
+        })
+    ret.update({'steps' : steps})
 
     # Get tags
     tags = []
@@ -267,8 +276,7 @@ def get_recipe_details(db_path, recipe_id):
 
     return ret
 
-def valid_recipe_id(db_path, recipe_id):
-    conn = sqlite3.connect(db_path)
+def valid_recipe_id(conn, recipe_id):
     c = conn.cursor()
     c.execute("SELECT * FROM Recipe WHERE recipe_id = ?", [recipe_id])
     recipe = c.fetchall()
@@ -276,3 +284,58 @@ def valid_recipe_id(db_path, recipe_id):
         return False
     
     return True
+
+def has_saved(conn, recipe_id, user_id):
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, user_id])
+    if c.fetchall() == None:
+        return False
+    
+    return True
+
+def has_rated(conn, recipe_id, user_id):
+    c = conn.cursor()
+    c.execute("SELECT * FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, user_id])
+    if c.fetchall() == None:
+        return False
+    
+    return True
+
+def update_recipe_details(conn, user_details, recipe_id, req):
+    c = conn.cursor()
+
+    # Update data in "Recipe"
+    c.execute("INSERT INTO Recipe VALUES (?, ?, ?, ?, ?, ?, ?)", (req['recipe_id'], req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings']))
+
+    # Update data in "Ingredient in Recipe"
+    ingredients = req['ingredients']
+    for i_dict in ingredients:
+        c.execute("INSERT INTO Ingredient_in_Recipe VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['amount']))
+
+    # Update data in "Tag in Recipe"
+    tags = req['tags']
+    for t_dict in tags:
+        c.execute("INSERT INTO Tag_in_Recipe VALUES (?, ?)", (recipe_id, t_dict['tag__id']))
+    
+    # Update "Skill Video in Recipe" **(Pending Confirmation)
+    videos = req['skill_videos']
+    for v in videos:
+         c.execute("INSERT INTO Skill_Video_in_Recipe VALUES (?, ?)", (recipe_id, v))
+    
+    # Update data in "Steps" **(Pending confirmation)
+    steps = req['steps']
+    for s_dict in steps:
+        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_number'], s_dict['description'], s_dict['image']))
+
+    # if contributor has public_state = public it should go into "Public Recipes"
+    # if contributor has public_state = private it should go into "Draft Recipes"
+    if user_details["is_contributor"]:
+        if str(req['public_state']) == "public":
+            c.execute("INSERT INTO Public_Recipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+        else:
+            c.execute("INSERT INTO Draft_Recipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+    # If update request is made my ruser, it should go into personal recipes with new recipe id - ** should there be a author field here?
+    else:
+        c.execute("INSERT INTO Personal_Recipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+    
+    return 
