@@ -86,10 +86,10 @@ def valid_email(email):
 def check_password(conn, email, password, is_contributor):
     cur = conn.cursor()
     if (is_contributor):
-        cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s')
+        cur.execute('SELECT * from Contributors WHERE email = %s AND password = %s', [email, password])
         info = cur.fetchone()
     else:
-        cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s')
+        cur.execute('SELECT * from Rusers WHERE email = %s AND password = %s', [email, password])
         info = cur.fetchone()
 
     cur.close()
