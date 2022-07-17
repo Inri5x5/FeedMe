@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './styles/FilterContainer.module.css'
 import TagLabel from './TagLabel'
 import SelectedTagLabel from './SelectedTagLabel'
+import { APICall } from '../helperFunc'
 
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -16,27 +17,49 @@ const FilterContainer = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const getAllTags = async() => {
+		let tag_cat_data = []; let tag_data =[]; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			tag_cat_data = await APICall(null, '/search/tag/categories', 'GET', headers);
+      for (let i = 0; i < tag_cat_data.tag_categories.length; i++) {
+        tag_data = await APICall(null, `/search/tag/tags?tag_category_id=${tag_cat_data.tag_categories[i].category_id}`, 'GET', headers);
+        console.log(tag_data)
+        tag_cat_data.tag_categories[i]['tags'] = tag_data['tags']
+        console.log(tag_cat_data.tag_categories)
+      }
+      setTagData(tag_cat_data.tag_categories)
+      
+		} catch (err) {
+			alert(err);
+		}
+  }
   
   React.useEffect(() => {
     //Fetch all tags
+    getAllTags();
     let temp = [
-      {"tag_category_id" : 1, "tag_category_name": "Cuisine", "tags": [{"tag_id" : 1, "tag_name" : "Australian"},{"tag_id" : 2, "tag_name" : "Asian"},{"tag_id" : 3, "tag_name" : "Europe"}]},
-      {"tag_category_id" : 2, "tag_category_name": "Meal type", "tags": [{"tag_id" : 4, "tag_name" : "Breakfast"},{"tag_id" : 5, "tag_name" : "Lunch"},{"tag_id" : 6, "tag_name" : "Dinner"}]},
-      {"tag_category_id" : 3, "tag_category_name": "Difficulty", "tags": [{"tag_id" : 7, "tag_name" : "Easy"},{"tag_id" : 8, "tag_name" : "Medium"},{"tag_id" : 9, "tag_name" : "Hard"}]}
+      {"category_id" : 1, "name": "Cuisine", "tags": [{"tag_id" : 1, "name" : "Australian"},{"tag_id" : 2, "name" : "Asian"},{"tag_id" : 3, "name" : "Europe"}]},
+      {"category_id" : 2, "name": "Meal type", "tags": [{"tag_id" : 4, "name" : "Breakfast"},{"tag_id" : 5, "name" : "Lunch"},{"tag_id" : 6, "name" : "Dinner"}]},
+      {"category_id" : 3, "name": "Difficulty", "tags": [{"tag_id" : 7, "name" : "Easy"},{"tag_id" : 8, "name" : "Medium"},{"tag_id" : 9, "name" : "Hard"}]}
     ]
-    setTagData(temp)
+    // setTagData(temp)
   }, [])
 
   const renderTags = () => {
     let content = [];
     for (let i = 0; i < tagData.length; i++) {
+      console.log(tagData[i].tags)
       let tagsContent = tagData[i].tags.map((object, index) => {
         const isSelected = checkIfSelected(object);
         return(<TagLabel object={object} isSelected={isSelected} clickFunction={isSelected ? removeTag : selectTag}></TagLabel>)
       })
       content.push(
         <div style={{marginTop:'10px'}}>
-          <div>{tagData[i].tag_category_name}</div>
+          <div>{tagData[i].name}</div>
           <div className={styles.tag_container}>{tagsContent}</div>
         </div>
       )
@@ -65,7 +88,7 @@ const FilterContainer = (props) => {
 		return content;
   }
   const renderAddTagButton = () => {
-    return (<TagLabel object={{"tag_id":-1, "tag_name":"+"}} clickFunction={handleOpen}></TagLabel>)
+    return (<TagLabel object={{"tag_id":-1, "name":"+"}} clickFunction={handleOpen}></TagLabel>)
   }
 
   return (

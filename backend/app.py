@@ -158,11 +158,10 @@ def ingredients():
 @app.route('/search/tag/categories', methods = ['GET'])
 def search_tag_categories():
     conn = db_connection()
-
     # Validate token
-    token = request.args.get('req')['token']
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
+    # token = request.args.get('req')['token']
+    # if not validate_token(conn, token):
+    #     raise AccessError("Invalid token")
 
     # Get tag categories
     tag_categories = get_tag_categories(conn)
@@ -176,13 +175,13 @@ def search_tag_tags():
     conn = db_connection()
 
     # Validate token
-    token = request.args.get('req')['token']
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
+    # token = request.args.get('req')['token']
+    # if not validate_token(conn, token):
+    #     raise AccessError("Invalid token")
 
     # Get params
-    req = request.get_json()
-    tag_category_id = req['tag_category_id']
+    # req = request.get_json()
+    tag_category_id = request.args.get('tag_category_id')
 
     # Get tags
     tags = get_tags(conn, tag_category_id)
@@ -596,9 +595,9 @@ def get_all_tags():
     conn = db_connection()
 
     # Validate token
-    token = request.args.get('req')['token']
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
+    # token = request.args.get('req')['token']
+    # if not validate_token(conn, token):
+    #     raise AccessError("Invalid token")
 
     # Get tags
     tags = get_tags_and_categories(conn)
