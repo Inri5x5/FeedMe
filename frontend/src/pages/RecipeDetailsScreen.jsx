@@ -17,7 +17,7 @@ import foodPic from '../assets/DummyPhoto.jpg';
 export default function RecipeDetailsScreen () {
   const token = localStorage.getItem('token');
   React.useEffect(() => { getDetails();}, [])
-  const id = 1;
+  const id = 0;
   const getDetails = async () => {
     try {
       const headers = {

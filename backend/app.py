@@ -87,10 +87,10 @@ def login():
             raise InputError("Incorrect password")
         
         # Create token 
-        token = generate_token(email, is_contributor)
+        token = generate_token(email)
 
         # Update tokens json file
-        add_token(token, user_id, is_contributor)
+        add_token(conn, token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -497,7 +497,7 @@ def rate():
 @app.route('/recipe_details/view', methods = ['GET'])
 def recipe_details_view():
     # Get usr input
-    recipe_id = request.args.get('query')
+    recipe_id = request.args.get('id')
 
     # Connect to db 
     conn = db_connection()
@@ -507,7 +507,7 @@ def recipe_details_view():
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id, user_details)
+    ret = get_recipe_details(conn, recipe_id, -1)
     
     conn.close()
 
