@@ -28,7 +28,7 @@ drop_tags_table_query = """
 
 create_tags_table_query = """
     CREATE TABLE tags (
-        id interger PRIMARY KEY NOT NULL,
+        id integer PRIMARY KEY NOT NULL,
         tag_category_id integer NOT NULL,
         name text,
         FOREIGN KEY(tag_category_id) REFERENCES tagCategories(id)

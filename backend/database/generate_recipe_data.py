@@ -5,44 +5,130 @@ conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
 
-# add a single recipe for backend testing
-insert_into_recipes_query = """
-INSERT INTO 
-    recipes (id,title,description,image,video,time_required,servings)
-VALUES
-    (0, "Superfood Salad", "Full of great veggies and high-fibre quinoa, this easy-to-make salad is nutritious, delicious and super-satisfying. Top with juicy pomegranate seeds for a great burst of flavour.", "https://img.jamieoliver.com/jamieoliver/recipe-database/oldImages/large/1460_1_1436891540.jpg", "", 40, 6);
-"""
+fp = open('./source_data/recipes.json', 'r')
+recipe_data = json.load(fp)
 
-cursor = cursor.execute(insert_into_recipes_query)
-conn.commit()
+#insert into Recipes
+delete_query = """DELETE FROM recipes WHERE 1"""
+cursor.execute(delete_query)
 
-insert_into_steps_query = """
-INSERT INTO 
-    steps (recipe_id, step_number,description,image)
-VALUES
-    (0, 1, "Preheat the oven to 200°C/400°F/gas 6.", ""),
-    (0, 2, "Scrub and chop the sweet potatoes into 2.5cm chunks. Place into a roasting tray with the chilli flakes, ground coriander and cinnamon, a drizzle of olive oil and a little sea salt and black pepper, then toss well.", ""),
-    (0, 3, "Spread out into an even layer and place in the hot oven for 15 to 20 minutes, or until golden and crisp.", ""),
-    (0, 4, "Meanwhile, cook the quinoa in boiling salted water according to the packet instructions.", ""),
-    (0, 5, "Once cooked, drain and rinse the quinoa under cold running water, then leave to cool along with the broccoli. Remove the sweet potato from the oven and leave it to cool, too.", ""),
-    (0, 6, "Slice the broccoli into small florets, then halve and finely slice the stalk. Place into a heatproof colander and rest it over the quinoa pan. Cover and steam for 3 minutes, or until just tender.", ""),
-    (0, 7, "Meanwhile, toast the nuts in a dry frying pan over a medium-high heat for 2 to 3 minutes, then transfer to a pestle and mortar and crush lightly.", ""),
-    (0, 8, "Halve the pomegranate and squeeze half the juice into a large bowl. Add 3 times as much extra virgin olive oil, the lime juice and balsamic vinegar. Whisk well and season to taste.", ""),
-    (0, 9, "Add the cooled broccoli and sprouts to the dressing, then snip in the cress. Roughly chop the coriander (stalks and all), finely slice the chilli and add to the bowl along with the quinoa and sweet potato.", ""),
-    (0, 10, "Toss well, spread out on a serving platter, then scoop out and dot over the avocado flesh.", ""),
-    (0, 11, "Bash the reserved pomegranate half with a wooden spoon so the seeds come tumbling out and scatter these over the platter along with the nuts, snip the cress on top, then serve with the feta crumbled over the top.", "");
-"""
+insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)"""
+for recipe in recipe_data:
+    cursor.execute('SELECT max(id) from recipes')
+    new_id = cursor.fetchone()
+    #print("THE ID IS HERE!!! " + new_id[0])
+    if new_id[0] is None:
+        new_id = 0
+    else:
+        new_id = new_id[0] + 1
+    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], "", recipe['time'], recipe['servings']))
+    conn.commit()
 
-cursor = cursor.execute(insert_into_steps_query)
-conn.commit()
+# insert into Steps
+# delete_query = """DELETE FROM steps WHERE 1"""
+# cursor.execute(delete_query)
+# insert_query = """INSERT INTO steps (recipe_id, step_number,description,image) VALUES (?, ?, ?, ?)"""
+# i = 0
+# for recipe in recipe_data:
+#     j = 0
+#     for step in recipe['steps']:
+#         cursor = cursor.execute(insert_query, (i, j, step, ""))
+#         conn.commit()
+#         j += 1
+#     i += 1
 
-insert_into_ingredientInRecipe_query = """
-INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description)
-VALUES
-    (0, 140, "200 g quinoa"),
-    (0, 442, "2 limes")
-"""
+# insert into IngredientInRecipe
+# insert_into_ingredientInRecipe_query = """
+# INSERT INTO 
+#     ingredientInRecipe (recipe_id, ingredient_id, description)
+# VALUES
+#     /*(0, 140, "200 g quinoa"),
+#     (0, 442, "2 limes"),*/
+#     (0, 817, "2 sweet potatoes (350g each)"),
+#     (0, 863, "1 pinch of dried chilli flakes"),
+#     (0, 868, "1 pinch of ground coriander"),
+#     (0, 771, "1 small pinch of ground cinnamon"),
+#     (0, 864, "olive oil"),
+#     (0, 798, "320 g broccoli"),
+#     (0, 664, "35 g mixed nuts such as walnuts, almonds, Brazils"),
+#     (0, 447, "pomegranate"),
+#     (0, 865, "extra virgin olive oil"),
+#     (0, 866, "1 splash of balsamic vinegar"),
+#     (0, 867, "40 g mixed sprouts"),
+#     (0, 541, "1 punnet of salad cress (use a mixture of varieties, if possible)"),
+#     (0, 517, "1 bunch of fresh coriander (30g)"),
+#     (0, 869, "1 fresh red chilli"),
+#     (0, 367, "1 ripe avocado"),
+#     (0, 159, "20 g feta cheese")
 
-cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-conn.commit()
+# """
+
+# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+# conn.commit()
+
+
+# insert into TagCategories
+# categories_data = [{"category_id": 0, "name": "Culture's Cuisine"}, {"category_id": 1, "name": "Difficulty"}, {"category_id": 2, "name": "Special Diet"}, {"category_id": 3, "name": "Meal Type"}]
+
+# insert_into_tagCategories_query = """
+# INSERT INTO 
+#     tagCategories (id, name)
+# VALUES
+#     (?, ?)
+# """
+# for category in categories_data:
+#     cursor = cursor.execute(insert_into_tagCategories_query, (category['category_id'], category['name']))
+#     conn.commit()
+
+# insert into Tags
+# tags_data = [
+#     {"id": 0, "category_id": 0, "name": "Chinese"},
+#     {"id": 1, "category_id": 0, "name": "Italian"},
+#     {"id": 2, "category_id": 0, "name": "Indian"},
+#     {"id": 3, "category_id": 0, "name": "Japanese"},
+#     {"id": 4, "category_id": 0, "name": "Korean"},
+#     {"id": 5, "category_id": 0, "name": "French"},
+#     {"id": 6, "category_id": 0, "name": "Greek"},
+#     {"id": 7, "category_id": 0, "name": "Mexican"},
+#     {"id": 8, "category_id": 1, "name": "Easy peasy"},
+#     {"id": 9, "category_id": 1, "name": "A bit tricky"},
+#     {"id": 10, "category_id": 1, "name": "Challenge me!"},
+#     {"id": 11, "category_id": 2, "name": "Vegetarian"},
+#     {"id": 12, "category_id": 2, "name": "Vegan"},
+#     {"id": 13, "category_id": 2, "name": "Gluten-free"},
+#     {"id": 14, "category_id": 2, "name": "Dairy-free"},
+#     {"id": 15, "category_id": 2, "name": "Nut-free"},
+#     {"id": 16, "category_id": 3, "name": "Breakfast"},
+#     {"id": 17, "category_id": 3, "name": "Lunch"},
+#     {"id": 18, "category_id": 3, "name": "Dinner"},
+#     {"id": 19, "category_id": 3, "name": "Entrée"},
+#     {"id": 20, "category_id": 3, "name": "Main"},
+#     {"id": 21, "category_id": 3, "name": "Dessert"},
+#     {"id": 22, "category_id": 3, "name": "Snack"}
+# ]
+
+# insert_into_tags_query = """
+# INSERT INTO 
+#     tags (id, tag_category_id, name)
+# VALUES
+#     (?, ?, ?)
+# """
+# for tag in tags_data:
+#     cursor = cursor.execute(insert_into_tags_query, (tag['id'], tag['category_id'], tag['name']))
+#     conn.commit()
+
+# insert into TagInRecipe
+# insert_into_tagInRecipe_query = """
+# INSERT INTO 
+#     tagInRecipe (recipe_id, tag_id)
+# VALUES
+#     (0, 13),
+#     (0, 11),
+#     (0, 9),
+#     (0, 20),
+#     (0, 17),
+#     (0, 18)
+# """
+
+# cursor = cursor.execute(insert_into_tagInRecipe_query)
+# conn.commit()
