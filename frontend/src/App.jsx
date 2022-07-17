@@ -9,6 +9,7 @@ import UserProfileScreen2 from './pages/UserProfileScreen2';
 import ContributorProfileScreen from './pages/ContributorProfileScreen';
 import TeachUsScreen from './pages/TeachUsScreen';
 import RecipeDetailsScreen from './pages/RecipeDetailsScreen';
+import ModifyRecipes from './pages/ModifyRecipes';
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/contributorProfile" element={<ContributorProfileScreen />} />
           <Route path="/teachUs" element={<TeachUsScreen />} />
           <Route path="/recipeDetails" element={<RecipeDetailsScreen />} />
+          <Route path="/recipe/add" element={<ModifyRecipes />} />
         </Routes>
       </BrowserRouter>
     </>

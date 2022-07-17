@@ -6,67 +6,75 @@ conn = sqlite3.connect("database.sqlite")
 cursor = conn.cursor()
 
 # insert into RecipeSaves
-# insert_into_recipeSaves_query = """
-# INSERT INTO 
-#     recipeSaves (ruser_id, contributor_id, recipe_id)
-# VALUES
-#     (0, null, 0),
-#     (0, null, 1),
-#     (0, null, 2),
-#     (0, null, 3),
-#     (0, null, 7),
-#     (0, null, 8),
-#     (0, null, 9),
-#     (null, 0, 0),
-#     (null, 0, 4),
-#     (null, 0, 5),
-#     (null, 0, 6)
-# """
+delete_query = """DELETE FROM RecipeSaves WHERE 1"""
+cursor.execute(delete_query)
+insert_into_recipeSaves_query = """
+INSERT INTO 
+    recipeSaves (ruser_id, contributor_id, recipe_id)
+VALUES
+    (0, null, 0),
+    (0, null, 1),
+    (0, null, 2),
+    (0, null, 3),
+    (0, null, 7),
+    (0, null, 8),
+    (0, null, 9),
+    (null, 0, 0),
+    (null, 0, 4),
+    (null, 0, 5),
+    (null, 0, 6)
+"""
 
-# cursor = cursor.execute(insert_into_recipeSaves_query)
-# conn.commit()
+cursor = cursor.execute(insert_into_recipeSaves_query)
+conn.commit()
 
 # insert into personalRecipes
-# insert_into_personalRecipes_query = """
-# INSERT INTO 
-#     personalRecipes (ruser_id, contributor_id, recipe_id)
-# VALUES
-#     (null, 0, 0),
-#     (null, 0, 1),
-#     (null, 0, 2),
-#     (null, 0, 3),
-#     (null, 0, 4),
-#     (null, 0, 5),
-#     (null, 0, 6),
-#     (null, 0, 7),
-#     (null, 0, 8),
-#     (null, 0, 9)
-# """
+delete_query = """DELETE FROM personalRecipes WHERE 1"""
+cursor.execute(delete_query)
+insert_into_personalRecipes_query = """
+INSERT INTO 
+    personalRecipes (ruser_id, contributor_id, recipe_id)
+VALUES
+    (null, 0, 0),
+    (null, 0, 1),
+    (null, 0, 2),
+    (null, 0, 3),
+    (null, 0, 4),
+    (null, 0, 5),
+    (null, 0, 6),
+    (null, 0, 7),
+    (null, 0, 8),
+    (null, 0, 9)
+"""
 
-# cursor = cursor.execute(insert_into_personalRecipes_query)
-# conn.commit()
+cursor = cursor.execute(insert_into_personalRecipes_query)
+conn.commit()
 
 # insert into publicRecipes
-# insert_into_personalRecipes_query = """
-# INSERT INTO 
-#     personalRecipes (recipe_id, contributor_id)
-# VALUES
-#     (0, 0),
-#     (1, 0),
-#     (2, 0),
-#     (3, 0),
-#     (4, 0),
-#     (5, 0),
-#     (6, 0),
-#     (7, 0),
-#     (8, 0),
-#     (9, 0)
-# """
+delete_query = """DELETE FROM PublicRecipes WHERE 1"""
+cursor.execute(delete_query)
+insert_into_PublicRecipes_query = """
+INSERT INTO 
+    PublicRecipes (recipe_id, contributor_id)
+VALUES
+    (0, 0),
+    (1, 0),
+    (2, 0),
+    (3, 0),
+    (4, 0),
+    (5, 0),
+    (6, 0),
+    (7, 0),
+    (8, 0),
+    (9, 0)
+"""
 
-# cursor = cursor.execute(insert_into_personalRecipes_query)
-# conn.commit()
+cursor = cursor.execute(insert_into_PublicRecipes_query)
+conn.commit()
 
 # insert into recipeRatings
+delete_query = """DELETE FROM recipeRatings WHERE 1"""
+cursor.execute(delete_query)
 insert_into_recipeRatings_query = """
 INSERT INTO 
     recipeRatings (ruser_id, contributor_id, recipe_id, rating)

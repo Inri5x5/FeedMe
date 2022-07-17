@@ -87,10 +87,10 @@ def login():
             raise InputError("Incorrect password")
         
         # Create token 
-        token = generate_token(email, is_contributor)
+        token = generate_token(email)
 
         # Update tokens json file
-        add_token(token, user_id, is_contributor)
+        add_token(conn, token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -102,7 +102,7 @@ def logout():
     conn = db_connection()
 
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
 
     # Validate token
     if not validate_token(conn, token):
@@ -162,6 +162,9 @@ def search_tag_categories():
     # token = request.args.get('req')['token']
     # if not validate_token(conn, token):
     #     raise AccessError("Invalid token")
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
     # Get tag categories
     tag_categories = get_tag_categories(conn)
@@ -178,6 +181,9 @@ def search_tag_tags():
     # token = request.args.get('req')['token']
     # if not validate_token(conn, token):
     #     raise AccessError("Invalid token")
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
     # Get params
     # req = request.get_json()
@@ -197,7 +203,7 @@ def search_recipes():
 
     # Get params
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     ingredients_req = req['ingredients_id']
 
     # Validate token
@@ -232,7 +238,7 @@ def dash_statistics():
 
     # Validate token
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -304,7 +310,7 @@ def dash_saved():
 
     # Validate token
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -334,7 +340,7 @@ def dash_rated():
 
     # Validate token
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -385,7 +391,7 @@ def recipe_details_delete():
 
     # Get params
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     recipe_id = req['recipe_id']
 
     # Error if blank recipe id
@@ -411,7 +417,7 @@ def save():
     # Get user input
     req = request.get_json()
     recipe_id = req['recipe_id']
-    token = req['token']
+    token = request.headers.get('token')
 
     # Connect to db 
     conn = db_connection()
@@ -450,7 +456,7 @@ def rate():
     # Get user input
     req = request.get_json()
     recipe_id = req['recipe_id']
-    token = req['token']
+    token = request.headers.get('token')
     rating = req['rating']
 
     # Connect to db 
@@ -496,7 +502,7 @@ def rate():
 @app.route('/recipe_details/view', methods = ['GET'])
 def recipe_details_view():
     # Get usr input
-    recipe_id = request.args.get('query')
+    recipe_id = request.args.get('id')
 
     # Connect to db 
     conn = db_connection()
@@ -506,7 +512,7 @@ def recipe_details_view():
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id, user_details)
+    ret = get_recipe_details(conn, recipe_id, -1)
     
     conn.close()
 
@@ -520,7 +526,7 @@ def recipe_details_update():
 
     # Validate token
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -557,7 +563,7 @@ def dash_my_recipes():
 
     # Get user input
     req = request.get_json()
-    token = req['token']
+    token = request.headers.get('token')
     # token = request.args.get('query')
 
     # Validate token

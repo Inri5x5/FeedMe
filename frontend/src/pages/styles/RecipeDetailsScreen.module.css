@@ -1,0 +1,286 @@
+.screen_container {
+    display: flex;
+    flex-direction: column;
+    /* background: #D0E4F5 url("../../assets/background.jpg") repeat-x scroll; */
+    /* background: -webkit-linear-gradient(top, #CE5937 0%, #FFFFFF 100%);
+    background: linear-gradient(to bottom, #CE5937 0%, #FFFFFF 100%); */
+}
+
+.screen_container h2 {
+    /* display: inline-block; */
+    /* margin-left: 20px; */
+    z-index: 1;
+    color: #293462;
+    font-family: 'Righteous', serif;
+    font-size: 2em; 
+    /* text-shadow: .03em .03em 0 hsla(230,40%,50%,1); */
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.info_container {
+    text-align: center;
+    font-size: 1.5em;
+    background-color: #FDB750;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 6px;
+}
+
+.duration_text {
+    vertical-align: 9px;
+}
+
+.duration {
+    height: 1.5em;
+    width: 1.3em;
+    vertical-align: -1px;
+}
+
+.serving {
+    height: 1.5em;
+    width: 1.5em;
+}
+
+
+.foodpic_container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+}
+
+.foodPic {
+    border-radius: 8px;
+    border: 2px solid black;
+}
+
+.description_container {
+    /* display: flex; */
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-top: 25px; */
+    text-align: center;
+}
+
+.description {
+    font-size: 1.5em;
+}
+
+.main_conatiner{
+    display: flex;
+    /* justify-content: space-between; */
+}
+
+.recipe_info{
+    align-self: stretch;
+    margin-inline-start: 35px;
+}
+
+.recipe_title{
+    font-size: 1.5em !important;
+}
+
+.hat{
+    height: 2em;
+    width: 2em;
+    animation-name: hat;
+    animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-duration: 4s;
+}
+
+@keyframes hat {
+    50% {
+        transform: rotate(30deg);
+    }
+    
+    100% {
+        transform: rotate(-30deg);
+    }
+}
+
+.recipe_by{
+    font-size: 1.3em;
+    font-weight: 600;
+    vertical-align: 8px;
+}
+
+.ingredients_container{
+    flex-grow: 1;
+    /* display: flex; */
+    flex-direction: column;
+}
+
+.ingredients_title {
+    margin-left: 550px;
+    margin-right: auto;
+}
+
+.ingredients_box {
+    /* display: flex; */
+    /* border: 1px solid #6B6B6B; */
+    margin-left: 550px;
+    width: 500px;
+    flex-wrap: wrap;
+    overflow: auto;
+    align-self: center;
+    border-radius: 40px;
+    -webkit-box-shadow: 5px 7px 24px 1px #6B6B6B;
+    box-shadow: 5px 7px 24px 1px #6B6B6B;
+}
+
+.ingredients_list {
+    list-style: none;
+    list-style-position: inside;
+    font-size: 1.3em;
+    text-align: left;
+    align-self: left;
+}
+
+.ingredients_list li::before {
+    content: "•"; color: orange;
+    display: inline-block; 
+    width: 1em;
+    margin-left: -1em;
+    font-size: 1.3em;
+}
+
+.save_button {
+    font-size: 18px;
+    line-height: 18px; 
+    padding: 14px; 
+    border-radius: 49px; 
+    font-family: 'Righteous', serif;; 
+    font-weight: normal; 
+    text-decoration: none; 
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none; 
+    background-color: #F9D371;
+    border-color: #F9D371;
+    color: #F47340;
+    margin-left: auto;
+    margin-right: auto;
+}
+.save_button:hover {
+    background: #F47340;
+    color: #F9D371;
+    cursor: pointer;
+}
+
+.saveIcon {
+    height: 20px;
+    width: 20px;
+    vertical-align: -5px;
+}
+
+.filterTagContainer {
+    max-width: 70vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+    align-content:center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.instruction{
+    margin-left: 35px;
+}
+
+ol.custom_list__numbered {
+    list-style-type: none;
+    margin: 0;
+    margin-left: 6em;
+    padding: 0;
+}
+  
+ol.custom_list__numbered li {
+    counter-increment: step-counter;
+    /* padding-left: 0; */
+    /* text-indent: 1em; */
+    font-size: 1.5em;
+}
+  
+ol.custom_list__numbered li:nth-child(n+10) {
+    text-indent: 0;
+}
+  
+ol.custom_list__numbered li:not(:last-child) {
+    margin-bottom: 1.5em;
+}
+  
+ol.custom_list__numbered li:before {
+    content: counter(step-counter);
+    color: #2b3738;
+      font-family: 'Playfair Display', serif;
+      font-size: 2em;
+      line-height: 1em;
+      font-weight: 900;
+    font-style: italic;
+    margin-right: 1em;
+    /* margin-left: -2em; */
+}
+  
+ul.custom_list__bulleted {
+    list-style: none;
+    margin-left: 1em;
+}
+  
+ul.custom_list__bulleted li {
+    padding-left: 2em;
+    text-indent: -2em;
+}
+  
+ul.custom_list__bulleted li:before {
+    content: "●"; /* Copy-paste unicode characters as symbols; \0000a0 is the unicode entity for a space. A very handy reference is https://unicode-table.com/en/ */
+      font-size: 1.2em;
+      line-height: 1em;
+    color: #2b3738;
+    padding-right: 1em;
+      position: relative;
+      top: -2px;
+}
+  
+ul.custom_list__bulleted li:not(:last-child) {
+    margin-bottom: 1em;
+}
+
+ul.custom_list__bulleted ul {
+    margin-top: .5em;
+}
+  
+ul.custom_list__bulleted ul li:before {
+    content: "○";
+}
+
+.rateContainer{
+    text-align: right;
+    margin-right: 15px;
+}
+
+.rateContainer h2 {
+    margin-bottom: 0;
+    font-size: 2.5em !important;
+    animation: waviy 1s infinite;
+    animation-delay: calc(.1s * var(--i));
+}
+
+@keyframes waviy {
+    0%,40%,100% {
+      transform: translateY(0)
+    }
+    20% {
+      transform: translateY(-20px)
+    }
+}
+
+.rateContainer button {
+    margin-bottom: 20px;
+}
