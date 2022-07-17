@@ -5,24 +5,26 @@ conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
 
-fp = open('./source_data/recipes.json', 'r')
-recipe_data = json.load(fp)
+#fp = open('./source_data/recipes.json', 'r')
+#recipe_data = json.load(fp)
+
+cursor.close()
 
 #insert into Recipes
-delete_query = """DELETE FROM recipes WHERE 1"""
-cursor.execute(delete_query)
+# delete_query = """DELETE FROM recipes WHERE 1"""
+# cursor.execute(delete_query)
 
-insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)"""
-for recipe in recipe_data:
-    cursor.execute('SELECT max(id) from recipes')
-    new_id = cursor.fetchone()
-    #print("THE ID IS HERE!!! " + new_id[0])
-    if new_id[0] is None:
-        new_id = 0
-    else:
-        new_id = new_id[0] + 1
-    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], "", recipe['time'], recipe['servings']))
-    conn.commit()
+# insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)"""
+# for recipe in recipe_data:
+#     cursor.execute('SELECT max(id) from recipes')
+#     new_id = cursor.fetchone()
+#     #print("THE ID IS HERE!!! " + new_id[0])
+#     if new_id[0] is None:
+#         new_id = 0
+#     else:
+#         new_id = new_id[0] + 1
+#     cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], "", recipe['time'], recipe['servings']))
+#     conn.commit()
 
 # insert into Steps
 # delete_query = """DELETE FROM steps WHERE 1"""
@@ -36,36 +38,6 @@ for recipe in recipe_data:
 #         conn.commit()
 #         j += 1
 #     i += 1
-
-# insert into IngredientInRecipe
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     /*(0, 140, "200 g quinoa"),
-#     (0, 442, "2 limes"),*/
-#     (0, 817, "2 sweet potatoes (350g each)"),
-#     (0, 863, "1 pinch of dried chilli flakes"),
-#     (0, 868, "1 pinch of ground coriander"),
-#     (0, 771, "1 small pinch of ground cinnamon"),
-#     (0, 864, "olive oil"),
-#     (0, 798, "320 g broccoli"),
-#     (0, 664, "35 g mixed nuts such as walnuts, almonds, Brazils"),
-#     (0, 447, "pomegranate"),
-#     (0, 865, "extra virgin olive oil"),
-#     (0, 866, "1 splash of balsamic vinegar"),
-#     (0, 867, "40 g mixed sprouts"),
-#     (0, 541, "1 punnet of salad cress (use a mixture of varieties, if possible)"),
-#     (0, 517, "1 bunch of fresh coriander (30g)"),
-#     (0, 869, "1 fresh red chilli"),
-#     (0, 367, "1 ripe avocado"),
-#     (0, 159, "20 g feta cheese")
-
-# """
-
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
-
 
 # insert into TagCategories
 # categories_data = [{"category_id": 0, "name": "Culture's Cuisine"}, {"category_id": 1, "name": "Difficulty"}, {"category_id": 2, "name": "Special Diet"}, {"category_id": 3, "name": "Meal Type"}]
@@ -116,6 +88,76 @@ for recipe in recipe_data:
 # for tag in tags_data:
 #     cursor = cursor.execute(insert_into_tags_query, (tag['id'], tag['category_id'], tag['name']))
 #     conn.commit()
+
+# SUPERFOOD SALAD
+# insert into IngredientInRecipe
+# insert_into_ingredientInRecipe_query = """
+# INSERT INTO 
+#     ingredientInRecipe (recipe_id, ingredient_id, description)
+# VALUES
+#     /*(0, 140, "200 g quinoa"),
+#     (0, 442, "2 limes"),*/
+#     (0, 817, "2 sweet potatoes (350g each)"),
+#     (0, 863, "1 pinch of dried chilli flakes"),
+#     (0, 868, "1 pinch of ground coriander"),
+#     (0, 771, "1 small pinch of ground cinnamon"),
+#     (0, 864, "olive oil"),
+#     (0, 798, "320 g broccoli"),
+#     (0, 664, "35 g mixed nuts such as walnuts, almonds, Brazils"),
+#     (0, 447, "pomegranate"),
+#     (0, 865, "extra virgin olive oil"),
+#     (0, 866, "1 splash of balsamic vinegar"),
+#     (0, 867, "40 g mixed sprouts"),
+#     (0, 541, "1 punnet of salad cress (use a mixture of varieties, if possible)"),
+#     (0, 517, "1 bunch of fresh coriander (30g)"),
+#     (0, 869, "1 fresh red chilli"),
+#     (0, 367, "1 ripe avocado"),
+#     (0, 159, "20 g feta cheese")
+
+# """
+
+# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+# conn.commit()
+
+
+
+# insert into TagInRecipe
+# insert_into_tagInRecipe_query = """
+# INSERT INTO 
+#     tagInRecipe (recipe_id, tag_id)
+# VALUES
+#     (0, 13),
+#     (0, 11),
+#     (0, 9),
+#     (0, 20),
+#     (0, 17),
+#     (0, 18)
+# """
+
+# cursor = cursor.execute(insert_into_tagInRecipe_query)
+# conn.commit()
+
+
+# PEA SOUP
+# insert into IngredientInRecipe
+# insert_into_ingredientInRecipe_query = """
+# INSERT INTO 
+#     ingredientInRecipe (recipe_id, ingredient_id, description)
+# VALUES
+#     (1, 870, "1 bunch of spring onions"),
+#     (1, 565, "300 g frozen peas"),
+#     (1, 828, "300 g frozen chopped spinach"),
+#     (1, 871, "100 g higher-welfare smoked ham"),
+#     (1, 525, "\u00bd a bunch of fresh mint (15g)"),
+#     (1, 140, "300 g dried wholewheat fusilli"),
+#     (1, 140, "50 g feta cheese")
+
+# """
+
+# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+# conn.commit()
+
+
 
 # insert into TagInRecipe
 # insert_into_tagInRecipe_query = """
