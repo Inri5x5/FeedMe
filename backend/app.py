@@ -158,13 +158,6 @@ def ingredients():
 @app.route('/search/tag/categories', methods = ['GET'])
 def search_tag_categories():
     conn = db_connection()
-    # Validate token
-    # token = request.args.get('req')['token']
-    # if not validate_token(conn, token):
-    #     raise AccessError("Invalid token")
-    token = request.headers.get('token')
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
 
     # Get tag categories
     tag_categories = get_tag_categories(conn)
@@ -176,14 +169,6 @@ def search_tag_categories():
 @app.route('/search/tag/tags', methods = ['GET'])
 def search_tag_tags():
     conn = db_connection()
-
-    # Validate token
-    # token = request.args.get('req')['token']
-    # if not validate_token(conn, token):
-    #     raise AccessError("Invalid token")
-    token = request.headers.get('token')
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
 
     # Get params
     # req = request.get_json()
@@ -203,12 +188,7 @@ def search_recipes():
 
     # Get params
     req = request.get_json()
-    token = request.headers.get('token')
     ingredients_req = req['ingredients_id']
-
-    # Validate token
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
 
     cur.execute('''
         SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
@@ -222,10 +202,11 @@ def search_recipes():
     recipes = []
     for i in info:
         recipe_id, ingredients = i
-        ingredients.split(",")
-
-        if set(ingredients) <= set(ingredients_req) or ingredients_req is None:
-            recipe_details = get_recipe_details(conn, recipe_id)
+        ingredients_split = ingredients.split(',')
+        ingredients_split_int = [int(i) for i in ingredients_split]    
+       
+        if set(ingredients_split_int) >= set(ingredients_req) or ingredients_req is None:
+            recipe_details = get_recipe_details(conn, recipe_id, -1)
             recipes.append(recipe_details)
     
     return {

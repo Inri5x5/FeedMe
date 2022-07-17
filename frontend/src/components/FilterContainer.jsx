@@ -27,9 +27,7 @@ const FilterContainer = (props) => {
 			tag_cat_data = await APICall(null, '/search/tag/categories', 'GET', headers);
       for (let i = 0; i < tag_cat_data.tag_categories.length; i++) {
         tag_data = await APICall(null, `/search/tag/tags?tag_category_id=${tag_cat_data.tag_categories[i].category_id}`, 'GET', headers);
-        console.log(tag_data)
         tag_cat_data.tag_categories[i]['tags'] = tag_data['tags']
-        console.log(tag_cat_data.tag_categories)
       }
       setTagData(tag_cat_data.tag_categories)
       
@@ -52,7 +50,6 @@ const FilterContainer = (props) => {
   const renderTags = () => {
     let content = [];
     for (let i = 0; i < tagData.length; i++) {
-      console.log(tagData[i].tags)
       let tagsContent = tagData[i].tags.map((object, index) => {
         const isSelected = checkIfSelected(object);
         return(<TagLabel object={object} isSelected={isSelected} clickFunction={isSelected ? removeTag : selectTag}></TagLabel>)

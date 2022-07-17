@@ -257,8 +257,8 @@ def get_recipe_details(conn, recipe_id, user_details):
         ret.update({'author' : author_name, 'public_state' : 'public'})
     else:
         c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
-        author_id = info[0]
-        c.execute("SELECT username FROM RUSers WHERE id = ?", [author_id])
+        author_id = c.fetchone()[0]
+        c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
         ret.update({'author' : author_name, 'public_state' : 'private'})
 
