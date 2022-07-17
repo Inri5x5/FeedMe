@@ -416,7 +416,7 @@ def save():
     id = user_details["user_id"]
     
     c = conn.cursor()
-    if has_saved(conn, recipe_id, id) == False:
+    if has_saved(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
             c.execute("INSERT INTO recipeSaves(rusr_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
         else:
@@ -430,7 +430,7 @@ def save():
     conn.commit()
     conn.close()
     
-    return
+    return {}
 
 @app.route('/save_and_rate/rate', methods = ['POST'])
 def rate():
