@@ -77,6 +77,32 @@ def delete_token(conn, token):
 
 ########################### AUTH ##########################
 
+def email_already_exists(conn, email):
+    cur = conn.cursor()
+    cur.execute('SELECT * from Rusers WHERE email = ?', [email])
+    info = cur.fetchone()
+
+    cur.close()
+
+    if not info: 
+        return False
+    else:
+        return True
+
+def get_new_user_id(conn):
+    cur = conn.cursor()
+    cur.execute('SELECT max(id) from Rusers')
+    max = cur.fetchone()[0]
+
+    cur.close()
+    return max + 1
+
+def add_new_user(conn, ruser_id, email, password, username):
+    cur = conn.cursor()
+    insert_query = """INSERT INTO rusers (id, email, username, password, profile_picture) VALUES (?, ?, ?, ?, ?)"""
+    cur = cur.execute(insert_query, (ruser_id, email, username, password, ""))
+    conn.commit()
+
 def valid_email(email):
     if not re.search(regex, email):
         return False
