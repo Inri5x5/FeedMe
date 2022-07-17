@@ -87,10 +87,10 @@ def login():
             raise InputError("Incorrect password")
         
         # Create token 
-        token = generate_token(email)
+        token = generate_token(email, is_contributor)
 
         # Update tokens json file
-        add_token(conn, token, user_id, is_contributor)
+        add_token(token, user_id, is_contributor)
 
         return {
             "status": 200,
@@ -100,6 +100,7 @@ def login():
 @app.route('/logout', methods = ['POST'])
 def logout():
     conn = db_connection()
+
     req = request.get_json()
     token = req['token']
 
@@ -152,445 +153,445 @@ def ingredients():
     
     return ret
 
-# ########################## SPRINT 2 ##########################
+########################## SPRINT 2 ##########################
 
-# @app.route('/search/tag/categories', methods = ['GET'])
-# def search_tag_categories():
-#     conn = db_connection()
+@app.route('/search/tag/categories', methods = ['GET'])
+def search_tag_categories():
+    conn = db_connection()
 
-#     # Validate token
-#     token = request.args.get('req')['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Get tag categories
-#     tag_categories = get_tag_categories(conn)
+    # Get tag categories
+    tag_categories = get_tag_categories(conn)
 
-#     return {
-#         "tag_categories": tag_categories
-#     }
+    return {
+        "tag_categories": tag_categories
+    }
 
-# @app.route('/search/tag/tags', methods = ['GET'])
-# def search_tag_tags():
-#     conn = db_connection()
+@app.route('/search/tag/tags', methods = ['GET'])
+def search_tag_tags():
+    conn = db_connection()
 
-#     # Validate token
-#     token = request.args.get('req')['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    tag_category_id = req['tag_category_id']
 
-#     # Get params
-#     req = request.get_json()
-#     tag_category_id = req['tag_category_id']
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Get tags
-#     tags = get_tags(conn, tag_category_id)
+    # Get tags
+    tags = get_tags(conn, tag_category_id)
 
-#     return {
-#         "tags": tags
-#     }
+    return {
+        "tags": tags
+    }
 
-# @app.route('/search/recipes', methods = ['POST'])
-# def search_recipes():
-#     conn = db_connection()
-#     cur = conn.cursor()
+@app.route('/search/recipes', methods = ['POST'])
+def search_recipes():
+    conn = db_connection()
+    cur = conn.cursor()
 
-#     # Get params
-#     req = request.get_json()
-#     token = req['token']
-#     ingredients_req = req['ingredients_id']
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    ingredients_req = req['ingredients_id']
 
-#     # Validate token
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     cur.execute('''
-#         SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id)
-#         FROM    Recipes r
-#                 JOIN Ingredient_in_Recipe ir on ir.recipe_id = r.recipe_id
-#         GROUP BY r.recipe_id
-#     ''')
-#     info = cur.fetchall()
-#     cur.close()
+    cur.execute('''
+        SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id)
+        FROM    Recipes r
+                JOIN Ingredient_in_Recipe ir on ir.recipe_id = r.recipe_id
+        GROUP BY r.recipe_id
+    ''')
+    info = cur.fetchall()
+    cur.close()
 
-#     recipes = []
-#     for i in info:
-#         recipe_id, ingredients = i
-#         ingredients.split(",")
+    recipes = []
+    for i in info:
+        recipe_id, ingredients = i
+        ingredients.split(",")
 
-#         if set(ingredients) <= set(ingredients_req) or ingredients_req is None:
-#             recipe_details = get_recipe_details(conn, recipe_id)
-#             recipes.append(recipe_details)
+        if set(ingredients) <= set(ingredients_req) or ingredients_req is None:
+            recipe_details = get_recipe_details(conn, recipe_id)
+            recipes.append(recipe_details)
     
-#     return {
-#         "recipes": recipes
-#     }
+    return {
+        "recipes": recipes
+    }
 
-# @app.route('/dash/statistics', methods = ['GET'])
-# def dash_statistics():
-#     conn = db_connection()
+@app.route('/dash/statistics', methods = ['GET'])
+def dash_statistics():
+    conn = db_connection()
 
-#     # Validate token
-#     req = request.get_json()
-#     token = req['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Check if user is a contributor
-#     user_details = decode_token(conn, token)
-#     if user_details["is_contributor"] is False:
-#         raise AccessError("User is not a Contributor")
+    # Check if user is a contributor
+    user_details = decode_token(conn, token)
+    if user_details["is_contributor"] is False:
+        raise AccessError("User is not a Contributor")
 
-#     # Get contributor id
-#     contributor_id = user_details["user_id"]
+    # Get contributor id
+    contributor_id = user_details["user_id"]
 
-#     cur = conn.cursor()
-#     qry = '''
-#         SELECT r.recipe_id, 
-#             SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
-#             SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
-#             SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
-#             SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
-#             SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
-#         FROM recipes r
-#             JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
-#             JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
-#         WHERE pr.author_id = %s
-#         GROUP BY r.recipe_id
-#     '''
-#     cur.execute(qry, [contributor_id])
-#     info = cur.fetchall()
-#     statistics = [] 
+    cur = conn.cursor()
+    qry = '''
+        SELECT r.recipe_id, 
+            SUM(CASE WHEN rr.rating = '1' THEN 1 ELSE 0 END) AS one_rating,
+            SUM(CASE WHEN rr.rating = '2' THEN 1 ELSE 0 END) AS two_rating,
+            SUM(CASE WHEN rr.rating = '3' THEN 1 ELSE 0 END) AS three_rating,
+            SUM(CASE WHEN rr.rating = '4' THEN 1 ELSE 0 END) AS four_rating,
+            SUM(CASE WHEN rr.rating = '5' THEN 1 ELSE 0 END) AS five_rating,
+        FROM recipes r
+            JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
+            JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
+        WHERE pr.author_id = %s
+        GROUP BY r.recipe_id
+    '''
+    cur.execute(qry, [contributor_id])
+    info = cur.fetchall()
+    statistics = [] 
 
-#     for i in info:
-#         # Recipe id and number of ratings
-#         recipe_id, one_rating, two_rating, three_rating, four_rating, five_rating = i
+    for i in info:
+        # Recipe id and number of ratings
+        recipe_id, one_rating, two_rating, three_rating, four_rating, five_rating = i
 
-#         # Average rating = sum of ratings/total number of ratings
-#         avg_rating = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)/(one_rating + two_rating + three_rating + four_rating + five_rating)
+        # Average rating = sum of ratings/total number of ratings
+        avg_rating = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)/(one_rating + two_rating + three_rating + four_rating + five_rating)
 
-#         # Number of recipe saves
-#         cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [recipe_id])
-#         info = cur.fetchone()
-#         if not info:
-#             num_saves = 0
-#         else:
-#             num_saves = info
+        # Number of recipe saves
+        cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [recipe_id])
+        info = cur.fetchone()
+        if not info:
+            num_saves = 0
+        else:
+            num_saves = info
 
-#         recipe_stats = {
-#             "recipe_id": recipe_id,
-#             "stats": {
-#                 "one star": one_rating,
-#                 "two star": two_rating,
-#                 "three star": three_rating,
-#                 "four star": four_rating,
-#                 "five star": five_rating,
-#                 "avg rating": avg_rating,
-#                 "num saves": num_saves
-#             }
-#         }
+        recipe_stats = {
+            "recipe_id": recipe_id,
+            "stats": {
+                "one star": one_rating,
+                "two star": two_rating,
+                "three star": three_rating,
+                "four star": four_rating,
+                "five star": five_rating,
+                "avg rating": avg_rating,
+                "num saves": num_saves
+            }
+        }
 
-#         statistics.append(recipe_stats)
+        statistics.append(recipe_stats)
 
-#     cur.close()
+    cur.close()
 
-#     return {
-#         "statistics": statistics
-#     }
+    return {
+        "statistics": statistics
+    }
 
-# @app.route('/dash/saved', methods = ['GET'])
-# def dash_saved():
-#     conn = db_connection()
+@app.route('/dash/saved', methods = ['GET'])
+def dash_saved():
+    conn = db_connection()
 
-#     # Validate token
-#     req = request.get_json()
-#     token = req['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Decode token to get user details
-#     user = decode_token(conn, token)
+    # Decode token to get user details
+    user = decode_token(conn, token)
 
-#     cur = conn.cursor()
-#     if user["is_contributor"]:  # Contributor
-#         cur.execute('SELECT recipe_id FROM Recipe_Save WHERE contributor_id = %s', [user["user_id"]])
-#     else: # RUser
-#         cur.execute('SELECT recipe_id FROM Recipe_Save WHERE ruser_id = %s', [user["user_id"]])
-#     info = cur.fetchall()
-#     cur.close()
+    cur = conn.cursor()
+    if user["is_contributor"]:  # Contributor
+        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE contributor_id = %s', [user["user_id"]])
+    else: # RUser
+        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE ruser_id = %s', [user["user_id"]])
+    info = cur.fetchall()
+    cur.close()
 
-#     recipes = []
-#     for i in info:
-#         recipe_details = get_recipe_details(conn, i)
-#         recipes.append(recipe_details)
+    recipes = []
+    for i in info:
+        recipe_details = get_recipe_details(conn, i)
+        recipes.append(recipe_details)
     
-#     return {
-#         "recipes": recipes
-#     }
+    return {
+        "recipes": recipes
+    }
 
-# @app.route('/dash/rated', methods = ['GET'])
-# def dash_rated():
-#     conn = db_connection()
+@app.route('/dash/rated', methods = ['GET'])
+def dash_rated():
+    conn = db_connection()
 
-#     # Validate token
-#     req = request.get_json()
-#     token = req['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Decode token to get user details
-#     user = decode_token(conn, token)
+    # Decode token to get user details
+    user = decode_token(conn, token)
 
-#     cur = conn.cursor()
-#     if user["is_contributor"]:  # Contributor
-#         cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-#             WHERE contributor_id = %s''', [user["user_id"]])
-#     else: # RUser
-#         cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-#             WHERE ruser_id = %s''', [user["user_id"]])
-#     info = cur.fetchall()
-#     cur.close()
+    cur = conn.cursor()
+    if user["is_contributor"]:  # Contributor
+        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
+            WHERE contributor_id = %s''', [user["user_id"]])
+    else: # RUser
+        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
+            WHERE ruser_id = %s''', [user["user_id"]])
+    info = cur.fetchall()
+    cur.close()
 
-#     # Create recipes list
-#     one_star_recipes = []
-#     two_star_recipes = []
-#     three_star_recipes = []
-#     four_star_recipes = []
-#     five_star_recipes = []
-#     for i in info:
-#         recipe_id, rating = i
-#         if rating == 1:
-#             one_star_recipes.append(get_recipe_details(conn, recipe_id))
-#         elif rating == 2:
-#             two_star_recipes.append(get_recipe_details(conn, recipe_id))
-#         elif rating == 3:
-#             three_star_recipes.append(get_recipe_details(conn, recipe_id))
-#         elif rating == 4:
-#             four_star_recipes.append(get_recipe_details(conn, recipe_id))
-#         else: # rating == 5
-#             five_star_recipes.append(get_recipe_details(conn, recipe_id))
+    # Create recipes list
+    one_star_recipes = []
+    two_star_recipes = []
+    three_star_recipes = []
+    four_star_recipes = []
+    five_star_recipes = []
+    for i in info:
+        recipe_id, rating = i
+        if rating == 1:
+            one_star_recipes.append(get_recipe_details(conn, recipe_id))
+        elif rating == 2:
+            two_star_recipes.append(get_recipe_details(conn, recipe_id))
+        elif rating == 3:
+            three_star_recipes.append(get_recipe_details(conn, recipe_id))
+        elif rating == 4:
+            four_star_recipes.append(get_recipe_details(conn, recipe_id))
+        else: # rating == 5
+            five_star_recipes.append(get_recipe_details(conn, recipe_id))
 
-#     return {
-#         "1-star recipes": one_star_recipes,
-#         "2-star recipes": two_star_recipes,
-#         "3-star recipes": three_star_recipes,
-#         "4-star recipes": four_star_recipes,
-#         "5-star recipes": five_star_recipes,
-#     }
+    return {
+        "1-star recipes": one_star_recipes,
+        "2-star recipes": two_star_recipes,
+        "3-star recipes": three_star_recipes,
+        "4-star recipes": four_star_recipes,
+        "5-star recipes": five_star_recipes,
+    }
 
-# @app.route('/recipe_details/delete', methods = ['DELETE'])
-# def recipe_details_delete():
-#     conn = db_connection()
-#     cur = conn.cursor()
+@app.route('/recipe_details/delete', methods = ['DELETE'])
+def recipe_details_delete():
+    conn = db_connection()
+    cur = conn.cursor()
 
-#     # Get params
-#     req = request.get_json()
-#     token = req['token']
-#     recipe_id = req['recipe_id']
+    # Get params
+    req = request.get_json()
+    token = req['token']
+    recipe_id = req['recipe_id']
 
-#     # Error if blank recipe id
-#     if not recipe_id: 
-#         raise InputError("Recipe ID cannot be empty")
+    # Error if blank recipe id
+    if not recipe_id: 
+        raise InputError("Recipe ID cannot be empty")
 
-#     # Error if recipe does not exist
-#     cur.execute('SELECT * FROM recipe WHERE recipe_id = %s LIMIT 1', [recipe_id])
-#     info = cur.fetchall()
-#     if not info:
-#         raise InputError("Recipe ID does not exist")
+    # Error if recipe does not exist
+    cur.execute('SELECT * FROM recipe WHERE recipe_id = %s LIMIT 1', [recipe_id])
+    info = cur.fetchall()
+    if not info:
+        raise InputError("Recipe ID does not exist")
 
-#     # Validate token
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     cur.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
-#     conn.commit()
-#     cur.close()
+    cur.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+    conn.commit()
+    cur.close()
 
-#     return {}
+    return {}
 
-# @app.route('/save_and_rate/save', methods = ['POST'])
-# def save():
-#     # Get user input
-#     req = request.get_json()
-#     recipe_id = req['recipe_id']
-#     token = req['token']
+@app.route('/save_and_rate/save', methods = ['POST'])
+def save():
+    # Get user input
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
 
-#     # Connect to db 
-#     conn = db_connection()
+    # Connect to db 
+    conn = db_connection()
 
-#     # Validate token
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Validate recipe_id
-#     if not valid_recipe_id(conn, recipe_id):
-#         raise InputError("No such recipe id")
+    # Validate recipe_id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
 
-#     # Get user id
-#     user_details = decode_token(conn, token)
-#     id = user_details["user_id"]
+    # Get user id
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
     
-#     c = conn.cursor()
-#     if has_saved(conn, recipe_id, id) == False:
-#         c.execute("INSERT INTO Recipe_Saves VALUES (?, ?)", (recipe_id, id))
-#     else:
-#         c.execute("DELETE FROM Recipe_Saves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+    c = conn.cursor()
+    if has_saved(conn, recipe_id, id) == False:
+        if user_details['is_contributor'] == False:
+            c.execute("INSERT INTO recipeSaves(rusr_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
+        else:
+            c.execute("INSERT INTO recipeSaves(contributor, recipe_id) VALUES (?, ?)", (id, recipe_id))
+    else:
+        if user_details["is_contributor"] == False:
+            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+        else:
+            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
     
-#     conn.commit()
-#     conn.close()
+    conn.commit()
+    conn.close()
     
-#     return
+    return
 
-# @app.route('/save_and_rate/rate', methods = ['POST'])
-# def rate():
-#     # Get user input
-#     req = request.get_json()
-#     recipe_id = req['recipe_id']
-#     token = req['token']
-#     rating = req['rating']
+@app.route('/save_and_rate/rate', methods = ['POST'])
+def rate():
+    # Get user input
+    req = request.get_json()
+    recipe_id = req['recipe_id']
+    token = req['token']
+    rating = req['rating']
 
-#     # Connect to db 
-#     conn = db_connection()
+    # Connect to db 
+    conn = db_connection()
 
-#      # Validate token
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+     # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-#     # Validate recipe_id
-#     if not valid_recipe_id(conn, recipe_id):
-#         raise InputError("No such recipe id")
+    # Validate recipe_id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
 
-#     #validate rating
-#     if rating > 5 or rating < 0:
-#         raise InputError("Rating out of range.")
+    #validate rating
+    if rating > 5 or rating < 0:
+        raise InputError("Rating out of range.")
     
-#     # Get user details 
-#     user_details = decode_token(conn, token)
-#     id = user_details["user_id"]
+    # Get user details 
+    user_details = decode_token(conn, token)
+    id = user_details["user_id"]
 
-#     c = conn.cursor()
-#     c.execute("SELECT * FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
-#     if has_rated(conn, recipe_id, id) == True:
-#         c.execute("DELETE FROM Recipe_Ratings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
-#         c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
-#     else:
-#         c.execute("INSERT INTO Recipe_Ratings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    c = conn.cursor()
+    if user_details["is_contributor"] == False:
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND rusr_id = ?", [recipe_id, id])
+        if has_rated(conn, recipe_id, user_details) == True:
+            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+        else:
+            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+    else:
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND contributor_id_id = ?", [recipe_id, id])
+        if has_rated(conn, recipe_id, user_details) == True:
+            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
+            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+        else:
+            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+
+    conn.commit()
+    conn.close()
+
+    return
+
+@app.route('/recipe_details/view', methods = ['GET'])
+def recipe_details_view():
+    # Get usr input
+    recipe_id = request.args.get('query')
+
+    # Connect to db 
+    conn = db_connection()
+
+    # Validate recipe id
+    if not valid_recipe_id(conn, recipe_id):
+        raise InputError("No such recipe id")
     
-#     conn.commit()
-#     conn.close()
-
-#     return
-
-# @app.route('/recipe_details/view', methods = ['GET'])
-# def recipe_details_view():
-#     # Get usr input
-#     recipe_id = request.args.get('query')
-
-#     # Connect to db 
-#     conn = db_connection()
-
-#     # Validate recipe id
-#     if not valid_recipe_id(conn, recipe_id):
-#         raise InputError("No such recipe id")
+    # Get recipe details 
+    ret = get_recipe_details(conn, recipe_id, user_details)
     
-#     # Get recipe details 
-#     ret = get_recipe_details(conn, recipe_id)
+    conn.close()
+
+    return ret
+
+@app.route('/recipe_details/update', methods = ['PUT'])
+def recipe_details_update():
+    # Connect to db
+    conn = db_connection()
+    c = conn.cursor()
+
+    # Validate token
+    req = request.get_json()
+    token = req['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Decode token to get user details
+    user_details = decode_token(conn, token)
+    user_id = user_details["user_id"]
+
+    # Get user input
+    req = request.get_json()
+
+    # Get recipe id
+    recipe_id = req['recipe_id']
+    # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
+    # check public state = if public state publish to public if not go to personal
+    # if positive num, update recipe that could be public or private
+    if recipe_id == -1:
+        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
+        recipe_id = c.fetchall()[0]
+        recipe_id = recipe_id + 1
+    # if recipe id != -1, update the recipe
+        # delete existing data first 
+    else:
+        c.execute('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id])
     
-#     conn.close()
+    update_recipe_details(conn, user_details, recipe_id, req)
 
-#     return ret
+    return 
 
-# @app.route('/recipe_details/update', methods = ['PUT'])
-# def recipe_details_update():
-#     # Connect to db
-#     conn = db_connection()
-#     c = conn.cursor()
+@app.route('/dash/my_recipes', methods = ['GET'])
+def dash_my_recipes():
+    # Connect to db
+    conn = db_connection()
+    c = conn.cursor()
 
-#     # Validate token
-#     req = request.get_json()
-#     token = req['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
+    # Get user input
+    req = request.get_json()
+    token = req['token']
+    # token = request.args.get('query')
 
-#     # Decode token to get user details
-#     user_details = decode_token(conn, token)
-#     user_id = user_details["user_id"]
-
-#     # Get user input
-#     req = request.get_json()
-
-#     # Get recipe id
-#     recipe_id = req['recipe_id']
-#     # If recipe id == -1, assign new recipe id
-#     if recipe_id == -1:
-#         c.execute("SELECT * FROM Recipe ORDER BY recipe_id DESC LIMIT 1")
-#         recipe_id = c.fetchall()[0]
-#         recipe_id = recipe_id + 1
-#     # if recipe id != -1, update the recipe
-#         # delete existing data first 
-#     else:
-#         c.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
     
-#     update_recipe_details(conn, user_details, recipe_id, req)
+    # Gey user_id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
 
-#     return 
+    # Get all Personal Recipes. For contributor this includes their drafts
+    recipes = []
+    if user["is_contributor"]:  # Contributor
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE contributor_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id))
+    else:
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE ruser_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id))
 
-# @app.route('/dash/my_recipes', methods = ['GET'])
-# def dash_my_recipes():
-#     # Connect to db
-#     conn = db_connection()
-#     c = conn.cursor()
+    conn.close()
 
-#     # Get user input
-#     req = request.get_json()
-#     token = req['token']
-#     # token = request.args.get('query')
+    ret = {"recipes" : recipes}
 
-#     # Validate token
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
-    
-#     # Gey user_id
-#     user = decode_token(conn, token)
-#     user_id = user["user_id"]
-
-#     # Get all Personal Recipes. For contributor this includes their drafts
-#     recipes = []
-#     if user["is_contributor"]:  # Contributor
-#         c.execute("SELECT recipe_id FROM Deaft_Recipes WHERE contributor_id = ?", [user_id])
-#         recipe_ids = c.fetchall()
-#         for i in recipe_ids:
-#             r_id = i
-#             recipes.append(get_recipe_details(conn, r_id))
-
-#     c.execute("SELECT recipe_id FROM Personal_Recipes WHERE ruser_id = ?", [user_id])
-#     recipe_ids = c.fetchall()
-#     for i in recipe_ids:
-#         r_id = i
-#         recipes.append(get_recipe_details(conn, r_id))
-
-#     conn.close()
-
-#     ret = {"recipes" : recipes}
-
-#     return ret
-# # Erivan here u go
-# @app.route('/get/tags', methods = ['GET'])
-# def get_all_tags():
-#     conn = db_connection()
-
-#     # Validate token
-#     token = request.args.get('req')['token']
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
-
-#     # Get tags
-#     tags = get_tags_and_categories(conn)
-
-#     return {
-#         "tags": tags
-#     }
-
+    return ret
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
