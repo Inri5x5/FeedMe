@@ -160,8 +160,7 @@ def search_tag_categories():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
-    token = req['token']
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
@@ -176,14 +175,14 @@ def search_tag_categories():
 def search_tag_tags():
     conn = db_connection()
 
-    # Get params
-    req = request.get_json()
-    token = req['token']
-    tag_category_id = req['tag_category_id']
-
     # Validate token
+    token = request.args.get('req')['token']
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
+
+    # Get params
+    req = request.get_json()
+    tag_category_id = req['tag_category_id']
 
     # Get tags
     tags = get_tags(conn, tag_category_id)
@@ -207,10 +206,10 @@ def search_recipes():
         raise AccessError("Invalid token")
 
     cur.execute('''
-        SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id)
+        SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
         FROM    Recipes r
-                JOIN Ingredient_in_Recipe ir on ir.recipe_id = r.recipe_id
-        GROUP BY r.recipe_id
+                JOIN ingredientInRecipe ir on ir.recipe_id = r.id
+        GROUP BY r.id
     ''')
     info = cur.fetchall()
     cur.close()
@@ -248,17 +247,17 @@ def dash_statistics():
 
     cur = conn.cursor()
     qry = '''
-        SELECT r.recipe_id, 
-            SUM(CASE WHEN rr.rating = '1' THEN 1 ELSE 0 END) AS one_rating,
-            SUM(CASE WHEN rr.rating = '2' THEN 1 ELSE 0 END) AS two_rating,
-            SUM(CASE WHEN rr.rating = '3' THEN 1 ELSE 0 END) AS three_rating,
-            SUM(CASE WHEN rr.rating = '4' THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = '5' THEN 1 ELSE 0 END) AS five_rating,
+        SELECT r.id, 
+            SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
+            SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
+            SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
+            SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
+            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
         FROM recipes r
-            JOIN public_recipes pr ON pr.recipe_id = r.recipe_id
-            JOIN recipe_ratings rr ON rr.recipe_id = r.recipe_id
-        WHERE pr.author_id = %s
-        GROUP BY r.recipe_id
+            JOIN publicRecipes pr ON pr.recipe_id = r.id
+            JOIN recipeRatings rr ON rr.recipe_id = r.id
+        WHERE pr.contributor_id = ?
+        GROUP BY r.id
     '''
     cur.execute(qry, [contributor_id])
     info = cur.fetchall()
@@ -272,7 +271,7 @@ def dash_statistics():
         avg_rating = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)/(one_rating + two_rating + three_rating + four_rating + five_rating)
 
         # Number of recipe saves
-        cur.execute('SELECT COUNT(*) FROM recipe_saves WHERE recipe_id = %s', [recipe_id])
+        cur.execute('SELECT COUNT(*) FROM recipeSaves WHERE recipe_id = ?', [recipe_id])
         info = cur.fetchone()
         if not info:
             num_saves = 0
@@ -315,9 +314,9 @@ def dash_saved():
 
     cur = conn.cursor()
     if user["is_contributor"]:  # Contributor
-        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE contributor_id = %s', [user["user_id"]])
+        cur.execute('SELECT recipe_id FROM recipeSaves WHERE contributor_id = ?', [user["user_id"]])
     else: # RUser
-        cur.execute('SELECT recipe_id FROM Recipe_Save WHERE ruser_id = %s', [user["user_id"]])
+        cur.execute('SELECT recipe_id FROM recipeSaves WHERE ruser_id = ?', [user["user_id"]])
     info = cur.fetchall()
     cur.close()
 
@@ -345,11 +344,11 @@ def dash_rated():
 
     cur = conn.cursor()
     if user["is_contributor"]:  # Contributor
-        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-            WHERE contributor_id = %s''', [user["user_id"]])
+        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
+            WHERE contributor_id = ?''', [user["user_id"]])
     else: # RUser
-        cur.execute('''SELECT recipe_id, rating FROM Recipe_Ratings
-            WHERE ruser_id = %s''', [user["user_id"]])
+        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
+            WHERE ruser_id = ?''', [user["user_id"]])
     info = cur.fetchall()
     cur.close()
 
@@ -395,16 +394,14 @@ def recipe_details_delete():
         raise InputError("Recipe ID cannot be empty")
 
     # Error if recipe does not exist
-    cur.execute('SELECT * FROM recipe WHERE recipe_id = %s LIMIT 1', [recipe_id])
-    info = cur.fetchall()
-    if not info:
+    if not valid_recipe_id(conn, recipe_id):
         raise InputError("Recipe ID does not exist")
 
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    cur.execute('DELETE FROM recipe WHERE recipe_id = %s', [recipe_id])
+    cur.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
     conn.commit()
     cur.close()
 
@@ -434,15 +431,9 @@ def save():
     
     c = conn.cursor()
     if has_saved(conn, recipe_id, id) == False:
-        if user_details['is_contributor'] == False:
-            c.execute("INSERT INTO recipeSaves(rusr_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
-        else:
-            c.execute("INSERT INTO recipeSaves(contributor, recipe_id) VALUES (?, ?)", (id, recipe_id))
+        c.execute("INSERT INTO RecipeSaves VALUES (?, ?)", (recipe_id, id))
     else:
-        if user_details["is_contributor"] == False:
-            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
-        else:
-            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
+        c.execute("DELETE FROM RecipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
     
     conn.commit()
     conn.close()
@@ -477,21 +468,13 @@ def rate():
     id = user_details["user_id"]
 
     c = conn.cursor()
-    if user_details["is_contributor"] == False:
-        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND rusr_id = ?", [recipe_id, id])
-        if has_rated(conn, recipe_id, user_details) == True:
-            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
-            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
-        else:
-            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+    c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+    if has_rated(conn, recipe_id, id) == True:
+        c.execute("DELETE FROM RecipeRatings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
+        c.execute("INSERT INTO RecipeRatings VALUES (?, ?, ?)", (recipe_id, id, rating))
     else:
-        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND contributor_id_id = ?", [recipe_id, id])
-        if has_rated(conn, recipe_id, user_details) == True:
-            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
-            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
-        else:
-            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
-
+        c.execute("INSERT INTO RecipeRatings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    
     conn.commit()
     conn.close()
 
@@ -510,7 +493,7 @@ def recipe_details_view():
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id, user_details)
+    ret = get_recipe_details(conn, recipe_id)
     
     conn.close()
 
@@ -537,11 +520,9 @@ def recipe_details_update():
 
     # Get recipe id
     recipe_id = req['recipe_id']
-    # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
-    # check public state = if public state publish to public if not go to personal
-    # if positive num, update recipe that could be public or private
+    # If recipe id == -1, assign new recipe id
     if recipe_id == -1:
-        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
+        c.execute("SELECT * FROM Recipes ORDER BY recipe_id DESC LIMIT 1")
         recipe_id = c.fetchall()[0]
         recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
@@ -575,19 +556,40 @@ def dash_my_recipes():
     # Get all Personal Recipes. For contributor this includes their drafts
     recipes = []
     if user["is_contributor"]:  # Contributor
-        c.execute("SELECT recipe_id FROM personalRecipes WHERE contributor_id = ?", [user_id])
-        recipe_ids = c.fetchall()
-        for i in recipe_ids:
-            r_id = i
-            recipes.append(get_recipe_details(conn, r_id))
-    else:
-        c.execute("SELECT recipe_id FROM personalRecipes WHERE ruser_id = ?", [user_id])
+        c.execute("SELECT recipe_id FROM DeaftRecipes WHERE contributor_id = ?", [user_id])
         recipe_ids = c.fetchall()
         for i in recipe_ids:
             r_id = i
             recipes.append(get_recipe_details(conn, r_id))
 
+    c.execute("SELECT recipe_id FROM PersonalRecipes WHERE ruser_id = ?", [user_id])
+    recipe_ids = c.fetchall()
+    for i in recipe_ids:
+        r_id = i
+        recipes.append(get_recipe_details(conn, r_id))
+
     conn.close()
+
+    ret = {"recipes" : recipes}
+
+    return ret
+
+# Erivan here u go
+@app.route('/get/tags', methods = ['GET'])
+def get_all_tags():
+    conn = db_connection()
+
+    # Validate token
+    token = request.args.get('req')['token']
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get tags
+    tags = get_tags_and_categories(conn)
+
+    return {
+        "tags": tags
+    }
 
     ret = {"recipes" : recipes}
 

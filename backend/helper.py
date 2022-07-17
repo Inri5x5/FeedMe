@@ -157,10 +157,8 @@ def get_tag_categories(conn):
     
     tag_categories = []
     for i in info: 
-        tag_category_id, name = i
-        tag_categories.append(
-            {"name": name, "category_id": tag_category_id}
-        )
+        id, name = i
+        tag_categories.append({"name": name, "category_id": id})
     
     return tag_categories
 
@@ -168,16 +166,16 @@ def get_tags(conn, tag_category_id):
     cur = conn.cursor()
 
     # Get tags of the given tag category
-    cur.execute('''SELECT name, tag_id FROM Tags 
-        WHERE tag_category_id = ?''', [tag_category_id])
+    cur.execute('''SELECT name, id FROM Tags 
+    WHERE tag_category_id = ?''', [tag_category_id])
     info = cur.fetchall()
     cur.close()
 
     tags = []
     for i in info:
-        name, tag_id = i
+        name, id = i
         tags.append(
-            {"name": name, "tag_id": tag_id}
+            {"name": name, "tag_id": id}
         )
 
     return tags
@@ -187,7 +185,7 @@ def get_tags_and_categories(conn):
     cur.execute('''
         SELECT tc.id, tc.name, 
         FROM tagCategories tc
-            JOIN Tags t on t.tag_category_id = tc.tag_category_id
+            JOIN Tags t on t.tag_category_id = tc.id
     ''')
     info = cur.fetchall()
     cur.close()
