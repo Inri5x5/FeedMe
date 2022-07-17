@@ -52,8 +52,10 @@ def decode_token(conn, token):
 
 def validate_token(conn, token):
     cur = conn.cursor()
-    cur.execute('SELECT 1 FROM Tokens WHERE token = ?', [token])
+    print(token)
+    cur.execute('SELECT * FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
+    print(info)
     cur.close()
 
     if not info:
@@ -63,7 +65,13 @@ def validate_token(conn, token):
 
 def add_token(conn, token, user_id, is_contributor):
     cur = conn.cursor()
-    cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, is_contributor))
+    print(token)
+    if is_contributor:
+        cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, None, user_id))
+    else:
+        cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, None))
+        
+    conn.commit()
     cur.close()
 
     return 0
@@ -309,7 +317,7 @@ def valid_recipe_id(conn, recipe_id):
     return True
 
 def has_saved(conn, recipe_id, user_details):
-    if (user_details == - 1): return False
+    if (user_details == -1): return False
     
     c = conn.cursor()
     if user_details["is_contributor"] == False:
