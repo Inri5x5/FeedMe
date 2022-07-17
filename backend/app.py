@@ -431,9 +431,15 @@ def save():
     
     c = conn.cursor()
     if has_saved(conn, recipe_id, id) == False:
-        c.execute("INSERT INTO RecipeSaves VALUES (?, ?)", (recipe_id, id))
+        if user_details['is_contributor'] == False:
+            c.execute("INSERT INTO recipeSaves(rusr_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
+        else:
+            c.execute("INSERT INTO recipeSaves(contributor, recipe_id) VALUES (?, ?)", (id, recipe_id))
     else:
-        c.execute("DELETE FROM RecipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+        if user_details["is_contributor"] == False:
+            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+        else:
+            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
     
     conn.commit()
     conn.close()
@@ -468,13 +474,21 @@ def rate():
     id = user_details["user_id"]
 
     c = conn.cursor()
-    c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
-    if has_rated(conn, recipe_id, id) == True:
-        c.execute("DELETE FROM RecipeRatings WHERE recipe_id = ? AND author_id = ?", [recipe_id, id])
-        c.execute("INSERT INTO RecipeRatings VALUES (?, ?, ?)", (recipe_id, id, rating))
+    if user_details["is_contributor"] == False:
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND rusr_id = ?", [recipe_id, id])
+        if has_rated(conn, recipe_id, user_details) == True:
+            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+        else:
+            c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
     else:
-        c.execute("INSERT INTO RecipeRatings VALUES (?, ?, ?)", (recipe_id, id, rating))
-    
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND contributor_id_id = ?", [recipe_id, id])
+        if has_rated(conn, recipe_id, user_details) == True:
+            c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
+            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+        else:
+            c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
+
     conn.commit()
     conn.close()
 
@@ -493,7 +507,7 @@ def recipe_details_view():
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id)
+    ret = get_recipe_details(conn, recipe_id, user_details)
     
     conn.close()
 
@@ -520,9 +534,11 @@ def recipe_details_update():
 
     # Get recipe id
     recipe_id = req['recipe_id']
-    # If recipe id == -1, assign new recipe id
+    # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
+    # check public state = if public state publish to public if not go to personal
+    # if positive num, update recipe that could be public or private
     if recipe_id == -1:
-        c.execute("SELECT * FROM Recipes ORDER BY recipe_id DESC LIMIT 1")
+        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
         recipe_id = c.fetchall()[0]
         recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
@@ -556,17 +572,17 @@ def dash_my_recipes():
     # Get all Personal Recipes. For contributor this includes their drafts
     recipes = []
     if user["is_contributor"]:  # Contributor
-        c.execute("SELECT recipe_id FROM DeaftRecipes WHERE contributor_id = ?", [user_id])
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE contributor_id = ?", [user_id])
         recipe_ids = c.fetchall()
         for i in recipe_ids:
             r_id = i
             recipes.append(get_recipe_details(conn, r_id))
-
-    c.execute("SELECT recipe_id FROM PersonalRecipes WHERE ruser_id = ?", [user_id])
-    recipe_ids = c.fetchall()
-    for i in recipe_ids:
-        r_id = i
-        recipes.append(get_recipe_details(conn, r_id))
+    else:
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE ruser_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id))
 
     conn.close()
 
