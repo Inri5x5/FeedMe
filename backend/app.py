@@ -502,7 +502,6 @@ def recipe_details_view():
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
-    
     # Gey user_id
     user = decode_token(conn, token)
     
