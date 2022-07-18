@@ -123,7 +123,7 @@ export default function UserProfileScreen2 () {
     let content = []
     for (let i = 0; i < shownRecipes.length; i++) {
       content.push(
-        <RecipeCard object={shownRecipes[i]} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={fetchSaved}/>
+        <RecipeCard object={shownRecipes[i]} isEditable={false} isDelete={false} handleAfterLike={fetchSaved}/>
       )
     }
     return content
@@ -133,7 +133,7 @@ export default function UserProfileScreen2 () {
     let content = []
     for (let i = 0; i < myRecipes.length; i++) {
       content.push(
-        <RecipeCard object={myRecipes[i]} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={fetchMyRecipes}/>
+        <RecipeCard object={myRecipes[i]} isEditable={false}  isDelete={true} handleAfterLike={fetchMyRecipes}/>
       )
     }
     return content
@@ -154,7 +154,7 @@ export default function UserProfileScreen2 () {
             "recipe_ratings": value[j].avg_rating,
             "recipe_tags": value[j].tags,
             "recipe_image": value[j].image
-          }} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={fetchRated}/>
+          }} isEditable={false} isDelete={false} handleAfterLike={fetchRated}/>
         )
       }
       let wrapper = (

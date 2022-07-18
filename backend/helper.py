@@ -34,7 +34,6 @@ def decode_token(conn, token):
     cur = conn.cursor()
     cur.execute('SELECT ruser_id, contributor_id FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
-    print(info)
     cur.close()
 
     # Find user id
@@ -217,10 +216,9 @@ def get_recipe_details(conn, recipe_id, user_details):
     c = conn.cursor()
 
     # Get General Recipe details
-    print("Recipe_id")
-    print(recipe_id)
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
+    print(recipe)
     ret.update({'recipe_id' : recipe[0]})
     ret.update({'title' : recipe[1]})
     ret.update({'description' : recipe[2]})
@@ -261,7 +259,6 @@ def get_recipe_details(conn, recipe_id, user_details):
     c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
     info = c.fetchone()
     if info is not None:
-        print("SUCCESS")
         author_id = info[0]
         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
