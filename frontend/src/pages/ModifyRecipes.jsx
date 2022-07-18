@@ -12,18 +12,55 @@ import SearchBarRecipe from '../components/SearchBarRecipe';
 
 export default function ModifyRecipes () {
   const navigate = useNavigate();
-  const [ingredients, setIngredients] = React.useState([{ ingredients: "" }])
-  const [steps, setSteps] = React.useState([{ steps: "" }])
-  const [tags, setTags] = React.useState([{ tags: "" }])
+  const [ingredients, setIngredients] = React.useState([])
+  const [steps, setSteps] = React.useState([])
+  const [tags, setTags] = React.useState([])
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
   const is_contributor = localStorage.getItem('is_contributor');
   const token = localStorage.getItem('token');
-  const id = 0;
+  const id = 3;
+  
+  /* For SearchBar */
+	const [listIngredient, setListIngredient] = React.useState([]);
+	const [listCategories, setListCategories] = React.useState([]);
+  
+  const getAllCategories = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			data = await APICall(null, '/categories', 'GET', headers);
+			for (let i = 0; i < data.body.categories.length; i++) {
+				temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
+			}
+			setListCategories(temp);
+		} catch (err) {
+			alert(err);
+		}
+	}
+	const getAllIngredients = async() => {
+		let data = []; let temp = [];
+		try {
+			const headers = {
+				'Content-Type': 'application/json',
+			};
+			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
+			for (let i = 0; i < data.body.suggestions.length; i++) {
+				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
+			}
+			setListIngredient(temp);
+		} catch (err) {
+			alert(err);
+		}
+	}
   
   React.useEffect(() => { 
     let isFetch = true;
     getDetails();
+    getAllCategories();
+		getAllIngredients();
     return () => isFetch = false;
   }, [id])
   
@@ -63,11 +100,11 @@ export default function ModifyRecipes () {
   
   const handleIngredientsChange = (e, index) => {
     const { name, value } = e.target;
-    console.log(e.target)
     const list = [...ingredients];
     list[index][name] = value;
     setIngredients(list);
     setSelected(list);
+    setRecipe({...recipe, ingredients: [list]})
   };
 
   const handleIngredientsRemove = (e, index) => {
@@ -76,11 +113,12 @@ export default function ModifyRecipes () {
     list.splice(index, 1);
     setIngredients(list);
     setSelected(list);
+    setRecipe({...recipe, ingredients: list})
   };
 
   const handleIngredientsAdd = (e) => {
     e.preventDefault()
-    setIngredients([...ingredients, { decription: '', ingredient_id: -1, name: ''}]);
+    setIngredients([...ingredients, { description: '', ingredient_id: -1, name: ''}]);
   };
   
   const handleStepsChange = (e, index) => {
@@ -88,6 +126,7 @@ export default function ModifyRecipes () {
     const list = [...steps];
     list[index][name] = value;
     setSteps(list);
+    setRecipe({...recipe, steps: list})
   };
 
   const handleStepsRemove = (e, index) => {
@@ -95,6 +134,7 @@ export default function ModifyRecipes () {
     const list = [...steps];
     list.splice(index, 1);
     setSteps(list);
+    setRecipe({...recipe, steps: [...steps, ...list]})
   };
 
   const handleStepsAdd = (e) => {
@@ -107,6 +147,7 @@ export default function ModifyRecipes () {
     const list = [...tags];
     list[index][name] = value;
     setTags(list);
+    setRecipe({...recipe, tags: list})
   };
 
   const handleTagsRemove = (e, index) => {
@@ -114,6 +155,7 @@ export default function ModifyRecipes () {
     const list = [...tags];
     list.splice(index, 1);
     setTags(list);
+    setRecipe({...recipe, tags: list})
   };
 
   const handleTagsAdd = (e) => {
@@ -136,19 +178,39 @@ export default function ModifyRecipes () {
     setSelected(ingredients);
   }
   
+  const handleChanges = (e) => {
+    const {name, value} = e.target
+    if (name === 'image') {
+      const file = e.target.files[0];
+      fileToDataUrl(file)
+        .then((res) => {
+          setRecipe({image: res});
+        })
+    } else {
+      setRecipe({...recipe, [name]: value})
+    }
+  }
+  
   const handleSave = async () => {
+    const ingredient = recipe.ingredients
+    const step = recipe.steps
+    const tag = recipe.tags
     try {
       const headers = {
         'Content-Type': 'application/json',
         'token': token,
       };
       const requestBody = {
-        recipe_id: `${recipe.id}`,
+        recipe_id: -1,
         title: `${recipe.title}`,
         description: `${recipe.description}`,
         image: `${recipe.image}`,
         time_required: `${recipe.time_required}`,
         servings: `${recipe.servings}`,
+        ingredients: ingredient,
+        tags: tag,
+        steps: step,
+        video: '',
         public_state: 'private'
       }
       const data = await APICall(requestBody, `/recipe_details/update`, 'PUT', headers);
@@ -160,7 +222,7 @@ export default function ModifyRecipes () {
       alert(err);
     }
   }
-  console.log(steps)
+  // console.log(steps)
   // console.log(ingredients)
   // console.log(selectedIngredients)
   // console.log(tags)
@@ -171,16 +233,16 @@ export default function ModifyRecipes () {
       <h2 className={styles.title}> Modify Recipe </h2>
       <form className={styles.form_control}>
         <label for='dishName' >Dish Name: </label>
-        <input id='dishName' type='text' value={recipe.title} onChange={(e) => setRecipe({title: e.target.value})}/>
+        <input name='title' id='dishName' type='text' value={recipe.title} onChange={(e) => handleChanges(e)}/>
         <label for='dishPic'> Upload Image: </label>
-        <input type="file" id="dishPic" name="questionImage" accept=".png,.jpeg,.jpg" onChange={handleFoodPic} />
+        <input name='image' type="file" id="dishPic" accept=".png,.jpeg,.jpg" onChange={(e) => handleChanges(e)} />
         <img src={recipe.image} className={styles.foodPic}/>
         <label for='duration'>Duration: </label>
-        <input id='duration' type='text' value={recipe.time_required} onChange={(e) => setRecipe({time_required: e.target.value})}/>
+        <input name='time_required' id='duration' type='text' value={recipe.time_required} onChange={(e) => handleChanges(e)}/>
         <label for='serving'>Serving: </label>
-        <input id='serving' type='text' value={recipe.servings} onChange={(e) => setRecipe({servings: e.target.value})}/>
+        <input name='servings' id='serving' type='text' value={recipe.servings} onChange={(e) => handleChanges(e)}/>
         <label for='desc' >Descriptions: </label>
-        <input id='desc' type='text' value={recipe.description} onChange={(e) => setRecipe({description: e.target.value})}/>
+        <input name='description' id='desc' type='text' value={recipe.description} onChange={(e) => handleChanges(e)}/>
         <label> Ingredients: </label>
         {ingredients.map((ingredient, index) => (
           <div key={index}>
@@ -188,12 +250,14 @@ export default function ModifyRecipes () {
               preFilled={selectedIngredients[index]}
               updateIngredients={handleUpdateIngredients}
               index={index}
+              listCategories={listCategories}
+              listIngredient={listIngredient}
             ></SearchBarRecipe>
             <input
-              name='decription'
+              name='description'
               type="text"
               onChange={(e) => handleIngredientsChange(e, index)}
-              value={ingredient.decription}
+              value={ingredient.description}
             />
             <button
             onClick={(e) => handleIngredientsRemove(e, index)}
@@ -210,7 +274,8 @@ export default function ModifyRecipes () {
             <textarea
               name='description'
               type="text"
-              onChange={(e) => handleStepsChange(e, index)}
+              onChange={(e) => 
+                handleStepsChange(e, index)}
               value={step.description}
               wrap= "soft"
               rows= "3"
@@ -269,9 +334,7 @@ export default function ModifyRecipes () {
               color: '#F9D371'
             }
             }}
-          onClick={
-            handleSave
-          }
+          onClick={() => handleSave()}
           >
           Save
         </Button>
@@ -286,7 +349,8 @@ export default function ModifyRecipes () {
               backgroundColor: '#F47340',
               color: '#F9D371'
             }
-            }}>
+            }}
+            onClick={() => handleSave()}>
           Publish
         </Button>
       </div>

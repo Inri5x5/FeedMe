@@ -19,8 +19,8 @@ const SearchBarRecipe = (props) => {
     }, [])
 
 	// Data State
-	const [listIngredient, setListIngredient] = useState([]);
-	const [listCategories, setListCategories] = useState([]);
+	// const [listIngredient, setListIngredient] = useState([]);
+	// const [listCategories, setListCategories] = useState([]);
 
 	// General API-call boilerplate function
 	const APICall = (requestBody, path, methodType, headersData) => {
@@ -46,36 +46,36 @@ const SearchBarRecipe = (props) => {
 		})
 	}
 
-	const getAllCategories = async() => {
-		let data = []; let temp = [];
-		try {
-			const headers = {
-			  'Content-Type': 'application/json',
-			};
-			data = await APICall(null, '/categories', 'GET', headers);
-			for (let i = 0; i < data.body.categories.length; i++) {
-				temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
-			}
-			setListCategories(temp);
-		} catch (err) {
-			alert(err);
-		}
-	}
-	const getAllIngredients = async() => {
-		let data = []; let temp = [];
-		try {
-			const headers = {
-				'Content-Type': 'application/json',
-			};
-			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
-			for (let i = 0; i < data.body.suggestions.length; i++) {
-				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
-			}
-			setListIngredient(temp);
-		} catch (err) {
-			alert(err);
-		}
-	}
+	// const getAllCategories = async() => {
+	// 	let data = []; let temp = [];
+	// 	try {
+	// 		const headers = {
+	// 		  'Content-Type': 'application/json',
+	// 		};
+	// 		data = await APICall(null, '/categories', 'GET', headers);
+	// 		for (let i = 0; i < data.body.categories.length; i++) {
+	// 			temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
+	// 		}
+	// 		setListCategories(temp);
+	// 	} catch (err) {
+	// 		alert(err);
+	// 	}
+	// }
+	// const getAllIngredients = async() => {
+	// 	let data = []; let temp = [];
+	// 	try {
+	// 		const headers = {
+	// 			'Content-Type': 'application/json',
+	// 		};
+	// 		data = await APICall(null, `/ingredients?query= `, 'GET', headers);
+	// 		for (let i = 0; i < data.body.suggestions.length; i++) {
+	// 			temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
+	// 		}
+	// 		setListIngredient(temp);
+	// 	} catch (err) {
+	// 		alert(err);
+	// 	}
+	// }
 
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
@@ -145,7 +145,7 @@ const SearchBarRecipe = (props) => {
 	const [found, setFound] = useState([]);
 	const onInput = (e) => {
 		setInput(e.target.value);
-		searchIngredient(e.target.value, listIngredient, category);
+		searchIngredient(e.target.value, props.listIngredient, category);
 		if (e.target.value === "") {
 			if (category.name !== "Category") {
 				setDropdownState('Ingredient')
@@ -181,15 +181,15 @@ const SearchBarRecipe = (props) => {
 		)
 	}
 
-	React.useEffect(() => {
-		getAllCategories();
-		getAllIngredients();
-	},[]);
+	// React.useEffect(() => {
+	// 	getAllCategories();
+	// 	getAllIngredients();
+	// },[]);
 	React.useEffect(() => {
 		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
-			getAllIngredients();
+			
 		} else {
-			searchIngredient(input, listIngredient, category);
+			searchIngredient(input, props.listIngredient, category);
 		} 
 	},[dropdownState]);
 		
@@ -202,7 +202,7 @@ const SearchBarRecipe = (props) => {
 						<KeyboardArrowDownIcon className={showDropdown ? styles.search_category_icon_focus : styles.search_category_icon}/>
 					</div>
 					<div className={showDropdown ? styles.category_menu_focus : styles.category_menu} tabIndex='0'>
-						{ (dropdownState === 'Category') && renderCategory(listCategories) }
+						{ (dropdownState === 'Category') && renderCategory(props.listCategories) }
 						{ (dropdownState === 'Searches') && renderSearchTitle() }
 						{ (category.name !== 'Category') && renderBackIcon() }
 						{ (category.name === 'Category') && (dropdownState === "Searches") && renderBackIcon() }
@@ -227,6 +227,8 @@ SearchBarRecipe.propTypes = {
     updateIngredients: PropTypes.func,
     preFilled: PropTypes.object,
     index: PropTypes.number,
+    listIngredient: PropTypes.array,
+    listCategories: PropTypes.array
 }
 
 export default SearchBarRecipe

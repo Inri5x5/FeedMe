@@ -23,7 +23,7 @@ const App = () => {
           <Route path="/userProfile" element={<UserProfileScreen2 />} />
           <Route path="/contributorProfile" element={<ContributorProfileScreen />} />
           <Route path="/teachUs" element={<TeachUsScreen />} />
-          <Route path="/recipeDetails" element={<RecipeDetailsScreen />} />
+          <Route path="/recipe_details/:id" element={<RecipeDetailsScreen />} />
           <Route path="/recipe/add" element={<ModifyRecipes />} />
         </Routes>
       </BrowserRouter>
