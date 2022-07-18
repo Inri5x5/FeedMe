@@ -75,7 +75,7 @@ export default function RecipeCard(props) {
           <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => handleLike()}>
             <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
           </IconButton>
-          <IconButton aria-label="edit" disabled={!localStorage.getItem('token')} >
+          <IconButton aria-label="edit" disabled={!localStorage.getItem('token')} onClick={() => navigate(`/recipe/edit/${props.object.recipe_id}`)} >
             <EditIcon></EditIcon>
           </IconButton>
           { (props.isDelete) && <IconButton aria-label="delete">

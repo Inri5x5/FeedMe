@@ -312,7 +312,7 @@ export default function ContributorProfileScreen () {
         width: '80%'
         }}>
           {renderContributorRecipesCard()}
-          <Fab color="primary" aria-label="add" size="large" style={style}>
+          <Fab color="primary" aria-label="add" size="large" style={style} onClick={()=>navigate(`/recipe/add`)}>
             <AddIcon />
           </Fab>
         </div>}
