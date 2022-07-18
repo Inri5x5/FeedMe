@@ -482,7 +482,7 @@ def rate():
         else:
             c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
     else:
-        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND contributor_id_id = ?", [recipe_id, id])
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
         if has_rated(conn, recipe_id, user_details) == True:
             c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
             c.execute("INSERT INTO recipeRatings(contributor_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
@@ -498,7 +498,7 @@ def rate():
 def recipe_details_view():
     # Get usr input
     recipe_id = request.args.get('id')
-
+    print(recipe_id)
     # Connect to db 
     conn = db_connection()
     
@@ -506,11 +506,13 @@ def recipe_details_view():
 
     # Validate token
     if not validate_token(conn, token):
-        raise AccessError("Invalid token")
-    
-    # Gey user_id
-    user = decode_token(conn, token)
-    
+        user = -1
+    else :
+        # Gey user_id
+        user = decode_token(conn, token)
+
+    print(user)
+
     # Validate recipe id
     if not valid_recipe_id(conn, recipe_id):
         raise InputError("No such recipe id")

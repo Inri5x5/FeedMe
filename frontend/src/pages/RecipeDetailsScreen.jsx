@@ -34,7 +34,7 @@ export default function RecipeDetailsScreen () {
         'Content-Type': 'application/json',
         'token': token,
       };
-      const data = await APICall(null, `/recipe_details/view?id=${id}`, 'GET', headers);
+      const data = await APICall(null, `/recipe_details/view?id=${id.id}`, 'GET', headers);
       if (data.error) {
         throw new Error(data.error);
       }
@@ -63,6 +63,7 @@ export default function RecipeDetailsScreen () {
       if (data.error) {
         throw new Error(data.error);
       }
+      getDetails()
     } catch (err) {
       alert(err);
     }

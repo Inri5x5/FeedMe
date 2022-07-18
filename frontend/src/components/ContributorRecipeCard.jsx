@@ -14,11 +14,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { APICall } from '../helperFunc';
+import { useNavigate } from 'react-router-dom';
 
 
 import styles from './styles/ContributorRecipeCard.module.css'
 
 export default function ContributorRecipeCard(props) {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -69,7 +71,7 @@ export default function ContributorRecipeCard(props) {
         <MenuItem onClick={() => deleteRecipe()}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
       </Menu>} */}
-      <CardActionArea>
+      <CardActionArea onClick={() => navigate(`/recipe_details/${props.object.recipe_id}`)}>
         <div style={{display:'flex', flexDirection:'row', width:'100%', alignItems:'center'}}>
             <div style={{flex: 1, maxWidth: '50%', paddingRight:'40px'}}>
               <CardMedia
@@ -89,16 +91,6 @@ export default function ContributorRecipeCard(props) {
                   {props.object.recipe_desc}
                 </div>
               </CardContent>
-              <CardActions className={styles.card_action}>
-                <div>
-                  <IconButton aria-label="add to favorites" onClick={() => handleLike()}>
-                    <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
-                  </IconButton>
-                  { (props.isDelete) && <IconButton aria-label="delete" onClick={() => deleteRecipe()}>
-                    <DeleteIcon></DeleteIcon>
-                  </IconButton>}
-                </div>
-              </CardActions>
             </div>
             <div style={{flex: 1, display:'flex'}}>
                 <RatingsField statistic={props.statistic}/>
@@ -122,6 +114,16 @@ export default function ContributorRecipeCard(props) {
             </div>
         </div>
       </CardActionArea>
+      <CardActions className={styles.card_action}>
+        <div>
+          <IconButton aria-label="add to favorites" onClick={() => handleLike()}>
+            <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
+          </IconButton>
+          { (props.isDelete) && <IconButton aria-label="delete" onClick={() => deleteRecipe()}>
+            <DeleteIcon></DeleteIcon>
+          </IconButton>}
+        </div>
+      </CardActions>
     </Card>
   );
 }

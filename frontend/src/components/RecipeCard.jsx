@@ -15,10 +15,12 @@ import EditIcon from '@mui/icons-material/Edit';
 
 import styles from './styles/RecipeCard.module.css'
 import { APICall } from '../helperFunc';
+import { useNavigate } from 'react-router-dom';
 
 export default function RecipeCard(props) {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -52,7 +54,7 @@ export default function RecipeCard(props) {
         <MenuItem onClick={handleClose}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
       </Menu>} */}
-      <CardActionArea>
+      <CardActionArea onClick={() => navigate(`/recipe_details/${props.object.recipe_id}`)}>
         <CardMedia
           component="img"
           height="225"

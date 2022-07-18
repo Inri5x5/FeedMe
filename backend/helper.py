@@ -213,10 +213,12 @@ def get_recipe_details(conn, recipe_id, user_details):
 
     # initialise db connection
     c = conn.cursor()
-
+    # print(type(recipe_id))
+    # print(recipe_id)
     # Get General Recipe details
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
+    # print(recipe)
     ret.update({'recipe_id' : recipe[0]})
     ret.update({'title' : recipe[1]})
     ret.update({'description' : recipe[2]})
