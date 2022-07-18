@@ -5,14 +5,16 @@ import ContributorDashboard from '../components/ContributorDashboard';
 import RecipeCard from '../components/RecipeCard';
 import ContributorRecipeCard from '../components/ContributorRecipeCard'
 import { APICall } from '../helperFunc';
+import AddIcon from '@mui/icons-material/Add';
+import Fab from '@mui/material/Fab';
 
 export default function ContributorProfileScreen () {
   const navigate = useNavigate();
   const [tabValue, setTabValue] = React.useState("Published")
+  const [publishedRecipes, setPublishedRecipes] = React.useState([])
   const [shownRecipes, setShownRecipes] = React.useState([])
   const [draftRecipes, setDraftRecipes] = React.useState([])
   const [ratedRecipes, setRatedRecipes] = React.useState([])
-  const [publishedRecipes, setPublishedRecipes] = React.useState([])
   const [statistic, setStatistic] = React.useState([])
 
   let dummyRecipes = [
@@ -43,6 +45,7 @@ export default function ContributorProfileScreen () {
       alert("Please Log in Beforehand")
       navigate("/")
     }
+    fetchStatistics()
   }, [])
 
   const fetchSaved = async() => {
@@ -130,7 +133,6 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
-      fetchStatistics()
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
         data.push({
@@ -168,12 +170,18 @@ export default function ContributorProfileScreen () {
   const renderRecipesCard = () => {
     let content = []
     let listRecipes = []
-    if (tabValue === 'Saved') listRecipes = shownRecipes
-    if (tabValue === 'Drafted') listRecipes = draftRecipes
-    
+    let func = null
+    if (tabValue === 'Saved') {
+      listRecipes = shownRecipes
+      func = fetchSaved
+    }
+    if (tabValue === 'Drafted') {
+      listRecipes = draftRecipes
+      func = fetchMyRecipes
+    }
     for (let i = 0; i < listRecipes.length; i++) {
       content.push(
-        <RecipeCard object={listRecipes[i]} isEditable={false} isDelete={false}/>
+        <RecipeCard object={listRecipes[i]} isDelete={false} handleAfterLike={func}/>
       )
     }
     return content
@@ -246,18 +254,40 @@ export default function ContributorProfileScreen () {
 
   const renderContributorRecipesCard = () => {
     let content = []
-    for (let i = 0; i < publishedRecipes.length; i++) {
-      let index = 0
-      for (let j = 0; j < statistic.length; j++) {
-        if (statistic[j].recipe_id === publishedRecipes[i].recipe_id) index = j
+    if (publishedRecipes.length == statistic.length) {
+      for (let i = 0; i < publishedRecipes.length; i++) {
+        let index = 0
+        for (let j = 0; j < statistic.length; j++) {
+          if (statistic[j].recipe_id === publishedRecipes[i].recipe_id) index = j
+        }
+        content.push(
+          <ContributorRecipeCard object={publishedRecipes[i]} isDelete={true} statistic={statistic[index]} afterDelete={handleAfterDelete} afterLike={handleAfterLike}/>
+        )
       }
-      console.log(statistic[index])
-      content.push(
-        <ContributorRecipeCard object={publishedRecipes[i]} isEditable={true} isDelete={true} statistic={statistic[index]} afterDelete={fetchPublishedRecipes}/>
-      )
     }
     return content
   }
+
+  const handleAfterLike = async() => {
+    await fetchStatistics()
+    await fetchPublishedRecipes()
+  }
+
+  const handleAfterDelete = (recipe_id) => {
+    const newStat = statistic.filter((recipeStat) => recipeStat.recipe_id !== recipe_id)
+    setStatistic(newStat)
+    const newPublRecipes = publishedRecipes.filter((recipe) => recipe.recipe_id !== recipe_id)
+    setPublishedRecipes(newPublRecipes)
+  }
+
+  const style = {
+    margin: 0,
+    top: 'auto',
+    right: 60,
+    bottom: 60,
+    left: 'auto',
+    position: 'fixed',
+};
   
   return (
     <>
@@ -282,6 +312,9 @@ export default function ContributorProfileScreen () {
         width: '80%'
         }}>
           {renderContributorRecipesCard()}
+          <Fab color="primary" aria-label="add" size="large" style={style}>
+            <AddIcon />
+          </Fab>
         </div>}
         {(tabValue == 'Saved' || tabValue == 'Drafted') && <div style={{
           position: 'relative',

@@ -11,6 +11,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea, CardActions } from '@mui/material';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import PersonIcon from '@mui/icons-material/Person';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { APICall } from '../helperFunc';
 
 
@@ -23,12 +25,10 @@ export default function ContributorRecipeCard(props) {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setAnchorEl(null);
   };
-
-  console.log(props.statistic)
   
   const deleteRecipe = async() => {
-    setAnchorEl(null);
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -38,7 +38,23 @@ export default function ContributorRecipeCard(props) {
         "recipe_id" : props.object.recipe_id
       }
       await APICall(requestBody, '/recipe_details/delete', 'DELETE', headers);
-      props.afterDelete()
+      props.afterDelete(props.object.recipe_id)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const handleLike = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const requestBody = {
+        "recipe_id" : props.object.recipe_id,
+      }
+      await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
+      props.afterLike()
     } catch (err) {
       alert(err);
     }
@@ -46,13 +62,13 @@ export default function ContributorRecipeCard(props) {
 
   return (
     <Card sx={{ width:'100%', m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
-      {(props.isEditable) && <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
+      {/* {(props.isEditable) && <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
         <MoreHorizIcon />
       </IconButton>}
       {(props.isEditable) && <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={() => deleteRecipe()}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
-      </Menu>}
+      </Menu>} */}
       <CardActionArea>
         <div style={{display:'flex', flexDirection:'row', width:'100%', alignItems:'center'}}>
             <div style={{flex: 1, maxWidth: '50%', paddingRight:'40px'}}>
@@ -73,23 +89,33 @@ export default function ContributorRecipeCard(props) {
                   {props.object.recipe_desc}
                 </div>
               </CardContent>
+              <CardActions className={styles.card_action}>
+                <div>
+                  <IconButton aria-label="add to favorites" onClick={() => handleLike()}>
+                    <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
+                  </IconButton>
+                  { (props.isDelete) && <IconButton aria-label="delete" onClick={() => deleteRecipe()}>
+                    <DeleteIcon></DeleteIcon>
+                  </IconButton>}
+                </div>
+              </CardActions>
             </div>
             <div style={{flex: 1, display:'flex'}}>
-                <RatingsField />
+                <RatingsField statistic={props.statistic}/>
                 <div style={{flex: 1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-evenly'}}>
 
                   <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>
                     <div style={{display: 'flex', alignItems:'center'}}>
                       <StarRateIcon />
-                      {/* <span>{props.statistic.stats["avg rating"]} / 5</span> */}
+                      <span>{props.statistic.stats["avg rating"]} / 5</span>
                     </div>
-                    {/* <div> {props.statistic.stats["num saves"][0]} Users Ratings </div> */}
+                    <div> {props.statistic.stats["num ratings"]} Users Ratings </div>
                   </div>
 
                   <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>
                     <div style={{display: 'flex', alignItems:'center'}}>
                       <PersonIcon /><FavoriteIcon/>
-                      <span>Value</span>
+                      <span>{props.statistic.stats["num saves"][0]}</span>
                     </div>
                   </div>
                 </div>

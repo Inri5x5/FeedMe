@@ -286,7 +286,8 @@ def dash_statistics():
                 "four star": four_rating,
                 "five star": five_rating,
                 "avg rating": avg_rating,
-                "num saves": num_saves
+                "num saves": num_saves,
+                "num ratings": num_ratings
             }
         }
 
@@ -386,8 +387,6 @@ def recipe_details_delete():
     req = request.get_json()
     token = request.headers.get('token')
     recipe_id = (req['recipe_id'])
-    print("ini naaaaaaaaaa")
-    print(recipe_id)
 
     # Error if blank recipe id
     if recipe_id is None: 
@@ -440,7 +439,7 @@ def save():
         if user_details["is_contributor"] == False:
             c.execute("DELETE FROM recipeSaves WHERE ruser_id = ? AND recipe_id = ?", [id, recipe_id])
         else:
-            c.execute("DELETE FROM recipeSaves WHERE ruser_id = ? AND recipe_id = ?", [id, recipe_id])
+            c.execute("DELETE FROM recipeSaves WHERE contributor_id = ? AND recipe_id = ?", [id, recipe_id])
     
     conn.commit()
     conn.close()
