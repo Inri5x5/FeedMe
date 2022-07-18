@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import { APICall, fileToDataUrl } from '../helperFunc';
 import NavigationBarHome from '../components/NavigationBarHome';
 import styles from './styles/ModifyRecipe.module.css';
@@ -11,15 +11,15 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import SearchBarRecipe from '../components/SearchBarRecipe';
 
 export default function ModifyRecipes () {
+  const id = useParams();
   const navigate = useNavigate();
-  const [ingredients, setIngredients] = React.useState([])
-  const [steps, setSteps] = React.useState([])
-  const [tags, setTags] = React.useState([])
+  const [ingredients, setIngredients] = React.useState([{}])
+  const [steps, setSteps] = React.useState([{}])
+  const [tags, setTags] = React.useState([{}])
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
   const is_contributor = localStorage.getItem('is_contributor');
   const token = localStorage.getItem('token');
-  const id = 3;
   
   /* For SearchBar */
 	const [listIngredient, setListIngredient] = React.useState([]);
@@ -58,7 +58,9 @@ export default function ModifyRecipes () {
   
   React.useEffect(() => { 
     let isFetch = true;
-    getDetails();
+    if (Object.keys(id).length !== 0) {
+      getDetails();
+    }
     getAllCategories();
 		getAllIngredients();
     return () => isFetch = false;
@@ -70,7 +72,7 @@ export default function ModifyRecipes () {
         'Content-Type': 'application/json',
         'token': token,
       };
-      const data = await APICall(null, `/recipe_details/view?id=${id}`, 'GET', headers);
+      const data = await APICall(null, `/recipe_details/view?id=${id.id}`, 'GET', headers);
       if (data.error) {
         throw new Error(data.error);
       }
@@ -191,7 +193,13 @@ export default function ModifyRecipes () {
     }
   }
   
-  const handleSave = async () => {
+  const handleSave = async (state) => {
+    let pass_id
+    if(Object.keys(id).length !== 0) {
+      pass_id = -1
+    } else {
+      pass_id = id.id
+    }
     const ingredient = recipe.ingredients
     const step = recipe.steps
     const tag = recipe.tags
@@ -201,7 +209,7 @@ export default function ModifyRecipes () {
         'token': token,
       };
       const requestBody = {
-        recipe_id: -1,
+        recipe_id: pass_id,
         title: `${recipe.title}`,
         description: `${recipe.description}`,
         image: `${recipe.image}`,
@@ -212,7 +220,7 @@ export default function ModifyRecipes () {
         tags: tag,
         steps: step,
         video: '',
-        public_state: 'private'
+        public_state: state
       }
       const data = await APICall(requestBody, `/recipe_details/update`, 'PUT', headers);
       if (data.error) {
@@ -335,25 +343,27 @@ export default function ModifyRecipes () {
               color: '#F9D371'
             }
             }}
-          onClick={() => handleSave()}
+          onClick={() => handleSave('private')}
           >
           Save
         </Button>
-        <Button variant="contained" endIcon={<SendIcon />} 
-          sx={{ 
-            ml: '5%', 
-            mb: '2%', 
-            backgroundColor: '#F9D371', 
-            color: '#F47340',
-            fontFamily: "'Righteous', serif",
-            '&:hover' : {
-              backgroundColor: '#F47340',
-              color: '#F9D371'
-            }
-            }}
-            onClick={() => handleSave()}>
-          Publish
-        </Button>
+        {is_contributor === 'true' && 
+          <Button variant="contained" endIcon={<SendIcon />} 
+            sx={{ 
+              ml: '5%', 
+              mb: '2%', 
+              backgroundColor: '#F9D371', 
+              color: '#F47340',
+              fontFamily: "'Righteous', serif",
+              '&:hover' : {
+                backgroundColor: '#F47340',
+                color: '#F9D371'
+              }
+              }}
+              onClick={() => handleSave('public')}>
+            Publish
+          </Button>
+        }
       </div>
     </div>
   </div>

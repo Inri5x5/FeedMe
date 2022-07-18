@@ -25,6 +25,7 @@ const App = () => {
           <Route path="/teachUs" element={<TeachUsScreen />} />
           <Route path="/recipe_details/:id" element={<RecipeDetailsScreen />} />
           <Route path="/recipe/add" element={<ModifyRecipes />} />
+          <Route path="/recipe/edit/:id" element={<ModifyRecipes />} />
         </Routes>
       </BrowserRouter>
     </>
