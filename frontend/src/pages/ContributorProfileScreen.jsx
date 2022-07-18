@@ -71,6 +71,32 @@ export default function ContributorProfileScreen () {
     }
   }
 
+  const fetchMyRecipes = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
+      let data = []
+      for(let i = 0; i < temp_data.recipes.length; i++) {
+        data.push({
+          "recipe_id" : temp_data.recipes[i].recipe_id,
+          "recipe_name": temp_data.recipes[i].title,
+          "recipe_desc": temp_data.recipes[i].description,
+          "recipe_time": temp_data.recipes[i].time_required,
+          "is_liked": temp_data.recipes[i].saved,
+          "recipe_ratings": temp_data.recipes[i].avg_rating,
+          "recipe_tags": temp_data.recipes[i].tags,
+          "recipe_image": temp_data.recipes[i].image
+        })
+      }
+      setDraftRecipes(data)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
   const fetchStatistics = async() => {
     try {
       const headers = {
@@ -78,6 +104,7 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/statistics', 'GET', headers);
+      setStatistic(temp_data.statistics)
     } catch (err) {
       alert(err);
     }
@@ -130,11 +157,11 @@ export default function ContributorProfileScreen () {
     } else if (tabValue === 'Rated') {
       fetchRated()
     } else if (tabValue === 'Drafted') {
-      setDraftRecipes([])
+      fetchMyRecipes()
     } else if (tabValue === 'Published') {
       fetchPublishedRecipes()
     } else if (tabValue === 'Video') {
-
+      // TODO
     }
   }, [tabValue])
 
@@ -220,8 +247,13 @@ export default function ContributorProfileScreen () {
   const renderContributorRecipesCard = () => {
     let content = []
     for (let i = 0; i < publishedRecipes.length; i++) {
+      let index = 0
+      for (let j = 0; j < statistic.length; j++) {
+        if (statistic[j].recipe_id === publishedRecipes[i].recipe_id) index = j
+      }
+      console.log(statistic[index])
       content.push(
-        <ContributorRecipeCard object={publishedRecipes[i]} isEditable={true} isDelete={true} afterDelete={fetchPublishedRecipes}/>
+        <ContributorRecipeCard object={publishedRecipes[i]} isEditable={true} isDelete={true} statistic={statistic[index]} afterDelete={fetchPublishedRecipes}/>
       )
     }
     return content

@@ -148,6 +148,7 @@ export default function ModifyRecipes () {
         description: `${recipe.description}`,
         image: `${recipe.image}`,
         time_required: `${recipe.time_required}`,
+        video : '',
         servings: `${recipe.servings}`,
         public_state: 'private'
       }

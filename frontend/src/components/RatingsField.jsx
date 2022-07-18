@@ -1,25 +1,24 @@
 import React from 'react'
 import styles from './styles/RatingsField.module.css'
 
-const RatingsField = () => {
+const RatingsField = (props) => {
 
   const createContent = () => {
     let content = [];
-    for (let i = 5; i >= 1; i--){
-      content.push(
-        <div className={styles["reviews__single_star_average"]}>
-          <div className={styles["single_star_average__amount"]}> {i} star</div>
-          <div className={styles["single_star_average__progress_bar"]}>
-            <progress
-              className={styles["progress_bar__data"]}
-              max="100"
-              value={i*10}
-            ></progress>
-          </div>
-          <div className={styles["single_star_average__percentage"]}>{i*10}%</div>
+    // console.log(props.statistic)
+    content.push(
+      <div className={styles["reviews__single_star_average"]}>
+        <div className={styles["single_star_average__amount"]}> 5 star</div>
+        <div className={styles["single_star_average__progress_bar"]}>
+          <progress
+            className={styles["progress_bar__data"]}
+            max="100"
+            value={5*10}
+          ></progress>
         </div>
-      )
-    }
+        <div className={styles["single_star_average__percentage"]}>{5*10}%</div>
+      </div>
+    )
     return content;
   }
   return (

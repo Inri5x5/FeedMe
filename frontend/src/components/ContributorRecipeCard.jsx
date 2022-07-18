@@ -24,6 +24,8 @@ export default function ContributorRecipeCard(props) {
   };
   const handleClose = () => {
   };
+
+  console.log(props.statistic)
   
   const deleteRecipe = async() => {
     setAnchorEl(null);
@@ -35,7 +37,6 @@ export default function ContributorRecipeCard(props) {
       const requestBody = {
         "recipe_id" : props.object.recipe_id
       }
-      console.log(props.object.recipe_id)
       await APICall(requestBody, '/recipe_details/delete', 'DELETE', headers);
       props.afterDelete()
     } catch (err) {
@@ -57,7 +58,7 @@ export default function ContributorRecipeCard(props) {
             <div style={{flex: 1, maxWidth: '50%', paddingRight:'40px'}}>
               <CardMedia
               component="img"
-              height="250"
+              height="290"
               image={props.object.recipe_image}
               alt={props.object.recipe_name}
               sx={{
@@ -80,9 +81,9 @@ export default function ContributorRecipeCard(props) {
                   <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>
                     <div style={{display: 'flex', alignItems:'center'}}>
                       <StarRateIcon />
-                      <span>Value / 5</span>
+                      {/* <span>{props.statistic.stats["avg rating"]} / 5</span> */}
                     </div>
-                    <div> X Users Ratings </div>
+                    {/* <div> {props.statistic.stats["num saves"][0]} Users Ratings </div> */}
                   </div>
 
                   <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>

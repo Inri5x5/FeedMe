@@ -247,8 +247,8 @@ def dash_statistics():
             SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
             SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating
         FROM recipes r
-            JOIN publicRecipes pr ON pr.recipe_id = r.id
-            JOIN recipeRatings rr ON rr.recipe_id = r.id
+            LEFT JOIN publicRecipes pr ON pr.recipe_id = r.id
+            LEFT JOIN recipeRatings rr ON rr.recipe_id = r.id
         WHERE pr.contributor_id = ?
         GROUP BY r.id
     '''
@@ -261,7 +261,13 @@ def dash_statistics():
         recipe_id, one_rating, two_rating, three_rating, four_rating, five_rating = i
 
         # Average rating = sum of ratings/total number of ratings
-        avg_rating = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)/(one_rating + two_rating + three_rating + four_rating + five_rating)
+        num_ratings = one_rating + two_rating + three_rating + four_rating + five_rating
+        sum_ratings = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)
+
+        if num_ratings == 0:
+            avg_rating = 0
+        else:
+            avg_rating = sum_ratings/num_ratings
 
         # Number of recipe saves
         cur.execute('SELECT COUNT(*) FROM recipeSaves WHERE recipe_id = ?', [recipe_id])
@@ -424,7 +430,6 @@ def save():
     # Get user id
     user_details = decode_token(conn, token) 
     id = user_details["user_id"]
-    id = 3
     c = conn.cursor()
     if has_saved(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
