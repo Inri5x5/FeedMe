@@ -538,8 +538,6 @@ def recipe_details_update():
     user_details = decode_token(conn, token)
     user_id = user_details["user_id"]
 
-    # Get user input
-    req = request.get_json()
     print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
@@ -558,6 +556,7 @@ def recipe_details_update():
         conn.commit()
     
     update_recipe_details(conn, user_details, recipe_id, req)
+    c.close()
 
     return {}
 

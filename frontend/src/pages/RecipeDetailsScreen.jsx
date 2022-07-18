@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { APICall } from '../helperFunc';
 import NavigationBarHome from '../components/NavigationBarHome';
 import FilterTagLabel from '../components/FilterTagLabel';
@@ -13,7 +13,7 @@ import Rating from '@mui/material/Rating';
 
 export default function RecipeDetailsScreen () {
   const token = localStorage.getItem('token');
-  const id = 0;
+  const id = useParams();
   React.useEffect(() => { 
     let isFetch = true;
     getDetails();
@@ -24,7 +24,6 @@ export default function RecipeDetailsScreen () {
   const [starsRating, setStarsRating] = React.useState(null);
   const [recipe, setRecipe] = React.useState({});
   const [tags, setTags] = React.useState([]);
-  const [saved, setSaved] = React.useState();
   const [ingredients, setIngredients] = React.useState([]);
   const [steps, setSteps] = React.useState([]);
   const [avg_rating, setAvgRate] = React.useState(0);
@@ -42,7 +41,6 @@ export default function RecipeDetailsScreen () {
       console.log(data);
       setRecipe(data);
       setTags(data.tags);
-      setSaved(data.saved);
       setIngredients(data.ingredients);
       setSteps(data.steps);
       setAvgRate(data.avg_rating);
@@ -80,7 +78,7 @@ export default function RecipeDetailsScreen () {
         'token': token,
       };
       await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
-      console.log(recipe)
+      getDetails()
     } catch (err) {
       alert(err);
     }
@@ -106,8 +104,8 @@ export default function RecipeDetailsScreen () {
       })}
     </div>
     <div className={styles.icon_container}>
-      {saved === false && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Unsaved} className={styles.saveIcon}/> </button>}
-      {saved === true && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Saved} className={styles.saveIcon}/> </button>}
+      {recipe.saved === false && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Unsaved} className={styles.saveIcon}/> </button>}
+      {recipe.saved === true && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Saved} className={styles.saveIcon}/> </button>}
       <Rating name="half-rating" value={avg_rating} precision={0.5} size="large" sx={{ verticalAlign: '-10px', ml: '5px'}} readOnly/>
       <span> {avg_rating} </span>
     </div>
@@ -121,7 +119,7 @@ export default function RecipeDetailsScreen () {
         <div className={styles.ingredients_box}>
           <ul className={styles.ingredients_list}>
             {ingredients.map((list, index) => {
-              return <li> {list.decription} </li>
+              return <li> {list.description} </li>
             })}
           </ul>
         </div>

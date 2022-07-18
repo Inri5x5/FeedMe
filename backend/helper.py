@@ -352,6 +352,7 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     conn.commit()
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
+    print(ingredients)
     for i_dict in ingredients:
         c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['description']))
 
@@ -368,7 +369,7 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
     for s_dict in steps:
-        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], s_dict['image']))
+        c.execute("INSERT or REPLACE INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
 
     # if contributor has public_state = public it should go into "Public Recipes"
     # if contributor has public_state = private it should go into "Personal Recipes"
@@ -380,6 +381,8 @@ def update_recipe_details(conn, user_details, recipe_id, req):
         conn.commit()
     # If update request is made my ruser, it should go into personal recipes with new recipe id - ** should there be a author field here?
     else:
-        c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_did) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+        c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+    
+    c.close()
     
     return 
