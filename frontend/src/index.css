@@ -1,13 +1,13 @@
-html,body {
+html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh;
 }
 
 body {
-  background-color: white;
+  background-color: #e6efa1;
 }
 
-.root {
-  margin: auto;
+#root {
+  height: 100%;
 }
