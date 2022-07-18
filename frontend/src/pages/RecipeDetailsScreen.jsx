@@ -9,7 +9,6 @@ import Serving from '../assets/serving.svg';
 import Hat from '../assets/chef-hat.svg'
 import Saved from '../assets/saved.svg'
 import Unsaved from '../assets/unsaved.svg'
-import { FaStar } from "react-icons/fa";
 import Rating from '@mui/material/Rating';
 
 export default function RecipeDetailsScreen () {
@@ -22,9 +21,7 @@ export default function RecipeDetailsScreen () {
     }, [id])
   
   const navigate = useNavigate();
-  const stars = Array(5).fill(0);
-  const [starsRating, setStarsRating] = React.useState(0);
-  const [hoverValue, setHoverValue] = React.useState(undefined);
+  const [starsRating, setStarsRating] = React.useState(null);
   const [recipe, setRecipe] = React.useState({});
   const [tags, setTags] = React.useState([]);
   const [saved, setSaved] = React.useState();
@@ -36,6 +33,7 @@ export default function RecipeDetailsScreen () {
     try {
       const headers = {
         'Content-Type': 'application/json',
+        'token': token,
       };
       const data = await APICall(null, `/recipe_details/view?id=${id}`, 'GET', headers);
       if (data.error) {
@@ -52,21 +50,27 @@ export default function RecipeDetailsScreen () {
       alert(err);
     }
   }
-  
-  const handleRating = value => {
-    setStarsRating(value)
-  }
 
-  const handleMouseOver = newHoverValue => {
-    setHoverValue(newHoverValue)
-  };
-
-  const handleMouseLeave = () => {
-    setHoverValue(undefined)
+  const rateRecipe = async () => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token': token,
+      }
+      const requestedBody = {
+        rating: starsRating,
+        recipe_id: recipe.recipe_id,
+      }
+      const data = await APICall(requestedBody, `/save_and_rate/rate`, 'POST', headers);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+    } catch (err) {
+      alert(err);
+    }
   }
   
   const handleSave = async () => {
-    console.log(token)
     try {
       const requestBody = {
         recipe_id: recipe.recipe_id,
@@ -76,6 +80,7 @@ export default function RecipeDetailsScreen () {
         'token': token,
       };
       await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
+      console.log(recipe)
     } catch (err) {
       alert(err);
     }
@@ -102,7 +107,7 @@ export default function RecipeDetailsScreen () {
     </div>
     <div className={styles.icon_container}>
       {saved === false && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Unsaved} className={styles.saveIcon}/> </button>}
-      {saved === true && <button className={styles.save_button} onClick={()=> setSaved(false)}> Save Recipe <img src={Saved} className={styles.saveIcon}/> </button>}
+      {saved === true && <button className={styles.save_button} onClick={handleSave}> Save Recipe <img src={Saved} className={styles.saveIcon}/> </button>}
       <Rating name="half-rating" value={avg_rating} precision={0.5} size="large" sx={{ verticalAlign: '-10px', ml: '5px'}} readOnly/>
       <span> {avg_rating} </span>
     </div>
@@ -131,24 +136,17 @@ export default function RecipeDetailsScreen () {
     <div className={styles.rateContainer}>
       <h2> Leave a Rating! </h2>
       <div style={styles.stars}>
-        {stars.map((_, index) => {
-          return (
-            <FaStar
-              key={index}
-              size={35}
-              onClick={() => handleRating(index + 1)}
-              onMouseOver={() => handleMouseOver(index + 1)}
-              onMouseLeave= {handleMouseLeave}
-              color={(hoverValue || starsRating) > index ? '#FFBA5A' : '#a9a9a9'}
-              style={{
-                marginRight: 10,
-                cursor: "pointer"
-              }}
-            />
-          )
-        })}
+         <Rating 
+          value={starsRating} 
+          precision={1} 
+          size="large" 
+          sx={{ verticalAlign: '-10px', ml: '5px'}}
+          onChange={(event, newValue) => {
+            setStarsRating(newValue);
+          }}
+          />
       </div>
-      <button className={styles.save_button}>
+      <button className={styles.save_button} onClick={rateRecipe}>
         Submit
       </button>
     </div>

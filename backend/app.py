@@ -420,9 +420,9 @@ def save():
         raise InputError("No such recipe id")
 
     # Get user id
-    user_details = decode_token(conn, token)
+    user_details = decode_token(conn, token) 
     id = user_details["user_id"]
-    
+    id = 3
     c = conn.cursor()
     if has_saved(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
@@ -459,9 +459,9 @@ def rate():
     if not valid_recipe_id(conn, recipe_id):
         raise InputError("No such recipe id")
 
-    #validate rating
-    if rating > 5 or rating < 0:
-        raise InputError("Rating out of range.")
+    # #validate rating
+    # if rating > 5 or rating < 0:
+    #     raise InputError("Rating out of range.")
     
     # Get user details 
     user_details = decode_token(conn, token)
@@ -469,7 +469,7 @@ def rate():
 
     c = conn.cursor()
     if user_details["is_contributor"] == False:
-        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND rusr_id = ?", [recipe_id, id])
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
         if has_rated(conn, recipe_id, user_details) == True:
             c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
             c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
@@ -486,7 +486,7 @@ def rate():
     conn.commit()
     conn.close()
 
-    return
+    return {}
 
 @app.route('/recipe_details/view', methods = ['GET'])
 def recipe_details_view():
@@ -534,7 +534,7 @@ def recipe_details_update():
 
     # Get user input
     req = request.get_json()
-
+    print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
@@ -547,7 +547,7 @@ def recipe_details_update():
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id])
+        c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
     
     update_recipe_details(conn, user_details, recipe_id, req)
 

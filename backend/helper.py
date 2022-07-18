@@ -52,10 +52,8 @@ def decode_token(conn, token):
 
 def validate_token(conn, token):
     cur = conn.cursor()
-    # print(token)
     cur.execute('SELECT * FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
-    # print(info)
     cur.close()
 
     if not info:
@@ -65,7 +63,6 @@ def validate_token(conn, token):
 
 def add_token(conn, token, user_id, is_contributor):
     cur = conn.cursor()
-    print(token)
     if is_contributor:
         cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, None, user_id))
     else:
@@ -321,7 +318,6 @@ def valid_recipe_id(conn, recipe_id):
 
 def has_saved(conn, recipe_id, user_details):
     if (user_details == -1): return False
-    
     c = conn.cursor()
     if user_details["is_contributor"] == False:
         c.execute("SELECT * FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, user_details["user_id"]])
@@ -361,9 +357,9 @@ def update_recipe_details(conn, user_details, recipe_id, req):
         c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag__id']))
     
     # Update "Skill Video in Recipe" **(Pending Confirmation)
-    videos = req['skill_videos']
-    for v in videos:
-         c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
+    # videos = req['skill_videos']
+    # for v in videos:
+    #      c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
     
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
