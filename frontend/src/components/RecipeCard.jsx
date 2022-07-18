@@ -12,6 +12,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
 
 import styles from './styles/RecipeCard.module.css'
+import { APICall } from '../helperFunc';
 
 export default function RecipeCard(props) {
 
@@ -23,6 +24,22 @@ export default function RecipeCard(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLike = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const requestBody = {
+        "recipe_id" : props.object.recipe_id,
+      }
+      await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
+      props.handleAfterLike()
+    } catch (err) {
+      alert(err);
+    }
+  }
 
   return (
     <Card sx={{ maxWidth: 345, m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
@@ -51,7 +68,7 @@ export default function RecipeCard(props) {
       </CardActionArea>
       <CardActions className={styles.card_action}>
         <div>
-          <IconButton aria-label="add to favorites">
+          <IconButton aria-label="add to favorites" disabled={!props.isSaveable} onClick={() => handleLike()}>
             <FavoriteIcon style={{color: (props.object.is_liked) ? 'red' : 'gray'}} />
           </IconButton>
         </div>

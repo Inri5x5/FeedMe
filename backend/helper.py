@@ -34,10 +34,11 @@ def decode_token(conn, token):
     cur = conn.cursor()
     cur.execute('SELECT ruser_id, contributor_id FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
+    print(info)
     cur.close()
 
     # Find user id
-    if info[1]:
+    if info[1] is not None:
         user_id = get_contributor(conn, email)
         is_contributor = True
     else:
@@ -52,10 +53,10 @@ def decode_token(conn, token):
 
 def validate_token(conn, token):
     cur = conn.cursor()
-    print(token)
+    # print(token)
     cur.execute('SELECT * FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
-    print(info)
+    # print(info)
     cur.close()
 
     if not info:
@@ -216,6 +217,8 @@ def get_recipe_details(conn, recipe_id, user_details):
     c = conn.cursor()
 
     # Get General Recipe details
+    print("Recipe_id")
+    print(recipe_id)
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
     ret.update({'recipe_id' : recipe[0]})
@@ -296,14 +299,17 @@ def get_recipe_details(conn, recipe_id, user_details):
     for row in ratings:
         counter = counter + 1
         total = total + row[3]
-    avg_rating = total / counter
+    if (counter == 0) :
+        avg_rating = 0
+    else :
+        avg_rating = total / counter
     ret.update({'avg_rating' : avg_rating})
 
     # get saved or not 
     b = has_saved(conn, recipe_id, user_details)
     ret.update({'saved' : b})
 
-    conn.close()
+    # conn.close()
 
     return ret
 

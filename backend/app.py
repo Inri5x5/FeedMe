@@ -188,6 +188,13 @@ def search_recipes():
 
     # Get params
     req = request.get_json()
+    token = request.headers.get('token')
+    if (token != -1):
+        user_details = decode_token(conn, token) 
+    else :
+        user_details = -1
+
+
     ingredients_req = req['ingredients_id']
 
     cur.execute('''
@@ -206,7 +213,11 @@ def search_recipes():
         ingredients_split_int = [int(i) for i in ingredients_split]    
        
         if set(ingredients_split_int) >= set(ingredients_req) or ingredients_req is None:
-            recipe_details = get_recipe_details(conn, recipe_id, -1)
+            recipe_details = get_recipe_details(conn, recipe_id, user_details)
+            print("User data")
+            print(user_details)
+            print("Recipe Data")
+            print(recipe_details)
             recipes.append(recipe_details)
     
     return {
@@ -218,7 +229,7 @@ def dash_statistics():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
+    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
@@ -238,7 +249,7 @@ def dash_statistics():
             SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
             SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
             SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating,
+            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating
         FROM recipes r
             JOIN publicRecipes pr ON pr.recipe_id = r.id
             JOIN recipeRatings rr ON rr.recipe_id = r.id
@@ -290,27 +301,26 @@ def dash_saved():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
+    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
     # Decode token to get user details
     user = decode_token(conn, token)
-
     cur = conn.cursor()
     if user["is_contributor"]:  # Contributor
         cur.execute('SELECT recipe_id FROM recipeSaves WHERE contributor_id = ?', [user["user_id"]])
     else: # RUser
         cur.execute('SELECT recipe_id FROM recipeSaves WHERE ruser_id = ?', [user["user_id"]])
     info = cur.fetchall()
-    cur.close()
 
     recipes = []
     for i in info:
-        recipe_details = get_recipe_details(conn, i)
+        recipe_details = get_recipe_details(conn, i[0], user)
         recipes.append(recipe_details)
     
+    cur.close()
     return {
         "recipes": recipes
     }
@@ -320,7 +330,7 @@ def dash_rated():
     conn = db_connection()
 
     # Validate token
-    req = request.get_json()
+    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
@@ -347,15 +357,15 @@ def dash_rated():
     for i in info:
         recipe_id, rating = i
         if rating == 1:
-            one_star_recipes.append(get_recipe_details(conn, recipe_id))
+            one_star_recipes.append(get_recipe_details(conn, recipe_id, user))
         elif rating == 2:
-            two_star_recipes.append(get_recipe_details(conn, recipe_id))
+            two_star_recipes.append(get_recipe_details(conn, recipe_id, user))
         elif rating == 3:
-            three_star_recipes.append(get_recipe_details(conn, recipe_id))
+            three_star_recipes.append(get_recipe_details(conn, recipe_id, user))
         elif rating == 4:
-            four_star_recipes.append(get_recipe_details(conn, recipe_id))
+            four_star_recipes.append(get_recipe_details(conn, recipe_id, user))
         else: # rating == 5
-            five_star_recipes.append(get_recipe_details(conn, recipe_id))
+            five_star_recipes.append(get_recipe_details(conn, recipe_id, user))
 
     return {
         "1-star recipes": one_star_recipes,
@@ -487,13 +497,22 @@ def recipe_details_view():
 
     # Connect to db 
     conn = db_connection()
+    
+    token = request.headers.get('token')
 
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Gey user_id
+    user = decode_token(conn, token)
+    
     # Validate recipe id
     if not valid_recipe_id(conn, recipe_id):
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id, -1)
+    ret = get_recipe_details(conn, recipe_id, user)
     
     conn.close()
 
@@ -543,7 +562,7 @@ def dash_my_recipes():
     c = conn.cursor()
 
     # Get user input
-    req = request.get_json()
+    # req = request.get_json()
     token = request.headers.get('token')
     # token = request.args.get('query')
 
@@ -562,13 +581,13 @@ def dash_my_recipes():
         recipe_ids = c.fetchall()
         for i in recipe_ids:
             r_id = i
-            recipes.append(get_recipe_details(conn, r_id))
+            recipes.append(get_recipe_details(conn, r_id[0], user))
     else:
         c.execute("SELECT recipe_id FROM personalRecipes WHERE ruser_id = ?", [user_id])
         recipe_ids = c.fetchall()
         for i in recipe_ids:
             r_id = i
-            recipes.append(get_recipe_details(conn, r_id))
+            recipes.append(get_recipe_details(conn, r_id[0], user))
 
     conn.close()
 
@@ -593,9 +612,27 @@ def get_all_tags():
         "tags": tags
     }
 
-    ret = {"recipes" : recipes}
 
-    return ret
+# @app.route('/verify/token', methods = ['GET'])
+# def get_all_tags():
+#     conn = db_connection()
+
+#     # Validate token
+#     token = request.headers.get('token')
+#     if not validate_token(conn, token):
+#         raise AccessError("Invalid token")
+
+#     user_details = decode_token(conn, token)
+#     if (user_details["is_contributor"] == True) :
+#         return {
+#             "is_contributor" : True
+#         }
+#     else :
+#         return {
+#             "is_contributor" : False
+#         }
+    
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

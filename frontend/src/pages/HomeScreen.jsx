@@ -44,56 +44,54 @@ const HomeScreen = () => {
       try {
         const headers = {
           'Content-Type': 'application/json',
+          'token' : localStorage.getItem('token') ? localStorage.getItem('token') : -1
         };
-        for(let i = 0; i < selectedIngredients.length; i++) {
-          ing_ids.push(selectedIngredients[i].i_id)
-        }
-        const requestBody = {
-          "ingredients_id" : ing_ids,
-        }
-        temp_data = await APICall(requestBody, '/search/recipes', 'POST', headers);
-        console.log(temp_data)
+        if (selectedIngredients.length > 0) {
+          for(let i = 0; i < selectedIngredients.length; i++) {
+            ing_ids.push(selectedIngredients[i].i_id)
+          }
+          const requestBody = {
+            "ingredients_id" : ing_ids,
+          }
+          temp_data = await APICall(requestBody, '/search/recipes', 'POST', headers);
+          console.log(temp_data)
+  
+          for(let i = 0; i < temp_data.recipes.length; i++) {
+            data.push({
+              "recipe_id" : temp_data.recipes[i].recipe_id,
+              "recipe_name": temp_data.recipes[i].title,
+              "recipe_desc": temp_data.recipes[i].description,
+              "recipe_time": temp_data.recipes[i].time_required,
+              "is_liked": temp_data.recipes[i].saved,
+              "recipe_ratings": temp_data.recipes[i].avg_rating,
+              "recipe_tags": temp_data.recipes[i].tags,
+              "recipe_image": temp_data.recipes[i].image
+            })
+          }
+          if (selectedTags.length > 0) {
+            let result = []
+            let tempSelectedTagId = []
+            for (let i = 0; i < selectedTags.length; i++) {
+              tempSelectedTagId.push(selectedTags[i].tag_id)
+            }
+            for (let i = 0; i < data.length; i++) {
+              let tempAvailableTagId = []
+              for (let j = 0; j < data[i].recipe_tags.length; j++) {
+                tempAvailableTagId.push(data[i].recipe_tags[j].tag_id)
+              }
+              let isValidRecipe = tempSelectedTagId.every(tag_id => tempAvailableTagId.includes(tag_id))
+              if (isValidRecipe) result.push(data[i])
+            }
+            setFoundRecipes(result)
+          } else {
+            setFoundRecipes(data)
+            console.log(data)
+          }
 
-        for(let i = 0; i < temp_data.recipes.length; i++) {
-          data.push({
-            "recipe_id" : temp_data.recipes[i].recipe_id,
-            "recipe_name": temp_data.recipes[i].title,
-            "recipe_desc": temp_data.recipes[i].description,
-            "recipe_time": temp_data.recipes[i].time_required,
-            "is_liked": temp_data.recipes[i].saved,
-            "recipe_ratings": temp_data.recipes[i].avg_rating,
-            "recipe_tags": temp_data.recipes[i].tags,
-            "recipe_image": temp_data.recipes[i].image
-          })
         }
-        setFoundRecipes(data)
       } catch (err) {
         alert(err);
       }
-    }
-
-    const fetchRecipes = (ingredientList = selectedIngredients, tagList = selectedTags) => {
-       // Fetch the recipes
-       const fetchedRecipes = dummyRecipes
-       // Filter if there is some tags selected
-       let result = []
-       if (tagList.length > 0) {
-         let tempSelectedTagId = []
-         for (let i = 0; i < tagList.length; i++) {
-           tempSelectedTagId.push(tagList[i].tag_id)
-         }
-         for (let i = 0; i < fetchedRecipes.length; i++) {
-           let tempAvailableTagId = []
-           for (let j = 0; j < fetchedRecipes[i].recipe_tags.length; j++) {
-             tempAvailableTagId.push(fetchedRecipes[i].recipe_tags[j].tag_id)
-           }
-           let isValidRecipe = tempSelectedTagId.every(tag_id => tempAvailableTagId.includes(tag_id))
-           if (isValidRecipe) result.push(fetchedRecipes[i])
-         }
-        } else {
-          result = fetchedRecipes
-        }
-        setFoundRecipes(result)
     }
 
 
@@ -113,11 +111,11 @@ const HomeScreen = () => {
     React.useEffect(() => {
       if(selectedIngredients.length > 0) {
         localStorage.setItem('fm-ingredients', JSON.stringify(selectedIngredients))
-        asyncFetchRecipes()
       }
       if(selectedIngredients.length === 0) {
         localStorage.removeItem('fm-ingredients')
       }
+      asyncFetchRecipes()
     },[selectedIngredients])
 
     React.useEffect(() => {
@@ -127,22 +125,15 @@ const HomeScreen = () => {
       if(selectedTags.length === 0) {
         localStorage.removeItem('fm-tags')
       }
+      asyncFetchRecipes()
     },[selectedTags])
     
 
-
-    // Recipe Card Feature
-    
-    const handleLikeButton = (recipe_object) => {
-      // Post requst to Like
-      // Fetch Recipes
-      // Filter by tags
-    }
     const renderRecipesCard = () => {
       let content = []
       for (let i = 0; i < foundRecipes.length; i++) {
         content.push(
-          <RecipeCard object={foundRecipes[i]} isEditable={false}/>
+          <RecipeCard object={foundRecipes[i]} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={asyncFetchRecipes}/>
         )
       }
       return content
