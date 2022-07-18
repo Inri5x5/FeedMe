@@ -426,9 +426,9 @@ def save():
         raise InputError("No such recipe id")
 
     # Get user id
-    user_details = decode_token(conn, token)
+    user_details = decode_token(conn, token) 
     id = user_details["user_id"]
-    
+    id = 3
     c = conn.cursor()
     if has_saved(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
@@ -437,6 +437,9 @@ def save():
             c.execute("INSERT INTO recipeSaves(contributor, recipe_id) VALUES (?, ?)", (id, recipe_id))
     else:
         if user_details["is_contributor"] == False:
+            c.execute("SELECT * FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+            print("nosaved")
+            print(c.fetchall())
             c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
         else:
             c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
@@ -465,9 +468,9 @@ def rate():
     if not valid_recipe_id(conn, recipe_id):
         raise InputError("No such recipe id")
 
-    #validate rating
-    if rating > 5 or rating < 0:
-        raise InputError("Rating out of range.")
+    # #validate rating
+    # if rating > 5 or rating < 0:
+    #     raise InputError("Rating out of range.")
     
     # Get user details 
     user_details = decode_token(conn, token)
@@ -475,7 +478,7 @@ def rate():
 
     c = conn.cursor()
     if user_details["is_contributor"] == False:
-        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND rusr_id = ?", [recipe_id, id])
+        c.execute("SELECT * FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
         if has_rated(conn, recipe_id, user_details) == True:
             c.execute("DELETE FROM recipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
             c.execute("INSERT INTO recipeRatings(ruser_id, recipe_id, rating) VALUES (?, ?, ?)", (id, recipe_id, rating))
@@ -492,7 +495,7 @@ def rate():
     conn.commit()
     conn.close()
 
-    return
+    return {}
 
 @app.route('/recipe_details/view', methods = ['GET'])
 def recipe_details_view():
@@ -501,13 +504,22 @@ def recipe_details_view():
 
     # Connect to db 
     conn = db_connection()
+    
+    token = request.headers.get('token')
 
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Gey user_id
+    user = decode_token(conn, token)
+    
     # Validate recipe id
     if not valid_recipe_id(conn, recipe_id):
         raise InputError("No such recipe id")
     
     # Get recipe details 
-    ret = get_recipe_details(conn, recipe_id, -1)
+    ret = get_recipe_details(conn, recipe_id, user)
     
     conn.close()
 
@@ -531,7 +543,7 @@ def recipe_details_update():
 
     # Get user input
     req = request.get_json()
-
+    print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
@@ -544,7 +556,7 @@ def recipe_details_update():
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id])
+        c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
     
     update_recipe_details(conn, user_details, recipe_id, req)
 

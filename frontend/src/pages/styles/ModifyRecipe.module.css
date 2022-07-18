@@ -71,6 +71,11 @@
     font-size: 1.2em;
 }
 
+.form_control textarea {
+    resize: none;
+    overflow: auto;
+}
+
 .remove_button {
     margin-left: 10px;
     height: 2.5em;
