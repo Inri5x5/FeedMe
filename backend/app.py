@@ -189,7 +189,7 @@ def search_recipes():
     # Get params
     req = request.get_json()
     token = request.headers.get('token')
-    if (token != -1):
+    if (token != '-1'):
         user_details = decode_token(conn, token) 
     else :
         user_details = -1
@@ -214,10 +214,6 @@ def search_recipes():
        
         if set(ingredients_split_int) >= set(ingredients_req) or ingredients_req is None:
             recipe_details = get_recipe_details(conn, recipe_id, user_details)
-            print("User data")
-            print(user_details)
-            print("Recipe Data")
-            print(recipe_details)
             recipes.append(recipe_details)
     
     return {
@@ -383,10 +379,12 @@ def recipe_details_delete():
     # Get params
     req = request.get_json()
     token = request.headers.get('token')
-    recipe_id = req['recipe_id']
+    recipe_id = (req['recipe_id'])
+    print("ini naaaaaaaaaa")
+    print(recipe_id)
 
     # Error if blank recipe id
-    if not recipe_id: 
+    if recipe_id is None: 
         raise InputError("Recipe ID cannot be empty")
 
     # Error if recipe does not exist
@@ -430,16 +428,14 @@ def save():
     c = conn.cursor()
     if has_saved(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
-            print("I AM HERE SAVING A RECIPE AS AN RUSER!!")
             c.execute("INSERT INTO recipeSaves(ruser_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
         else:
             c.execute("INSERT INTO recipeSaves(contributor_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
     else:
         if user_details["is_contributor"] == False:
-            print("I AM HERE unSAVING A RECIPE AS AN RUSER!!")
-            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, id])
+            c.execute("DELETE FROM recipeSaves WHERE ruser_id = ? AND recipe_id = ?", [id, recipe_id])
         else:
-            c.execute("DELETE FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, id])
+            c.execute("DELETE FROM recipeSaves WHERE ruser_id = ? AND recipe_id = ?", [id, recipe_id])
     
     conn.commit()
     conn.close()

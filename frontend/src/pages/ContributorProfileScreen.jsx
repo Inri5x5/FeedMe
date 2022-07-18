@@ -78,7 +78,6 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/statistics', 'GET', headers);
-      console.log(temp_data)
     } catch (err) {
       alert(err);
     }
@@ -147,7 +146,7 @@ export default function ContributorProfileScreen () {
     
     for (let i = 0; i < listRecipes.length; i++) {
       content.push(
-        <RecipeCard object={listRecipes[i]} isEditable={false}/>
+        <RecipeCard object={listRecipes[i]} isEditable={false} isDelete={false}/>
       )
     }
     return content
@@ -169,7 +168,7 @@ export default function ContributorProfileScreen () {
             "recipe_ratings": value[j].avg_rating,
             "recipe_tags": value[j].tags,
             "recipe_image": value[j].image
-          }} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={fetchRated}/>
+          }} isEditable={false} isDelete={false} handleAfterLike={fetchRated}/>
         )
       }
       let wrapper = (
@@ -222,7 +221,7 @@ export default function ContributorProfileScreen () {
     let content = []
     for (let i = 0; i < publishedRecipes.length; i++) {
       content.push(
-        <ContributorRecipeCard object={publishedRecipes[i]} isEditable={true}/>
+        <ContributorRecipeCard object={publishedRecipes[i]} isEditable={true} isDelete={true} afterDelete={fetchPublishedRecipes}/>
       )
     }
     return content

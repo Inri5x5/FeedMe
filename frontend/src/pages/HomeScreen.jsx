@@ -55,6 +55,7 @@ const HomeScreen = () => {
           }
           temp_data = await APICall(requestBody, '/search/recipes', 'POST', headers);
           console.log(temp_data)
+      
   
           for(let i = 0; i < temp_data.recipes.length; i++) {
             data.push({
@@ -85,7 +86,7 @@ const HomeScreen = () => {
             setFoundRecipes(result)
           } else {
             setFoundRecipes(data)
-            console.log(data)
+
           }
 
         }
@@ -133,7 +134,7 @@ const HomeScreen = () => {
       let content = []
       for (let i = 0; i < foundRecipes.length; i++) {
         content.push(
-          <RecipeCard object={foundRecipes[i]} isEditable={false} isSaveable={(localStorage.getItem('token')) ? true : false} handleAfterLike={asyncFetchRecipes}/>
+          <RecipeCard object={foundRecipes[i]} isEditable={false} isDelete={false} handleAfterLike={asyncFetchRecipes}/>
         )
       }
       return content

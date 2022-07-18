@@ -11,6 +11,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea, CardActions } from '@mui/material';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import PersonIcon from '@mui/icons-material/Person';
+import { APICall } from '../helperFunc';
 
 
 import styles from './styles/ContributorRecipeCard.module.css'
@@ -22,8 +23,25 @@ export default function ContributorRecipeCard(props) {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    setAnchorEl(null);
   };
+  
+  const deleteRecipe = async() => {
+    setAnchorEl(null);
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const requestBody = {
+        "recipe_id" : props.object.recipe_id
+      }
+      console.log(props.object.recipe_id)
+      await APICall(requestBody, '/recipe_details/delete', 'DELETE', headers);
+      props.afterDelete()
+    } catch (err) {
+      alert(err);
+    }
+  }
 
   return (
     <Card sx={{ width:'100%', m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
@@ -31,7 +49,7 @@ export default function ContributorRecipeCard(props) {
         <MoreHorizIcon />
       </IconButton>}
       {(props.isEditable) && <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={() => deleteRecipe()}>Delete</MenuItem>
         <MenuItem onClick={handleClose}>Edit</MenuItem>
       </Menu>}
       <CardActionArea>
