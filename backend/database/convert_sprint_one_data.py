@@ -5,6 +5,9 @@ conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
 
+# TURN ON FOREIGN KEY CONSTRAINTS
+cursor.execute("PRAGMA foreign_keys = ON")
+
 # RUSERS TABLE
 drop_rusers_table_query = """
     DROP TABLE IF EXISTS rusers
@@ -67,8 +70,8 @@ create_tokens_table_query = """
         token string PRIMARY KEY NOT NULL,
         ruser_id integer,
         contributor_id integer,
-        FOREIGN KEY(ruser_id) REFERENCES ruser(id),
-        FOREIGN KEY(contributor_id) REFERENCES contributor(id)
+        FOREIGN KEY(ruser_id) REFERENCES rusers(id) ON DELETE CASCADE,
+        FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE
 )
 """
 
@@ -118,7 +121,7 @@ create_ingredients_table_query = """
         id interger PRIMARY KEY NOT NULL,
         ingredient_category_id integer NOT NULL,
         name text,
-        FOREIGN KEY(ingredient_category_id) REFERENCES ingredientCategories(id)
+        FOREIGN KEY(ingredient_category_id) REFERENCES ingredientCategories(id) ON DELETE CASCADE
 )
 """
 

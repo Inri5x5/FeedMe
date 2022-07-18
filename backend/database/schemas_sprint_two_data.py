@@ -5,6 +5,9 @@ conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
 
+# TURN ON FOREIGN KEY CONSTRAINTS
+cursor.execute("PRAGMA foreign_keys = ON")
+
 # TAG CATEGORIES TABLE
 drop_tag_categories_table_query = """
     DROP TABLE IF EXISTS tagCategories
@@ -31,7 +34,7 @@ create_tags_table_query = """
         id integer PRIMARY KEY NOT NULL,
         tag_category_id integer NOT NULL,
         name text,
-        FOREIGN KEY(tag_category_id) REFERENCES tagCategories(id)
+        FOREIGN KEY(tag_category_id) REFERENCES tagCategories(id) ON DELETE CASCADE
 )
 """
 
@@ -69,8 +72,8 @@ create_tag_in_recipe_table_query = """
     CREATE TABLE tagInRecipe (
         recipe_id interger NOT NULL,
         tag_id integer NOT NULL,
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
-        FOREIGN KEY(tag_id) REFERENCES tags(id)
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+        FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE
 )
 """
 
@@ -88,8 +91,8 @@ create_ingredient_in_recipe_table_query = """
         recipe_id interger NOT NULL,
         ingredient_id integer NOT NULL,
         description text NOT NULL,
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
-        FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+        FOREIGN KEY(ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE
 )
 """
 
@@ -108,7 +111,7 @@ create_steps_table_query = """
         step_number interger NOT NULL,
         description text NOT NULL,
         image text,
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
         CONSTRAINT PK_steps PRIMARY KEY (recipe_id, step_number)
 )
 """
@@ -127,9 +130,9 @@ create_recipe_saves_table_query = """
         ruser_id integer,
         contributor_id integer,
         recipe_id integer NOT NULL,
-        FOREIGN KEY(ruser_id) REFERENCES rusers(id),
-        FOREIGN KEY(contributor_id) REFERENCES contributors(id),
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
+        FOREIGN KEY(ruser_id) REFERENCES rusers(id) ON DELETE CASCADE,
+        FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE,
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
         CONSTRAINT PK_recipeSaves PRIMARY KEY (ruser_id, contributor_id, recipe_id)
 )
 """
@@ -148,9 +151,9 @@ create_personal_recipes_table_query = """
         ruser_id integer,
         contributor_id integer,
         recipe_id integer NOT NULL,
-        FOREIGN KEY(ruser_id) REFERENCES rusers(id),
-        FOREIGN KEY(contributor_id) REFERENCES contributors(id),
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
+        FOREIGN KEY(ruser_id) REFERENCES rusers(id) ON DELETE CASCADE,
+        FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE,
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
         CONSTRAINT PK_personalRecipes PRIMARY KEY (ruser_id, contributor_id, recipe_id)
 )
 """
@@ -168,8 +171,8 @@ create_public_recipes_table_query = """
     CREATE TABLE publicRecipes (
         recipe_id integer NOT NULL,
         contributor_id integer NOT NULL,
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
-        FOREIGN KEY(contributor_id) REFERENCES contributors(id),
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+        FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE,
         CONSTRAINT PK_publicRecipes PRIMARY KEY (recipe_id, contributor_id)
 )
 """
@@ -189,9 +192,9 @@ create_recipe_ratings_table_query = """
         contributor_id integer,
         recipe_id integer NOT NULL,
         rating integer NOT NULL,
-        FOREIGN KEY(ruser_id) REFERENCES rusers(id),
-        FOREIGN KEY(contributor_id) REFERENCES contributors(id),
-        FOREIGN KEY(recipe_id) REFERENCES recipes(id),
+        FOREIGN KEY(ruser_id) REFERENCES rusers(id) ON DELETE CASCADE,
+        FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE,
+        FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
         CONSTRAINT PK_recipeRatings PRIMARY KEY (ruser_id, contributor_id, recipe_id)
 )
 """

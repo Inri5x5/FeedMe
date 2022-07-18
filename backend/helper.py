@@ -14,6 +14,8 @@ def db_connection():
     conn = None
     try:
         conn = sqlite3.connect("./database/database.sqlite")
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON")
     except sqlite3.error as e:
         print(e)
     return conn
@@ -34,10 +36,11 @@ def decode_token(conn, token):
     cur = conn.cursor()
     cur.execute('SELECT ruser_id, contributor_id FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
+    print(info)
     cur.close()
 
     # Find user id
-    if info[1]:
+    if info[1] is not None:
         user_id = get_contributor(conn, email)
         is_contributor = True
     else:
@@ -52,8 +55,10 @@ def decode_token(conn, token):
 
 def validate_token(conn, token):
     cur = conn.cursor()
-    cur.execute('SELECT 1 FROM Tokens WHERE token = ?', [token])
+    # print(token)
+    cur.execute('SELECT * FROM Tokens WHERE token = ?', [token])
     info = cur.fetchone()
+    # print(info)
     cur.close()
 
     if not info:
@@ -63,7 +68,13 @@ def validate_token(conn, token):
 
 def add_token(conn, token, user_id, is_contributor):
     cur = conn.cursor()
-    cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, is_contributor))
+    print(token)
+    if is_contributor:
+        cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, None, user_id))
+    else:
+        cur.execute('INSERT INTO Tokens VALUES (?, ?, ?)', (token, user_id, None))
+        
+    conn.commit()
     cur.close()
 
     return 0
@@ -183,7 +194,7 @@ def get_tags(conn, tag_category_id):
 def get_tags_and_categories(conn):
     cur = conn.cursor()
     cur.execute('''
-        SELECT tc.id, tc.name, 
+        SELECT tc.id, tc.name
         FROM tagCategories tc
             JOIN Tags t on t.tag_category_id = tc.id
     ''')
@@ -208,7 +219,9 @@ def get_recipe_details(conn, recipe_id, user_details):
     c = conn.cursor()
 
     # Get General Recipe details
-    c.execute("SELECT * FROM recipes WHERE recipe_id = ?", [recipe_id])
+    print("Recipe_id")
+    print(recipe_id)
+    c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
     ret.update({'recipe_id' : recipe[0]})
     ret.update({'title' : recipe[1]})
@@ -241,22 +254,24 @@ def get_recipe_details(conn, recipe_id, user_details):
     c.execute("SELECT * FROM TaginRecipe WHERE recipe_id = ?", [recipe_id])
     tag_ids = c.fetchall()
     for row in tag_ids:
-        c.execute("SELECT * FROM Tags WHERE tag_id = ?", [row[1]])
+        c.execute("SELECT * FROM Tags WHERE id = ?", [row[1]])
         tag_data = c.fetchone()
         tags.append({'tag_id': tag_data[0], 'name' : tag_data[2]})
     ret.update({'tags' : tags})
 
     # Get author and public state
     c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
-    if c.fetchone() != None:
-        author_id = c.fetchone()[0]
+    info = c.fetchone()
+    if info is not None:
+        print("SUCCESS")
+        author_id = info[0]
         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
         ret.update({'author' : author_name, 'public_state' : 'public'})
     else:
         c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
         author_id = c.fetchone()[0]
-        c.execute("SELECT username FROM RUSers WHERE ruser_id = ?", [author_id])
+        c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
         ret.update({'author' : author_name, 'public_state' : 'private'})
 
@@ -265,7 +280,7 @@ def get_recipe_details(conn, recipe_id, user_details):
     c.execute("SELECT * FROM IngredientinRecipe WHERE recipe_id = ?", [recipe_id])
     i = c.fetchall()
     for row in i:
-        c.execute("SELECT name FROM ingredients WHERE ingredient_id = ?", [row[1]])
+        c.execute("SELECT name FROM ingredients WHERE id = ?", [row[1]])
         ingredients.append({'name' : c.fetchone()[0], 'ingredient_id' : row[1], 'decription' : row[2]})
     ret.update({'ingredients' : ingredients})
 
@@ -286,20 +301,23 @@ def get_recipe_details(conn, recipe_id, user_details):
     for row in ratings:
         counter = counter + 1
         total = total + row[3]
-    avg_rating = total / counter
+    if (counter == 0) :
+        avg_rating = 0
+    else :
+        avg_rating = total / counter
     ret.update({'avg_rating' : avg_rating})
 
     # get saved or not 
     b = has_saved(conn, recipe_id, user_details)
     ret.update({'saved' : b})
 
-    conn.close()
+    # conn.close()
 
     return ret
 
 def valid_recipe_id(conn, recipe_id):
     c = conn.cursor()
-    c.execute("SELECT * FROM recipes WHERE recipe_id = ?", [recipe_id])
+    c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchall()
     if recipe == None: 
         return False
@@ -307,13 +325,16 @@ def valid_recipe_id(conn, recipe_id):
     return True
 
 def has_saved(conn, recipe_id, user_details):
+    if (user_details == -1): return False
+    
     c = conn.cursor()
     if user_details["is_contributor"] == False:
         c.execute("SELECT * FROM recipeSaves WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, user_details["user_id"]])
     else:
         c.execute("SELECT * FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, user_details["user_id"]])
     
-    if c.fetchall() == None:
+    info = c.fetchone()
+    if info is None:
         return False
     
     return True
@@ -324,7 +345,8 @@ def has_rated(conn, recipe_id, user_details):
         c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, user_details["user_id"]])
     else:
         c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, user_details["user_id"]])
-    if c.fetchall() == None:
+    
+    if c.fetchone() is None: # INCLUDE
         return False
     
     return True
