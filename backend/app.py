@@ -543,17 +543,19 @@ def recipe_details_update():
     # check public state = if public state publish to public if not go to personal
     # if positive num, update recipe that could be public or private
     if recipe_id == -1:
-        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
-        recipe_id = c.fetchall()[0]
+        c.execute("SELECT * FROM recipes ORDER BY id DESC LIMIT 1")
+        recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipes WHERE recipe_id = ?', [recipe_id])
+        print("I AM HERE!!!!!!!!!!")
+        c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
+        conn.commit()
     
     update_recipe_details(conn, user_details, recipe_id, req)
 
-    return 
+    return {}
 
 @app.route('/dash/my_recipes', methods = ['GET'])
 def dash_my_recipes():

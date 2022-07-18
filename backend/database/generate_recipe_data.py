@@ -136,8 +136,8 @@ insert_into_ingredientInRecipe_query = """
 INSERT INTO 
     ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
-    /*(0, 140, "200 g quinoa"),
-    (0, 442, "2 limes"),*/
+    (0, 140, "200 g quinoa"),
+    (0, 442, "2 limes"),
     (0, 817, "2 sweet potatoes (350g each)"),
     (0, 863, "1 pinch of dried chilli flakes"),
     (0, 868, "1 pinch of ground coriander"),
@@ -183,39 +183,80 @@ conn.commit()
 
 # PEA SOUP
 # insert into IngredientInRecipe
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (1, 870, "1 bunch of spring onions"),
-#     (1, 565, "300 g frozen peas"),
-#     (1, 828, "300 g frozen chopped spinach"),
-#     (1, 871, "100 g higher-welfare smoked ham"),
-#     (1, 525, "\u00bd a bunch of fresh mint (15g)"),
-#     (1, 140, "300 g dried wholewheat fusilli"),
-#     (1, 140, "50 g feta cheese")
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (1, 870, "1 bunch of spring onions"),
+    (1, 565, "300 g frozen peas"),
+    (1, 828, "300 g frozen chopped spinach"),
+    (1, 871, "100 g higher-welfare smoked ham"),
+    (1, 525, "\u00bd a bunch of fresh mint (15g)"),
+    (1, 35, "300 g dried wholewheat fusilli"),
+    (1, 159, "50 g feta cheese")
 
-# """
+"""
 
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
 
 
 # insert into TagInRecipe
-# delete_query = """DELETE FROM TagInRecipe WHERE 1"""
-# cursor.execute(delete_query)
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (0, 13),
-#     (0, 11),
-#     (0, 9),
-#     (0, 20),
-#     (0, 17),
-#     (0, 18)
-# """
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (1, 8),
+    (1, 15),
+    (1, 18),
+    (1, 20)
+"""
 
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+
+# VEGGIE LASAGNA
+# insert into IngredientInRecipe
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (2, 793, "1 leek"),
+    (2, 148, "50 g unsalted butter"),
+    (2, 673, "olive oil"),
+    (2, 818, "500 g asparagus"),
+    (2, 146, "50 g plain flour"),
+    (2, 803, "2 teaspoons English mustard"),
+    (2, 179, "800 ml semi-skimmed milk"),
+    (2, 565, "300 g fresh or frozen peas"),
+    (2, 790, "300 g fresh or frozen broad beans"),
+    (2, 525, "\u00bd a bunch of fresh mint (15g)"),
+    (2, 165, "80 g Parmesan cheese plus extra to serve"),
+    (2, 153, "80 g mature Cheddar cheese"),
+    (2, 872, "250 g fresh lasagne sheets"),
+    (2, 640, "50 g blanched almonds"),
+    (2, 441, "1 lemon optional"),
+    (2, 873, "green pesto optional")
+
+"""
+
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+
+
+# insert into TagInRecipe
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (2, 1),
+    (2, 11),
+    (2, 18),
+    (2, 20)
+"""
+
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
