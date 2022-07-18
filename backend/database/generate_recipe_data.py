@@ -8,7 +8,7 @@ cursor = conn.cursor()
 #fp = open('./source_data/recipes.json', 'r')
 #recipe_data = json.load(fp)
 
-cursor.close()
+#cursor.close()
 
 #insert into Recipes
 # delete_query = """DELETE FROM recipes WHERE 1"""
