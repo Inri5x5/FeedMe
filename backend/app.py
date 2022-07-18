@@ -395,6 +395,8 @@ def recipe_details_delete():
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
+    print("WHAT IS THE RECIPE ID???")
+    print(recipe_id)
     cur.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
     conn.commit()
     cur.close()
@@ -428,7 +430,7 @@ def save():
         if user_details['is_contributor'] == False:
             c.execute("INSERT INTO recipeSaves(ruser_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
         else:
-            c.execute("INSERT INTO recipeSaves(contributor, recipe_id) VALUES (?, ?)", (id, recipe_id))
+            c.execute("INSERT INTO recipeSaves(contributor_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
     else:
         if user_details["is_contributor"] == False:
             c.execute("DELETE FROM recipeSaves WHERE ruser_id = ? AND recipe_id = ?", [id, recipe_id])
@@ -541,17 +543,19 @@ def recipe_details_update():
     # check public state = if public state publish to public if not go to personal
     # if positive num, update recipe that could be public or private
     if recipe_id == -1:
-        c.execute("SELECT * FROM recipes ORDER BY recipe_id DESC LIMIT 1")
-        recipe_id = c.fetchall()[0]
+        c.execute("SELECT * FROM recipes ORDER BY id DESC LIMIT 1")
+        recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
+        print("I AM HERE!!!!!!!!!!")
         c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
+        conn.commit()
     
     update_recipe_details(conn, user_details, recipe_id, req)
 
-    return 
+    return {}
 
 @app.route('/dash/my_recipes', methods = ['GET'])
 def dash_my_recipes():

@@ -14,6 +14,8 @@ def db_connection():
     conn = None
     try:
         conn = sqlite3.connect("./database/database.sqlite")
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON")
     except sqlite3.error as e:
         print(e)
     return conn
@@ -215,7 +217,6 @@ def get_recipe_details(conn, recipe_id, user_details):
     # Get General Recipe details
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
-    print(recipe)
     ret.update({'recipe_id' : recipe[0]})
     ret.update({'title' : recipe[1]})
     ret.update({'description' : recipe[2]})
@@ -238,7 +239,8 @@ def get_recipe_details(conn, recipe_id, user_details):
         recipe_id, step_id, description, image = i
         steps.append({
             "step_id": step_id,
-            "description": description
+            "description": description,
+            "image": image
         })
     ret.update({'steps' : steps})
 
@@ -273,7 +275,7 @@ def get_recipe_details(conn, recipe_id, user_details):
     i = c.fetchall()
     for row in i:
         c.execute("SELECT name FROM ingredients WHERE id = ?", [row[1]])
-        ingredients.append({'name' : c.fetchone()[0], 'ingredient_id' : row[1], 'decription' : row[2]})
+        ingredients.append({'name' : c.fetchone()[0], 'ingredient_id' : row[1], 'description' : row[2]})
     ret.update({'ingredients' : ingredients})
 
     # get skill videos
@@ -324,7 +326,8 @@ def has_saved(conn, recipe_id, user_details):
     else:
         c.execute("SELECT * FROM recipeSaves WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, user_details["user_id"]])
     
-    if c.fetchall() == None:
+    info = c.fetchone()
+    if info is None:
         return False
     
     return True
@@ -335,7 +338,8 @@ def has_rated(conn, recipe_id, user_details):
         c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND ruser_id = ?", [recipe_id, user_details["user_id"]])
     else:
         c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ? AND contributor_id = ?", [recipe_id, user_details["user_id"]])
-    if c.fetchall() == None:
+    
+    if c.fetchone() is None: # INCLUDE
         return False
     
     return True
@@ -344,17 +348,17 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
 
     # Update data in "Recipe"
-    c.execute("INSERT INTO Recipes(id, title, description, image, text, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)", (req['recipe_id'], req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings']))
-
+    c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings']))
+    conn.commit()
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
     for i_dict in ingredients:
-        c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['descirption']))
+        c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['description']))
 
     # Update data in "Tag in Recipe"
     tags = req['tags']
     for t_dict in tags:
-        c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag__id']))
+        c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag_id']))
     
     # Update "Skill Video in Recipe" **(Pending Confirmation)
     # videos = req['skill_videos']
@@ -364,7 +368,7 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
     for s_dict in steps:
-        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_number'], s_dict['description'], s_dict['image']))
+        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], s_dict['image']))
 
     # if contributor has public_state = public it should go into "Public Recipes"
     # if contributor has public_state = private it should go into "Personal Recipes"
@@ -373,6 +377,7 @@ def update_recipe_details(conn, user_details, recipe_id, req):
             c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
         else:
             c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+        conn.commit()
     # If update request is made my ruser, it should go into personal recipes with new recipe id - ** should there be a author field here?
     else:
         c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_did) VALUES (?, ?)", (user_details["user_id"], recipe_id))

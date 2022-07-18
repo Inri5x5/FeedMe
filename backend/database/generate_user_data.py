@@ -5,6 +5,9 @@ conn = sqlite3.connect("database.sqlite")
 
 cursor = conn.cursor()
 
+# TURN ON FOREIGN KEY CONSTRAINTS
+cursor.execute("PRAGMA foreign_keys = ON")
+
 # insert into RecipeSaves
 delete_query = """DELETE FROM RecipeSaves WHERE 1"""
 cursor.execute(delete_query)
