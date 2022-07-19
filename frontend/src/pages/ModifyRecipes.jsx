@@ -14,7 +14,7 @@ export default function ModifyRecipes () {
   const id = useParams();
   const navigate = useNavigate();
   const [ingredients, setIngredients] = React.useState([{}])
-  const [steps, setSteps] = React.useState([{}])
+  const [steps, setSteps] = React.useState([{description: '', step_id: 0}])
   const [tags, setTags] = React.useState([{}])
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
@@ -48,7 +48,7 @@ export default function ModifyRecipes () {
 			};
 			data = await APICall(null, `/ingredients?query= `, 'GET', headers);
 			for (let i = 0; i < data.body.suggestions.length; i++) {
-				temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
+				temp.push({"ingredient_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
 			}
 			setListIngredient(temp);
 		} catch (err) {
@@ -92,8 +92,8 @@ export default function ModifyRecipes () {
     data.map((i, index) => {
       iUpdate = [...iUpdate, 
         {
-          u_id: i.ingredient_id, 
-          name: i.name
+          name: i.name,
+          ingredient_id: i.ingredient_id, 
         }
       ]
     })
@@ -106,7 +106,7 @@ export default function ModifyRecipes () {
     list[index][name] = value;
     setIngredients(list);
     setSelected(list);
-    setRecipe({...recipe, ingredients: [list]})
+    setRecipe({...recipe, ingredients: list})
   };
 
   const handleIngredientsRemove = (e, index) => {
@@ -129,6 +129,7 @@ export default function ModifyRecipes () {
     list[index][name] = value;
     setSteps(list);
     setRecipe({...recipe, steps: list})
+    console.log(list)
   };
 
   const handleStepsRemove = (e, index) => {
@@ -185,17 +186,18 @@ export default function ModifyRecipes () {
     if (name === 'image') {
       const file = e.target.files[0];
       fileToDataUrl(file)
-        .then((res) => {
+      .then((res) => {
           setRecipe({image: res});
         })
-    } else {
+      } else {
+      // console.log(e.target)
       setRecipe({...recipe, [name]: value})
     }
   }
   
   const handleSave = async (state) => {
     let pass_id
-    if(Object.keys(id).length !== 0) {
+    if(Object.keys(id).length === 0) {
       pass_id = -1
     } else {
       pass_id = id.id
@@ -222,11 +224,12 @@ export default function ModifyRecipes () {
         video: '',
         public_state: state
       }
+      console.log(requestBody)
       const data = await APICall(requestBody, `/recipe_details/update`, 'PUT', headers);
       if (data.error) {
         throw new Error(data.error);
       }
-      console.log(data);
+      navigate('/')
     } catch (err) {
       alert(err);
     }
