@@ -1,0 +1,81 @@
+******        Add a new ingredient to the database       ****** (who?)
+
+path is /ingredients/new
+
+? method
+
+frontend body:
+?
+
+backend response:
+?
+
+errors:
+?
+
+
+******        Add search combination       ****** (who?)
+
+path is /search/has_searched
+
+? method
+
+frontend body:
+?
+
+backend response:
+?
+
+errors:
+?
+
+
+******        Get ingredient recommendations in homepage search       ****** (who?)
+
+path is /search/recommendation
+
+? method
+
+frontend body:
+?
+
+backend response:
+?
+
+errors:
+?
+
+
+******        Get all skills videos       ****** (who?)
+
+path is /skills_videos
+
+? method
+
+frontend body:
+?
+
+backend response:
+?
+
+errors:
+?
+
+
+******        Get a particular contributor's skill videos       ****** (who?)
+
+path is /skills_videos
+
+? method
+
+frontend body:
+?
+
+backend response:
+?
+
+errors:
+?
+
+
+******        Are users going to have their own set of saved videos?       ****** (who?)
