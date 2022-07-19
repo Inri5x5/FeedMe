@@ -1,5 +1,6 @@
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { APICall } from '../helperFunc';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from './styles/SearchBar.module.css'
 import textStyles from './styles/SearchBarTitle.module.css'
@@ -8,35 +9,12 @@ import CategoryLabel from './CategoryLabel';
 import IngredientLabel from './IngredientLabel';
 import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import homeChef from '../assets/homeChef.png'
 
-const SearchBar = () => {
+const SearchBar = (props) => {
 	// Data State
 	const [listIngredient, setListIngredient] = useState([]);
 	const [listCategories, setListCategories] = useState([]);
-
-	// General API-call boilerplate function
-	const APICall = (requestBody, path, methodType, headersData) => {
-		if (requestBody !== null) requestBody = JSON.stringify(requestBody);
-		return new Promise((resolve, reject) => {
-			const init = {
-			method: methodType,
-			headers: headersData,
-			body: requestBody,
-			}
-			fetch(`${path}`, init)
-			.then(response => {
-				if (response.status === 200) {
-				return response.json().then(resolve);
-				} else if (response.status === 400) {
-				return response.json().then(obj => {
-					reject(obj.error);
-				});
-				} else {
-				throw new Error(`${response.status} Error with API call`);
-				}
-			});
-		})
-	}
 
 	const getAllCategories = async() => {
 		let data = []; let temp = [];
@@ -111,7 +89,6 @@ const SearchBar = () => {
 	}
 
 	//Ingredient Feature
-	const [selectedIngredients, setSelectedIngredients] = useState([]); 
 	const renderIngredient = (list_ingredients) => {
 		let content = list_ingredients.map((object, index) => {
 			const isSelected = checkIfSelected(object);
@@ -120,10 +97,10 @@ const SearchBar = () => {
 		return content;
 	}
 	const addIngredientOnClick = (object) => {
-		setSelectedIngredients([...selectedIngredients, object]);
+		props.setSelectedIngredients([...props.selectedIngredients, object]);
 	}
 	const removeIngredientOnClick = (object) => {
-		setSelectedIngredients(selectedIngredients.filter(selIngr => {
+		props.setSelectedIngredients(props.selectedIngredients.filter(selIngr => {
 			return selIngr.i_id !== object.i_id;
 		}))
 	}
@@ -134,8 +111,8 @@ const SearchBar = () => {
 		return content;
 	}
 	const checkIfSelected = (object) => {
-		for(let i = 0; i < selectedIngredients.length; i++) {
-			if (object.i_id === selectedIngredients[i].i_id) return true;
+		for(let i = 0; i < props.selectedIngredients.length; i++) {
+			if (object.i_id === props.selectedIngredients[i].i_id) return true;
 		}
 		return false;
 	}
@@ -157,7 +134,6 @@ const SearchBar = () => {
 			setDropdownState('Searches')
 		}
 	}
-  
 	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
@@ -181,6 +157,14 @@ const SearchBar = () => {
 		)
 	}
 
+	const renderHomeTitle = () => {
+		if (props.selectedIngredients.length == 0){
+			return "Let's Start Cooking!"
+		} else {
+			return "Today I have"
+		}
+	}
+
 	React.useEffect(() => {
 		getAllCategories();
 		getAllIngredients();
@@ -196,9 +180,14 @@ const SearchBar = () => {
 	return (
 		<>
 			<div className={textStyles.container}>
-				<h1 className={textStyles} data-shadow="Today I have">Today I have</h1>
+				<div className={textStyles.wrapper}>
+					<img style={{width: '30vw', aspectRatio:'1/1', objectFit:'cover'}} src={homeChef} alt="ChefHomeScreen"></img>
+					<h1 className={textStyles}>
+						{renderHomeTitle()}
+					</h1>
+				</div>
 				<div className={styles.selected_ingredient_container}>
-					{renderSelectedIngredient(selectedIngredients)}
+					{renderSelectedIngredient(props.selectedIngredients)}
 				</div>
 			</div>
 			<div className={styles.search_bar} onBlur={(e) => handleBlur(e)}>

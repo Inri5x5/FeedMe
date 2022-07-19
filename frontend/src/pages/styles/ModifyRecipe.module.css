@@ -1,0 +1,97 @@
+.screen_container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.form_container{
+    /* border: 2px solid black; */
+    height: 100%;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    overflow: auto;
+    border-radius: 40px;
+    -webkit-box-shadow: 5px 7px 24px 1px #6B6B6B;
+    box-shadow: 5px 7px 24px 1px #ff9900;
+}
+
+.title {
+    margin-left: 40%;
+    font-size: 2.5em !important;
+    animation-name: change;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+	animation-direction: alternate;
+    font-family: 'Righteous', serif;
+}
+
+@keyframes change {
+    from {color: #F47340}
+    to {color:#F9D371}
+}
+
+.form_control {
+    display: flex;
+    flex-direction: column;
+    width: 900px;
+    margin-left: 19%;
+    margin-right: auto;
+    padding-bottom: 50px;
+}
+
+.foodPic {
+    border-radius: 8px;
+    height: 25%;
+    width: 25%;
+}
+
+.form_control input {
+    width: 750px;
+    height: 2em;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.ingredients_label{
+    margin-left: 32px;
+}
+
+.ingredients_input {
+    width: 590px !important;
+}
+
+.measurement_input {
+    width: 150px !important;
+    margin-right: 10px;
+}
+
+.form_control label {
+    font-size: 1.2em;
+}
+
+.form_control textarea {
+    resize: none;
+    overflow: auto;
+}
+
+.remove_button {
+    margin-left: 10px;
+    height: 2.5em;
+    background-color: #F9D371;
+    border-color: #F9D371;
+    color: #F47340;
+    border-radius: 5px;
+}
+
+.remove_button:hover {
+    cursor: pointer;
+    background: #F47340;
+    color: #F9D371;
+}
+
+.button_container{
+    display: flex;
+    flex-direction: row;
+}

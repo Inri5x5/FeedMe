@@ -5,9 +5,11 @@ import HomeScreen from './pages/HomeScreen';
 import LoginScreen from './pages/LoginScreen';
 import SignUpScreen from './pages/SignUpScreen';
 import UserProfileScreen from './pages/UserProfileScreen';
+import UserProfileScreen2 from './pages/UserProfileScreen2';
 import ContributorProfileScreen from './pages/ContributorProfileScreen';
 import TeachUsScreen from './pages/TeachUsScreen';
 import RecipeDetailsScreen from './pages/RecipeDetailsScreen';
+import ModifyRecipes from './pages/ModifyRecipes';
 
 const App = () => {
 
@@ -18,10 +20,12 @@ const App = () => {
           <Route path="/" element={<HomeScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<SignUpScreen />} />
-          <Route path="/userProfile" element={<UserProfileScreen />} />
+          <Route path="/userProfile" element={<UserProfileScreen2 />} />
           <Route path="/contributorProfile" element={<ContributorProfileScreen />} />
           <Route path="/teachUs" element={<TeachUsScreen />} />
-          <Route path="/recipeDetails" element={<RecipeDetailsScreen />} />
+          <Route path="/recipe_details/:id" element={<RecipeDetailsScreen />} />
+          <Route path="/recipe/add" element={<ModifyRecipes />} />
+          <Route path="/recipe/edit/:id" element={<ModifyRecipes />} />
         </Routes>
       </BrowserRouter>
     </>

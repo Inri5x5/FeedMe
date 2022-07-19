@@ -1,0 +1,38 @@
+.card {
+    transition: transform .2s; 
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card_action {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card_desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.3em;
+}
+
+.card_title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 2em;
+}
+
+.card_time {
+    display: flex;
+    align-content: center;
+}
+
+.card_time span {
+    margin-left: 5px;
+    padding-top: 3px;
+}
