@@ -1,81 +1,176 @@
-******        Add a new ingredient to the database       ****** (who?)
+******        Add a new ingredient to the database       ****** Kaylee
 
 path is /ingredients/new
 
-? method
+PUT method
 
 frontend body:
-?
+{
+  "ingredient_name": "Chicken",
+  "category_id": 3
+}
+(token passed in as header - make sure it's a contributor token)
 
 backend response:
-?
+{
+  "ingredient_id": 500
+}
 
 errors:
-?
+-token invalid
+-token not from a contributor
+-ingredient already exists
+-category id is invalid
 
 
-******        Add search combination       ****** (who?)
+******        Add search combination       ****** Nadya
 
 path is /search/has_searched
 
-? method
+POST method
 
 frontend body:
-?
+{
+  "ingredient_id_list": [1, 10, 300]
+}
 
 backend response:
-?
+{}
 
 errors:
-?
+-invalid ingredient id
+(can the user input the same ingredient multiple times??)
 
 
-******        Get ingredient recommendations in homepage search       ****** (who?)
+******        Get ingredient recommendations in homepage search       ****** Nadya
 
 path is /search/recommendation
 
-? method
+GET method
 
 frontend body:
-?
+no body, but we need a parameter of ingredients that the user currently has in their search bar e.g.
+'/search/recommendation?1 2 3 4'
 
 backend response:
-?
+(top 10?????)
+{"ingredient_list": [
+  {"rank": 1, "id": 3, "name": "Chicken"},
+  {"rank": 2, "id": 100, "name": "Potato"},
+  ...
+]}
+-please use ingrientInRecipe data
 
 errors:
-?
+-invalid recipe id
 
 
-******        Get all skills videos       ****** (who?)
+******        Get top ingredient search combinations which don't have recipes       ****** Nadya
+
+path is /search/no_recipe
+
+GET method
+
+frontend body:
+contributor token
+
+backend response:
+(top 10?????)
+{"ingredient_combination_list": 
+  {"rank": 1, "num_searches" 300, "ingredient_list": [
+      {"id": 3, "name": "Chicken"},
+      {"id": 100, "name": "Potato"},
+  ]},
+  {"rank": 2, "num_searches" 290, "ingredient_list": [
+      {"id": 3, "name": "Chicken"},
+      {"id": 34, "name": "Mushroom"},
+  ]},
+  ...
+}
+-use searches, ingredientInSearch and ingredientInRecipe data
+
+errors:
+-invalid token
+-token not a contributor
+
+
+******        Get all skills videos       ****** Kaylee
 
 path is /skills_videos
 
-? method
+GET method
 
 frontend body:
-?
+nothing
 
 backend response:
-?
+{"video_list": [
+  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya"},
+  ...
+]}
 
 errors:
-?
+none
 
 
-******        Get a particular contributor's skill videos       ****** (who?)
+******        Get a particular contributor's skill videos       ****** Kaylee
 
-path is /skills_videos
+path is /skills_videos/contributor
 
-? method
+GET method
 
 frontend body:
-?
+no body or params, but we need the token (otherwise if you wanted to send the contributor_id as a param too then that works as well)
 
 backend response:
-?
+{"video_list": [
+  {"id": 1, "title": "stir", "url": "www.youtube.stir"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg"},
+  ...
+]}
+(would frontend also like to know the creator of each video i.e. the username of the logged-in contributor?)
 
 errors:
-?
+-invalid token
+-not a contributor
 
 
-******        Are users going to have their own set of saved videos?       ****** (who?)
+******        Get an ruser's saved videos       ****** Kaylee
+path is /skills_videos/ruser
+
+GET method
+
+frontend body:
+no body or params, but we need the token (otherwise if you wanted to send the ruser_id as a param too then that works as well)
+
+backend response:
+{"video_list": [
+  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya"},
+  ...
+]}
+
+errors:
+-invalid token
+-not an ruser
+
+
+******        Update an ruser's or contributors details       ****** Kaylee
+path is /dashboard/update_details
+
+PUT method
+
+frontend body:
+{
+  "username": "bob",
+  "password": "bob2",
+  "profile_pic": "image-of-bob",
+  "email": "bob@gmail.com"
+}
+
+backend response:
+{}
+
+errors:
+-invalid token
