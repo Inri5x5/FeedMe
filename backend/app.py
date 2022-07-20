@@ -553,7 +553,6 @@ def recipe_details_update():
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        print("I AM HERE!!!!!!!!!!")
         c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
         conn.commit()
     
