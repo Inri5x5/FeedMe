@@ -15,4 +15,21 @@ At this point, I made the decision to switch to using simple JSON files for our 
 Then, I wrote the backend '/auth/register' route, which we merged with the frontend when we did our backend-frontend merge.
 
 Week 5
-To come!
+-Demo A went well!
+-I ran the retro A meeting and we came up with some great ideas of what we should try next sprint in order to improve our teamwork processes. I submitted the document that night.
+-I set up the tickets in sprint 2 (split them into frontend+backend) and started the sprint.
+-I wrote the HTTProutes (the flask routes which the frontend will call for data) for sprint 2 and asked the team to review them.
+-I attempted to set up the virtual environment so that we could run our SQLite database on there. However, I found that my macOS version was too old to run the software. So I asked our tutor Tam if it would be okay if we switched to a different database which would be easier to set up, as I had wasted a lot of time on setup and reached a lot of dead ends up to this point.
+
+Week 6
+-Tam allowed us to change our database, which was great news. After doing some further research and considering which database would best suit our data needs, I chose SQLite as our team's database going forward.
+-I converted all of our sprint 1 data from JSON files into the SQLite database.
+-Gave the backend squad some basic pointers of where to start with working with the SQLite database so they could get stuck into things.
+
+Week 7
+-Did some research on how to add recipes into our database in the right format, and decided that the RapidAPI MyCookBook.io would be a good tool to use as it gets the data half-way there.
+-Created table schemas for all of the tables we would be using in our sprint 2.
+-Wrote python and SQL scripts to add 10 recipes to our database, 3 of which had full data (that is, I spent time manually assigning each ingredient its ingredient id and added tags).
+-Wrote a script which added dashboard data to our database (that is, things like recipe saves, recipe ratings, published recipes, etc.) for one contributor and one registered user.
+-Helped the frontend integrate with the backend.
+-Helped test and debug the backend. We were able to test the backend using Postman, which was a game changer as it means that we can test the backend before integrating it with the frontend, instead of only being able to find bugs by playing around with the website interface.
