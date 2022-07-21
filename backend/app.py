@@ -498,7 +498,7 @@ def rate():
 def recipe_details_view():
     # Get usr input
     recipe_id = request.args.get('id')
-    print(recipe_id)
+
     # Connect to db 
     conn = db_connection()
     
@@ -510,8 +510,6 @@ def recipe_details_view():
     else :
         # Gey user_id
         user = decode_token(conn, token)
-
-    print(user)
 
     # Validate recipe id
     if not valid_recipe_id(conn, recipe_id):
@@ -540,7 +538,6 @@ def recipe_details_update():
     user_details = decode_token(conn, token)
     user_id = user_details["user_id"]
 
-    print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id

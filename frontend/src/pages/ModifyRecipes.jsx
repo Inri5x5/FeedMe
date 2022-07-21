@@ -15,7 +15,7 @@ export default function ModifyRecipes () {
   const navigate = useNavigate();
   const [ingredients, setIngredients] = React.useState([{}])
   const [steps, setSteps] = React.useState([{description: '', step_id: 0}])
-  const [tags, setTags] = React.useState([{}])
+  const [tags, setTags] = React.useState([])
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
   const is_contributor = localStorage.getItem('is_contributor');
@@ -24,6 +24,7 @@ export default function ModifyRecipes () {
   /* For SearchBar */
 	const [listIngredient, setListIngredient] = React.useState([]);
 	const [listCategories, setListCategories] = React.useState([]);
+  const [tagData, setTagData] = React.useState([])
   
   const getAllCategories = async() => {
 		let data = []; let temp = [];
@@ -56,6 +57,23 @@ export default function ModifyRecipes () {
 		}
 	}
   
+  const getAllTags = async() => {
+		let tag_cat_data = []; let tag_data =[]; let temp = [];
+		try {
+			const headers = {
+			  'Content-Type': 'application/json',
+			};
+			tag_cat_data = await APICall(null, '/search/tag/categories', 'GET', headers);
+      for (let i = 0; i < tag_cat_data.tag_categories.length; i++) {
+        tag_data = await APICall(null, `/search/tag/tags?tag_category_id=${tag_cat_data.tag_categories[i].category_id}`, 'GET', headers);
+        tag_cat_data.tag_categories[i]['tags'] = tag_data['tags']
+      }
+      setTagData(tag_cat_data.tag_categories)
+		} catch (err) {
+			alert(err);
+		}
+  }
+  
   React.useEffect(() => { 
     let isFetch = true;
     if (Object.keys(id).length !== 0) {
@@ -63,6 +81,7 @@ export default function ModifyRecipes () {
     }
     getAllCategories();
 		getAllIngredients();
+		getAllTags();
     return () => isFetch = false;
   }, [id])
   
@@ -145,13 +164,13 @@ export default function ModifyRecipes () {
     setSteps([...steps, { description: "" , step_id: steps.length}]);
   };
   
-  const handleTagsChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...tags];
-    list[index][name] = value;
-    setTags(list);
-    setRecipe({...recipe, tags: list})
-  };
+  // const handleTagsChange = (e, index) => {
+  //   const { name, value } = e.target;
+  //   const list = [...tags];
+  //   list[index][name] = value;
+  //   setTags(list);
+  //   setRecipe({...recipe, tags: list})
+  // };
 
   const handleTagsRemove = (e, index) => {
     e.preventDefault()
@@ -184,10 +203,12 @@ export default function ModifyRecipes () {
   const handleChanges = (e) => {
     const {name, value} = e.target
     if (name === 'image') {
+      console.log(e.target)
       const file = e.target.files[0];
+      console.log(file)
       fileToDataUrl(file)
       .then((res) => {
-          setRecipe({image: res});
+          setRecipe({...recipe, [name]: res});
         })
       } else {
       // console.log(e.target)
@@ -196,15 +217,14 @@ export default function ModifyRecipes () {
   }
   
   const handleSave = async (state) => {
-    let pass_id
-    if(Object.keys(id).length === 0) {
-      pass_id = -1
-    } else {
-      pass_id = id.id
-    }
+    let pass_id = -1
+    // if(Object.keys(id).length === 0) {
+    //   pass_id = -1
+    // } else {
+    //   pass_id = id.id
+    // }
     const ingredient = recipe.ingredients
     const step = recipe.steps
-    const tag = recipe.tags
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -219,7 +239,7 @@ export default function ModifyRecipes () {
         video : '',
         servings: `${recipe.servings}`,
         ingredients: ingredient,
-        tags: tag,
+        tags: tags,
         steps: step,
         video: '',
         public_state: state
@@ -234,10 +254,31 @@ export default function ModifyRecipes () {
       alert(err);
     }
   }
+  
+  const checkTags = (object) => {
+    if(tags.map(v=>v.tag_id).includes(object.tag_id)){
+      return true
+    }
+    return false
+  }
+  
+  const handleTagsChange = (e, object) => {
+    // console.log(e.target.checked)
+    // console.log(object)
+    if(e.target.checked) {
+      setTags([...tags, object]);
+    } else {
+      setTags(curr =>
+        curr.filter(tag => {
+          return tag.tag_id !== object.tag_id
+      }))
+    }
+  } 
   // console.log(steps)
   // console.log(ingredients)
   // console.log(selectedIngredients)
   // console.log(tags)
+  // console.log(tagData);
   return (
   <div className={styles.screen_container}>
     <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
@@ -302,7 +343,7 @@ export default function ModifyRecipes () {
           <AddIcon />
         </IconButton>
         <label>Categories: </label>
-        {tags.map((tag, index) => (
+        {/* {tags.map((tag, index) => (
           <div key={index}>
             <input
               name='tags'
@@ -317,7 +358,25 @@ export default function ModifyRecipes () {
         ))}
         <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleTagsAdd}>
           <AddIcon />
-        </IconButton>
+        </IconButton> */}
+        <div className={styles.tag_container}>
+          {tagData.map((tags, index) => (
+            <div key={index} className={styles.tag_categories}>
+              <label> {tags.name} </label>
+              {tags.tags.map((tag, index) => (
+                <div> 
+                  <input type='checkbox' 
+                    name={tag.tag_id} 
+                    value={tag.name} 
+                    defaultChecked={checkTags(tag)}
+                    onChange={(e) => handleTagsChange(e, tag)}
+                    />
+                  <label for={tag.tag_id}> {tag.name} </label> 
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </form>
       <div className={styles.button_container}>
         <Button variant="contained" endIcon={<CancelIcon />} 
@@ -331,7 +390,9 @@ export default function ModifyRecipes () {
               backgroundColor: '#F47340',
               color: '#F9D371'
             }
-            }}>
+            }}
+          onClick={() => navigate('/')}
+            >
           Cancel
         </Button>
         <Button variant="contained" endIcon={<SendIcon />} 

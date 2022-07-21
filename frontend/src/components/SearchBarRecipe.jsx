@@ -16,42 +16,7 @@ const SearchBarRecipe = (props) => {
             setInput(props.preFilled.name)
         }
         return () => isFetch = false;
-    }, [])
-
-	// Data State
-	// const [listIngredient, setListIngredient] = useState([]);
-	// const [listCategories, setListCategories] = useState([]);
-
-	// const getAllCategories = async() => {
-	// 	let data = []; let temp = [];
-	// 	try {
-	// 		const headers = {
-	// 		  'Content-Type': 'application/json',
-	// 		};
-	// 		data = await APICall(null, '/categories', 'GET', headers);
-	// 		for (let i = 0; i < data.body.categories.length; i++) {
-	// 			temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
-	// 		}
-	// 		setListCategories(temp);
-	// 	} catch (err) {
-	// 		alert(err);
-	// 	}
-	// }
-	// const getAllIngredients = async() => {
-	// 	let data = []; let temp = [];
-	// 	try {
-	// 		const headers = {
-	// 			'Content-Type': 'application/json',
-	// 		};
-	// 		data = await APICall(null, `/ingredients?query= `, 'GET', headers);
-	// 		for (let i = 0; i < data.body.suggestions.length; i++) {
-	// 			temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
-	// 		}
-	// 		setListIngredient(temp);
-	// 	} catch (err) {
-	// 		alert(err);
-	// 	}
-	// }
+    }, [props])
 
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
@@ -137,7 +102,6 @@ const SearchBarRecipe = (props) => {
   
 	const searchIngredient = (name, list_ingredients, category) => {
 		let found = [];
-		// console.log(list_ingredients)
 		for (let i = 0; i < list_ingredients.length; i++) {
 			if (category.name === "Category"){
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase())) {
@@ -160,13 +124,9 @@ const SearchBarRecipe = (props) => {
 		)
 	}
 
-	// React.useEffect(() => {
-	// 	getAllCategories();
-	// 	getAllIngredients();
-	// },[]);
 	React.useEffect(() => {
 		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
-			console.log('test')
+			console.log('')
 		} else {
 			searchIngredient(input, props.listIngredient, category);
 		} 
