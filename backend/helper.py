@@ -346,7 +346,7 @@ def has_rated(conn, recipe_id, user_details):
     
     return True
 
-def update_recipe_details(conn, user_details, recipe_id, req):
+def insert_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
 
     # Update data in "Recipe"
