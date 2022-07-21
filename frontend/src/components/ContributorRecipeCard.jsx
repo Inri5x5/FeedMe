@@ -63,67 +63,75 @@ export default function ContributorRecipeCard(props) {
   }
 
   return (
-    <Card sx={{ width:'100%', m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
-      {/* {(props.isEditable) && <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
-        <MoreHorizIcon />
-      </IconButton>}
-      {(props.isEditable) && <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={() => deleteRecipe()}>Delete</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-      </Menu>} */}
-      <CardActionArea onClick={() => navigate(`/recipe_details/${props.object.recipe_id}`)}>
-        <div style={{display:'flex', flexDirection:'row', width:'100%', alignItems:'center'}}>
-            <div style={{flex: 1, maxWidth: '50%', paddingRight:'40px'}}>
-              <CardMedia
-              component="img"
-              height="290"
-              image={props.object.recipe_image}
-              alt={props.object.recipe_name}
-              sx={{
-                borderRadius: '30px'
-              }}
-              />
-              <CardContent>
-                <div className={styles.card_title}>
-                  {props.object.recipe_name}
+    <div style={{width: '100%', display: 'flex', flexDirection:'row', alignItems:'center'}}>
+      <Card sx={{ width:'50%',m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
+        <CardActionArea onClick={() => navigate(`/recipe_details/${props.object.recipe_id}`)}>
+          <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+              <div style={{width:'100%'}}>
+                <div style={{ display:'flex', justifyContent:'center' }}>
+                  <CardMedia
+                  component="img"
+                  height="300"
+                  image={props.object.recipe_image}
+                  alt={props.object.recipe_name}
+                  sx={{
+                    borderRadius: '30px'
+                  }}
+                  />
                 </div>
-                <div className={styles.card_desc}>
-                  {props.object.recipe_desc}
-                </div>
-              </CardContent>
-            </div>
-            <div style={{flex: 1, display:'flex'}}>
-                <RatingsField statistic={props.statistic}/>
-                <div style={{flex: 1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-evenly'}}>
-
-                  <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>
-                    <div style={{display: 'flex', alignItems:'center'}}>
-                      <StarRateIcon />
-                      <span>{props.statistic.stats["avg rating"]} / 5</span>
-                    </div>
-                    <div> {props.statistic.stats["num ratings"]} Users Ratings </div>
+                <CardContent>
+                  <div className={styles.card_title}>
+                    {props.object.recipe_name}
                   </div>
+                  <div className={styles.card_desc} >
+                    {props.object.recipe_desc}
+                  </div>
+                </CardContent>
+              </div>
+             
+          </div>
+        </CardActionArea>
+        <CardActions className={styles.card_action}>
+          <div>
+            <IconButton aria-label="add to favorites" onClick={() => handleLike()}>
+              <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
+            </IconButton>
+            <IconButton aria-label="Edit Recipe" onClick={() => navigate(`/recipe/edit/${props.object.recipe_id}`)}>
+              <EditIcon></EditIcon>
+            </IconButton>
+            { (props.isDelete) && <IconButton aria-label="delete" onClick={() => deleteRecipe()}>
+              <DeleteIcon></DeleteIcon>
+            </IconButton>}
+          </div>
+        </CardActions>
+      </Card>
+      <div style={{ width: '50%'}}>
+        <Card sx={{ width:'100%', m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}}>
+          <div style={{display:'flex', flexDirection:'column'}}>
+              <RatingsField statistic={props.statistic}/>
 
-                  <div style={{background: 'orange', padding: '5px', borderRadius:'20px'}}>
-                    <div style={{display: 'flex', alignItems:'center'}}>
-                      <PersonIcon /><FavoriteIcon/>
-                      <span>{props.statistic.stats["num saves"][0]}</span>
-                    </div>
+              <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-evenly', padding:'20px 0'}}>
+
+                <div style={{background: 'orange', padding: '10px', width:'140px', height:'70px', borderRadius:'20px', display:'flex', flexDirection:'column', justifyContent:'center', alignContent:'center'}}>
+                  <div style={{display: 'flex', alignItems:'center', justifyContent:'center'}}>
+                    <StarRateIcon />
+                    <span style={{fontWeight:'bold', paddingTop:'5px', paddingLeft:'5px'}}>{props.statistic.stats["avg rating"]} / 5</span>
+                  </div>
+                  <div style={{fontWeight:'bold', paddingTop:'5px', paddingLeft:'5px'}}> {props.statistic.stats["num ratings"]} Users Ratings </div>
+                </div>
+
+                <div style={{background: 'orange', padding: '10px', width:'140px', height:'70px', borderRadius:'20px', display:'flex', flexDirection:'column', justifyContent:'center', alignContent:'center'}}>
+                  <div style={{display: 'flex', alignItems:'center', justifyContent:'center'}}>
+                    <PersonIcon /><FavoriteIcon/>
+                    <span style={{fontWeight:'bold', paddingTop:'5px', paddingLeft:'10px'}}>{props.statistic.stats["num saves"][0]}</span>
                   </div>
                 </div>
-            </div>
-        </div>
-      </CardActionArea>
-      <CardActions className={styles.card_action}>
-        <div>
-          <IconButton aria-label="add to favorites" onClick={() => handleLike()}>
-            <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
-          </IconButton>
-          { (props.isDelete) && <IconButton aria-label="delete" onClick={() => deleteRecipe()}>
-            <DeleteIcon></DeleteIcon>
-          </IconButton>}
-        </div>
-      </CardActions>
-    </Card>
+
+              </div>
+          </div>
+          
+        </Card>
+      </div>
+    </div>
   );
 }

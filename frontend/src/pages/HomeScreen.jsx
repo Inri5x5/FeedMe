@@ -5,7 +5,6 @@ import NavigationBarHome from '../components/NavigationBarHome';
 import FilterContainer from '../components/FilterContainer';
 import RecipeCard from '../components/RecipeCard';
 import { APICall } from '../helperFunc';
-import { fontSize, fontWeight } from '@mui/system';
 
 
 const HomeScreen = () => {
@@ -148,6 +147,7 @@ const HomeScreen = () => {
           <SearchBar
             selectedIngredients={selectedIngredients}
             setSelectedIngredients={setSelectedIngredients}
+            numRecipesFound={foundRecipes.length}
           />
           <FilterContainer
             selectedTags={selectedTags}

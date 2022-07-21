@@ -81,6 +81,8 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
+      console.log("My reicpeeeee")
+      console.log(temp_data)
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
         data.push({
@@ -107,6 +109,8 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/statistics', 'GET', headers);
+      console.log("My reicpeeeee")
+      console.log(temp_data)
       setStatistic(temp_data.statistics)
     } catch (err) {
       alert(err);
@@ -133,6 +137,7 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
+      
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
         data.push({
@@ -254,7 +259,7 @@ export default function ContributorProfileScreen () {
 
   const renderContributorRecipesCard = () => {
     let content = []
-    if (publishedRecipes.length == statistic.length) {
+    // if (publishedRecipes.length == statistic.length) {
       for (let i = 0; i < publishedRecipes.length; i++) {
         let index = 0
         for (let j = 0; j < statistic.length; j++) {
@@ -264,7 +269,7 @@ export default function ContributorProfileScreen () {
           <ContributorRecipeCard object={publishedRecipes[i]} isDelete={true} statistic={statistic[index]} afterDelete={handleAfterDelete} afterLike={handleAfterLike}/>
         )
       }
-    }
+    // }
     return content
   }
 
@@ -309,7 +314,7 @@ export default function ContributorProfileScreen () {
         alignItems:'center',
         marginTop: '20px',
         marginLeft: '20px',
-        width: '80%'
+        width: '90%'
         }}>
           {renderContributorRecipesCard()}
           <Fab color="primary" aria-label="add" size="large" style={style} onClick={()=>navigate(`/recipe/add`)}>

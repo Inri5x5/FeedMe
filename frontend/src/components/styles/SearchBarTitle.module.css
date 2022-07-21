@@ -32,3 +32,10 @@ h1 {
   font-size: 5vw; 
 }
 
+.num_recipes {
+  font-size: 1.6em;
+  text-align: center;
+  font-family: 'Righteous', serif;
+  color: darkred;
+}
+
