@@ -550,13 +550,13 @@ def recipe_details_update():
         c.execute("SELECT * FROM recipes ORDER BY id DESC LIMIT 1")
         recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
+        insert_recipe_details(conn, user_details, recipe_id, req)
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
         c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
         conn.commit()
     
-    insert_recipe_details(conn, user_details, recipe_id, req)
     c.close()
 
     return {}
@@ -618,7 +618,65 @@ def get_all_tags():
         "tags": tags
     }
 
+@app.route('/ingredients/new', methods = ['PUT'])
+def ingredients_new():
+    conn = db_connection()
+    c = conn.cursor()
 
+    token = request.headers.get('token')
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    # Validate contributor status
+    if not user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    # Get Body
+    req = request.get_json()
+    ingredient_name = req['ingredient_name']
+    category_id = req['category_id']
+
+    # Check valid category id
+    c.execute("SELECT * FROM ingredientCategories ORDER BY id DESC LIMIT 1")
+    max_cat_id = c.fetchone()[0]
+    if category_id > max_cat_id:
+        raise InputError("Incorrect category id")
+    
+    # Check ingredient doesn't already exist
+    c.execute("SELECT * FROM ingredients WHERE name = ? COLLATE NOCASE", [ingredient_name])
+    if c.fetchone() is not None:
+        raise InputError("Ingredient already exists")
+
+    # make new ingredient id
+    c.execute("SELECT * FROM ingredients ORDER BY id DESC LIMIT 1")
+    new_ingredient_id = c.fetchone()[0]
+    new_ingredient_id = new_ingredient_id + 1
+
+    # add ingredient to "Ingredients" database
+    c.execute("INSERT INTO ingredients VALUES (?, ?, ?)", (new_ingredient_id, category_id, ingredient_name))
+    
+    return {
+        "ingredient_id" : new_ingredient_id
+    }
+
+@app.route('/skill_videos', methods = ['GET'])
+def skill_videos():
+    return
+
+@app.route('/skill_videos/contributor', methods = ['GET'])
+def skill_videos_contributor():
+    return
+
+@app.route('/skill_videos/r_user', methods = ['GET'])
+def skill_videos_ruser():
+    return
+
+@app.route('/dash/update_details', methods = ['PUT'])
+def dash_update_details():
+    return
 # @app.route('/verify/token', methods = ['GET'])
 # def get_all_tags():
 #     conn = db_connection()
