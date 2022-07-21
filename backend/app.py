@@ -748,8 +748,35 @@ def skill_videos_ruser():
 
 @app.route('/dash/update_details', methods = ['PUT'])
 def dash_update_details():
-
+    conn = db_connection()
+    c = conn.cursor()
     
+    token = request.headers.get('token')
+     # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+
+    req = request.get_json()
+    username = req['username']
+    password = req['password']
+    dp = req['profile_pic']
+    email = req['email']
+
+    if user["is_contributor"]:
+        c.execute("UPDATE contributors SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE contributors SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE contributors SET password = ? WHERE id = ?", [password, user_id])
+        c.execute("UPDATE contributors SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    else:
+        c.execute("UPDATE rusers SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE rusers SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE rusers SET password = ? WHERE id = ?", [password, user_id])
+        c.execute("UPDATE rusers SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    
+    conn.commit()
 
     return {}
 
