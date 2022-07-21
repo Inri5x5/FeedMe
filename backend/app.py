@@ -657,14 +657,29 @@ def ingredients_new():
 
     # add ingredient to "Ingredients" database
     c.execute("INSERT INTO ingredients VALUES (?, ?, ?)", (new_ingredient_id, category_id, ingredient_name))
-    
+    conn.commit()
+
     return {
         "ingredient_id" : new_ingredient_id
     }
 
 @app.route('/skill_videos', methods = ['GET'])
 def skill_videos():
-    return
+    conn = db_connection()
+    c = conn.cursor()
+
+    video_list = []
+
+    c.execute("SELECT * FROM SkillVideos")
+    videos = c.fetchall()
+    for row in videos:
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        name = c.fetchone()[0]
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+
+    ret = {"video_list" : video_list}
+
+    return ret
 
 @app.route('/skill_videos/contributor', methods = ['GET'])
 def skill_videos_contributor():
