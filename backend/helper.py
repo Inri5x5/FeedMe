@@ -388,3 +388,35 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     c.close()
     
     return 
+
+########################### SEARCHES ##########################
+
+def get_new_search_id(conn):
+    cur = conn.cursor()
+    cur.execute('SELECT MAX(id) FROM Searches')
+    max = cur.fetchone()[0]
+    cur.close()
+    return max + 1
+
+def check_search_combination(conn, ingredients_req):
+    new_combination = True
+    search_id = -1
+
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT s.id, GROUP_CONCAT(is.ingredient_id)
+        FROM Searches s
+            JOIN IngredientInSearch is on is.search_id = s.id
+        GROUP BY s.id
+    ''')
+    info = cur.fetchall()
+    for i in info:
+        s_id, ingredients = i
+        ingredients_split = [int(j) for j in ingredients.split(',')]    
+        if set(ingredients_split) == set(ingredients_req):
+            new_combination = False
+            search_id = s_id
+            break
+    cur.close()
+
+    return new_combination, search_id

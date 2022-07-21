@@ -620,25 +620,76 @@ def get_all_tags():
     }
 
 
-# @app.route('/verify/token', methods = ['GET'])
-# def get_all_tags():
-#     conn = db_connection()
+########################## SPRINT 3 ##########################
 
-#     # Validate token
-#     token = request.headers.get('token')
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
 
-#     user_details = decode_token(conn, token)
-#     if (user_details["is_contributor"] == True) :
-#         return {
-#             "is_contributor" : True
-#         }
-#     else :
-#         return {
-#             "is_contributor" : False
-#         }
-    
+@app.route('/search/has_searched', methods = ['POST'])
+def search_hassearched():
+    '''Add a search combination.'''
+
+    # Get params
+    req = request.get_json()
+    ingredients_req = req['ingredient_id_list']
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Check if search combination already exists
+    n_comb, search_id = check_search_combination(conn, ingredients_req)
+
+    # New search combination
+    if n_comb:
+        # Get a new search id
+        search_id = get_new_search_id(conn)
+
+        # Insert rows of ingredient ids to IngredientInSearch table
+        qry = '''INSERT INTO IngredientInSearch (ingredient_id, search_id)
+            VALUES (?, ?)'''
+        for ingredient_id in ingredients_req:
+            cur.execute(qry, [ingredient_id, search_id])
+
+        # Update Searches table
+        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
+
+    # Existing search combination
+    else:
+        # Update Searches table (increment count)
+        cur.execute('UPDATE Searches SET count = count + 1 WHERE id = ?', [search_id])
+
+    conn.commit()
+    cur.close()
+
+    return {}
+
+@app.route('/search/recommendation', methods = ['GET'])
+def search_recommendation():
+    '''Get ingredient recommendations in homepage search.'''
+
+
+    return {}
+
+@app.route('/search/no_recipe', methods = ['GET'])
+def search_norecipe():
+    '''Get top ingredient search combinations which don't
+    have recipes yet.'''
+
+    # Validate token
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Check if user is a contributor
+    user_details = decode_token(conn, token)
+    if user_details["is_contributor"] is False:
+        raise AccessError("User is not a Contributor")
+
+
+    # Connect to database
+    conn = db_connection()
+
+    return {}
+
 
 
 if __name__ == '__main__':
