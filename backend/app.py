@@ -683,15 +683,77 @@ def skill_videos():
 
 @app.route('/skill_videos/contributor', methods = ['GET'])
 def skill_videos_contributor():
-    return
+    conn = db_connection()
+    c = conn.cursor()
+    token = request.headers.get('token')
+    
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    
+    # Validate contributor status
+    if not user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    contributor_id = user["user_id"]
+    video_list = []
+
+    c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ?", [contributor_id])
+    videos = c.fetchall()
+    for row in videos:
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3]})
+    
+    ret = {"video_list" : video_list}
+
+    return ret
 
 @app.route('/skill_videos/r_user', methods = ['GET'])
 def skill_videos_ruser():
-    return
+    conn = db_connection()
+    c = conn.cursor()
+    token = request.headers.get('token')
+    
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Validate contributor status
+    if user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+
+    c.execute("SELECT video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
+
+    if c.fetchone() is None:
+        return{"video_list" : []}
+
+    videos = c.fetchall()
+    video_list = []
+    for v in videos:
+        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v])
+        row = c.fetchone()
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        name = c.fetchone()[0]
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+
+    ret = {"video_list" : video_list}
+
+    return ret
 
 @app.route('/dash/update_details', methods = ['PUT'])
 def dash_update_details():
-    return
+
+    
+
+    return {}
+
+
 # @app.route('/verify/token', methods = ['GET'])
 # def get_all_tags():
 #     conn = db_connection()
