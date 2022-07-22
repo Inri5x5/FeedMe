@@ -882,7 +882,7 @@ def search_norecipe():
 
     # Create a view of ingredients (ingredient_id, name, search_id) that 
     # are in searches but not in recipes
-    cur.execute("DROP VIEW IF EXISTS searches_minus_recipes")
+    cur.execute('DROP VIEW IF EXISTS searches_minus_recipes')
     cur.execute('''
         CREATE VIEW searches_minus_recipes AS
         SELECT 
@@ -899,10 +899,11 @@ def search_norecipe():
     # From the previous view, order the ingredients by the number of times
     # its search id occurs (descending)
     cur.execute('''
-        SELECT search_id, COUNT(*)
-        FROM searches_minus_recipes
-        GROUP BY search_id
-        ORDER BY COUNT(*) DESC
+        SELECT smr.search_id, s.count
+        FROM searches_minus_recipes smr
+            JOIN searches s on s.id = smr.search_id
+        GROUP BY smr.search_id
+        ORDER BY s.count DESC
     ''')
     info = cur.fetchall()
 
@@ -910,14 +911,7 @@ def search_norecipe():
     ic_list = []
     rank = 1
     for i in info:
-        search_id, count = i
-
-        # Get number of searches
-        cur.execute('SELECT count FROM searches WHERE id = ?', [search_id])
-        num_searches = cur.fetchone()
-        # rank based on count in searches table
-
-        # Get ingredient list
+        search_id, num_searches = i
         ingredient_list = get_searched_combinations(conn, search_id)
 
         ic_list.append({
