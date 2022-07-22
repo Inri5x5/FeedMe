@@ -398,7 +398,28 @@ def get_new_search_id(conn):
     cur.close()
     return max + 1
 
-def check_search_combination(conn, ingredients_req):
+def get_searched_combinations(conn, search_id):
+    '''Get the ingredients' ids and names of a 
+    particular search id'''
+
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT is.ingredient_id, i.name
+        FROM IngredientInSearch is
+            JOIN Ingredients i on i.id = is.ingredient_id
+        WHERE search_id = ?''', [search_id])
+    
+    ingredients = []
+    info = cur.fetchall()
+    for i in info:
+        id, name = i
+        ingredients.append({"id": id, "name": name})
+
+    cur.close()
+
+    return ingredients
+
+def check_search_combinations(conn, ingredients_req):
     new_combination = True
     search_id = -1
 
