@@ -1,8 +1,11 @@
+from encodings import search_function
 from flask import Flask, jsonify, render_template, request
 from error import AccessError, InputError
 from helper import *
 from json import dumps
 import json
+
+from search import *
 
 
 def defaultHandler(err):
@@ -171,7 +174,6 @@ def search_tag_tags():
     conn = db_connection()
 
     # Get params
-    # req = request.get_json()
     tag_category_id = request.args.get('tag_category_id')
 
     # Get tags
@@ -183,39 +185,18 @@ def search_tag_tags():
 
 @app.route('/search/recipes', methods = ['POST'])
 def search_recipes():
+    # Connect to database
     conn = db_connection()
     cur = conn.cursor()
 
     # Get params
     req = request.get_json()
-    token = request.headers.get('token')
-    if (token != '-1'):
-        user_details = decode_token(conn, token) 
-    else :
-        user_details = -1
-
-
     ingredients_req = req['ingredients_id']
+    token = request.headers.get('token')
 
-    cur.execute('''
-        SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
-        FROM    Recipes r
-                JOIN ingredientInRecipe ir on ir.recipe_id = r.id
-        GROUP BY r.id
-    ''')
-    info = cur.fetchall()
-    cur.close()
+    # Get recipes
+    recipes = search_for_recipes(token, ingredients_req)
 
-    recipes = []
-    for i in info:
-        recipe_id, ingredients = i
-        ingredients_split = ingredients.split(',')
-        ingredients_split_int = [int(i) for i in ingredients_split]    
-       
-        if set(ingredients_split_int) >= set(ingredients_req) or ingredients_req is None:
-            recipe_details = get_recipe_details(conn, recipe_id, user_details)
-            recipes.append(recipe_details)
-    
     return {
         "recipes": recipes
     }
@@ -618,6 +599,8 @@ def get_all_tags():
         "tags": tags
     }
 
+########################## SPRINT 3 ##########################
+
 @app.route('/ingredients/new', methods = ['PUT'])
 def ingredients_new():
     conn = db_connection()
@@ -780,10 +763,6 @@ def dash_update_details():
 
     return {}
 
-
-########################## SPRINT 3 ##########################
-
-
 @app.route('/search/has_searched', methods = ['POST'])
 def search_hassearched():
     '''Add a search combination.'''
@@ -792,66 +771,15 @@ def search_hassearched():
     req = request.get_json()
     ingredients_req = req['ingredient_id_list']
 
-    # Connect to database
-    conn = db_connection()
-    cur = conn.cursor()
-
-    # Check if search combination already exists
-    n_comb, search_id = check_search_combinations(conn, ingredients_req)
-
-    # New search combination
-    if n_comb:
-        # Get a new search id
-        search_id = get_new_search_id(conn)
-
-        # Update Searches table
-        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
-
-        # Insert rows of ingredient ids to IngredientInSearch table
-        qry = '''INSERT INTO IngredientInSearch 
-            (ingredient_id, search_id) VALUES (?, ?)'''
-        for ingredient_id in ingredients_req:
-            cur.execute(qry, [ingredient_id, search_id])
-
-    # Existing search combination
-    else:
-        # Update Searches table (increment count)
-        cur.execute('UPDATE Searches SET count = count + 1 WHERE id = ?', [search_id])
-
-    conn.commit()
-    cur.close()
-
+    has_searched(ingredients_req)
+    
     return {}
 
 @app.route('/search/recommendation', methods = ['GET'])
 def search_recommendation():
     '''Get ingredient recommendations in homepage search.'''
 
-    # frontend will remove ingredient if it is already in the search bar
-
-    # Connect to database
-    conn = db_connection()
-    cur = conn.cursor()
-
-    # Get top ingredients in recipes
-    cur.execute('''
-        SELECT ir.ingredient_id, COUNT(ir.ingredient_id) AS occurence, i.name
-        FROM IngredientInRecipe ir
-            JOIN Ingredients i on i.id = ir.ingredient_id
-        GROUP BY ir.ingredient_id
-        ORDER BY occurence DESC
-    ''')
-    info = cur.fetchall()
-
-    # Add top ingredients to the recommendations
-    ingredients = []
-    rank = 1
-    for i in info:
-        id, count, name = i
-        i_dict = {"rank": rank, "id": id, "name": name}
-        ingredients.append(i_dict)
-
-        rank += 1
+    ingredients = recommendation()
 
     return {
         "ingredients_list": ingredients[:30]
@@ -876,53 +804,7 @@ def search_norecipe():
     if user_details["is_contributor"] is False:
         raise AccessError("User is not a Contributor")
 
-    # Connect to database
-    conn = db_connection()
-    cur = conn.cursor()
-
-    # Create a view of ingredients (ingredient_id, name, search_id) that 
-    # are in searches but not in recipes
-    cur.execute('DROP VIEW IF EXISTS searches_minus_recipes')
-    cur.execute('''
-        CREATE VIEW searches_minus_recipes AS
-        SELECT 
-            iss.ingredient_id as ingredient_id, 
-            i.name as ingredient_name, 
-            iss.search_id as search_id
-        FROM IngredientInSearch iss
-            LEFT JOIN IngredientInRecipe ir on ir.ingredient_id = iss.ingredient_id
-            LEFT JOIN Ingredients i on i.id = iss.ingredient_id
-        WHERE ir.ingredient_id is NULL
-    ''')
-    conn.commit()
-
-    # From the previous view, order the ingredients by the number of times
-    # its search id occurs (descending)
-    cur.execute('''
-        SELECT smr.search_id, s.count
-        FROM searches_minus_recipes smr
-            JOIN searches s on s.id = smr.search_id
-        GROUP BY smr.search_id
-        ORDER BY s.count DESC
-    ''')
-    info = cur.fetchall()
-
-    # From the search ids, get its ingredient combinations and add to return list
-    ic_list = []
-    rank = 1
-    for i in info:
-        search_id, num_searches = i
-        ingredient_list = get_searched_combinations(conn, search_id)
-
-        ic_list.append({
-            "rank": rank,
-            "num_searches": num_searches,
-            "ingredient_list": ingredient_list
-        })
-        
-        rank += 1
-
-    cur.close()
+    ic_list = no_recipes()
 
     return {
         "ingredient_combination_list": ic_list
