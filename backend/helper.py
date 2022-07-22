@@ -281,13 +281,13 @@ def get_recipe_details(conn, recipe_id, user_details):
     ret.update({'ingredients' : ingredients})
 
     # get skill videos
-    # skill_videos = []
-    # c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
-    # vids = c.fetchall()
-    # for row in vids:
-    #     c.execute("SELECT link FROM SkillVideos WHERE video_id = ?", [row[1]])
-    #     skill_videos.append(c.fetchone()[0])
-    # ret.update({'skill_videos' : skill_videos})
+    skill_videos = []
+    c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
+    vids = c.fetchall()
+    for row in vids:
+        c.execute("SELECT link FROM SkillVideos WHERE video_id = ?", [row[1]])
+        skill_videos.append(c.fetchone()[0])
+    ret.update({'skill_videos' : skill_videos})
     
     # get ratings
     c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ?", [recipe_id])
@@ -351,10 +351,8 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
 
     # Update data in "Recipe"
     c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings']))
-    conn.commit()
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
-    print(ingredients)
     for i_dict in ingredients:
         c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['description']))
 
@@ -364,9 +362,9 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
         c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag_id']))
     
     # Update "Skill Video in Recipe" **(Pending Confirmation)
-    # videos = req['skill_videos']
-    # for v in videos:
-    #      c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
+    videos = req['skill_videos']
+    for v in videos:
+        c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
     
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
@@ -385,6 +383,50 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     else:
         c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
     
+    conn.commit()
+    c.close()
+    
+    return 
+
+def update_recipe_details(conn, user_details, recipe_id, req):
+    c = conn.cursor()
+
+    # Update data in "Recipe"
+    c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=? WHERE id = ?", (req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings'], recipe_id))
+    
+    # Update data in "Ingredient in Recipe"
+    ingredients = req['ingredients']
+    for i_dict in ingredients:
+        c.execute("UPDATE IngredientinRecipe SET ingredient_id=?, description=? WHERE recipe_id=?", (i_dict['ingredient_id'], i_dict['description'], recipe_id))
+
+    # Update data in "Tag in Recipe"
+    tags = req['tags']
+    for t_dict in tags:
+        c.execute("UPDATE TaginRecipe SET tag_id=? WHERE recipe_id=?", (t_dict['tag_id'], recipe_id))
+    
+    # Update "Skill Video in Recipe" **(Pending Confirmation)
+    videos = req['skill_videos']
+    for v in videos:
+        c.execute("UPDATE SkillVideoinRecipe SET video_id=? WHERE recipe_id-?", (v, recipe_id))
+    
+    # Update data in "Steps" **(Pending confirmation)
+    steps = req['steps']
+    for s_dict in steps:
+        c.execute("UPDATE Steps SET step_number=?, description=?, image=? WHERE recipe_id=? ", (s_dict['step_id'], s_dict['description'], '', recipe_id,))
+
+    # # if contributor has public_state = public it should go into "Public Recipes"
+    # # if contributor has public_state = private it should go into "Personal Recipes"
+    # if user_details["is_contributor"]:
+    #     if str(req['public_state']) == "public":
+    #         c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+    #     else:
+    #         c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+    #     conn.commit()
+    # # If update request is made my ruser, it should go into personal recipes with new recipe id - ** should there be a author field here?
+    # else:
+    #     c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+    
+    conn.commit()
     c.close()
     
     return 
