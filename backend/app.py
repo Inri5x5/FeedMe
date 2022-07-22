@@ -636,7 +636,6 @@ def search_norecipe():
 
     # Connect to database
     conn = db_connection()
-    cur = conn.cursor()
 
     # Validate token
     token = request.headers.get('token')
