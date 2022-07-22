@@ -376,6 +376,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     if user_details["is_contributor"]:
         if str(req['public_state']) == "public":
             c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+            c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
         else:
             c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
         conn.commit()
