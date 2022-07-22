@@ -6,6 +6,7 @@ from json import dumps
 import json
 
 from search import *
+from dash import *
 
 
 def defaultHandler(err):
@@ -206,7 +207,6 @@ def dash_statistics():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
@@ -215,69 +215,12 @@ def dash_statistics():
     user_details = decode_token(conn, token)
     if user_details["is_contributor"] is False:
         raise AccessError("User is not a Contributor")
-
-    # Get contributor id
     contributor_id = user_details["user_id"]
 
-    cur = conn.cursor()
-    qry = '''
-        SELECT r.id, 
-            SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
-            SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
-            SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
-            SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating
-        FROM recipes r
-            LEFT JOIN publicRecipes pr ON pr.recipe_id = r.id
-            LEFT JOIN recipeRatings rr ON rr.recipe_id = r.id
-        WHERE pr.contributor_id = ?
-        GROUP BY r.id
-    '''
-    cur.execute(qry, [contributor_id])
-    info = cur.fetchall()
-    statistics = [] 
-
-    for i in info:
-        # Recipe id and number of ratings
-        recipe_id, one_rating, two_rating, three_rating, four_rating, five_rating = i
-
-        # Average rating = sum of ratings/total number of ratings
-        num_ratings = one_rating + two_rating + three_rating + four_rating + five_rating
-        sum_ratings = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)
-
-        if num_ratings == 0:
-            avg_rating = 0
-        else:
-            avg_rating = sum_ratings/num_ratings
-
-        # Number of recipe saves
-        cur.execute('SELECT COUNT(*) FROM recipeSaves WHERE recipe_id = ?', [recipe_id])
-        info = cur.fetchone()
-        if not info:
-            num_saves = 0
-        else:
-            num_saves = info
-
-        recipe_stats = {
-            "recipe_id": recipe_id,
-            "stats": {
-                "one star": one_rating,
-                "two star": two_rating,
-                "three star": three_rating,
-                "four star": four_rating,
-                "five star": five_rating,
-                "avg rating": avg_rating,
-                "num saves": num_saves,
-                "num ratings": num_ratings
-            }
-        }
-
-        statistics.append(recipe_stats)
-
-    cur.close()
+    statistics_list = statistics(contributor_id)
 
     return {
-        "statistics": statistics
+        "statistics": statistics_list
     }
 
 @app.route('/dash/saved', methods = ['GET'])
@@ -285,26 +228,12 @@ def dash_saved():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    # Decode token to get user details
-    user = decode_token(conn, token)
-    cur = conn.cursor()
-    if user["is_contributor"]:  # Contributor
-        cur.execute('SELECT recipe_id FROM recipeSaves WHERE contributor_id = ?', [user["user_id"]])
-    else: # RUser
-        cur.execute('SELECT recipe_id FROM recipeSaves WHERE ruser_id = ?', [user["user_id"]])
-    info = cur.fetchall()
+    recipes = saved_recipes(token)
 
-    recipes = []
-    for i in info:
-        recipe_details = get_recipe_details(conn, i[0], user)
-        recipes.append(recipe_details)
-    
-    cur.close()
     return {
         "recipes": recipes
     }
@@ -314,49 +243,18 @@ def dash_rated():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    # Decode token to get user details
-    user = decode_token(conn, token)
-
-    cur = conn.cursor()
-    if user["is_contributor"]:  # Contributor
-        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
-            WHERE contributor_id = ?''', [user["user_id"]])
-    else: # RUser
-        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
-            WHERE ruser_id = ?''', [user["user_id"]])
-    info = cur.fetchall()
-    cur.close()
-
-    # Create recipes list
-    one_star_recipes = []
-    two_star_recipes = []
-    three_star_recipes = []
-    four_star_recipes = []
-    five_star_recipes = []
-    for i in info:
-        recipe_id, rating = i
-        if rating == 1:
-            one_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 2:
-            two_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 3:
-            three_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 4:
-            four_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        else: # rating == 5
-            five_star_recipes.append(get_recipe_details(conn, recipe_id, user))
+    one, two, three, four, five = rated_recipes(token)
 
     return {
-        "1-star recipes": one_star_recipes,
-        "2-star recipes": two_star_recipes,
-        "3-star recipes": three_star_recipes,
-        "4-star recipes": four_star_recipes,
-        "5-star recipes": five_star_recipes,
+        "1-star recipes": one,
+        "2-star recipes": two,
+        "3-star recipes": three,
+        "4-star recipes": four,
+        "5-star recipes": five,
     }
 
 @app.route('/recipe_details/delete', methods = ['DELETE'])
