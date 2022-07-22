@@ -1,10 +1,7 @@
-from encodings import search_function
-from flask import Flask, jsonify, render_template, request
-from error import AccessError, InputError
-from helper import *
+from flask import Flask, request
 from json import dumps
-import json
-
+from error import *
+from helper import *
 from search import *
 from dash import *
 from auth import *
