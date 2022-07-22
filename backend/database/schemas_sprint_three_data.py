@@ -53,6 +53,7 @@ create_skillVideos_table_query = """
         contributor_id integer NOT NULL,
         title text NOT NULL,
         link text NOT NULL,
+        is_full_recipe_video BOOLEAN NOT NULL,
         FOREIGN KEY(contributor_id) REFERENCES contributors(id) ON DELETE CASCADE
 )
 """
