@@ -285,8 +285,8 @@ def get_recipe_details(conn, recipe_id, user_details):
     c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
     vids = c.fetchall()
     for row in vids:
-        c.execute("SELECT link FROM SkillVideos WHERE video_id = ?", [row[1]])
-        skill_videos.append(c.fetchone()[0])
+        c.execute("SELECT * FROM SkillVideos WHERE video_id = ?", [row[1]])
+        skill_videos.append({"video_id" : c.fetchone()[3], "is_full_recipe_video" : c.fetchone()[4]})
     ret.update({'skill_videos' : skill_videos})
     
     # get ratings

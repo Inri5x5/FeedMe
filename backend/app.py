@@ -673,9 +673,9 @@ def skill_videos():
     c.execute("SELECT * FROM SkillVideos")
     videos = c.fetchall()
     for row in videos:
-        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        c.execute("SELECT username FROM Contributors WHERE id = ? AND is_full_recipe_video = ?", [row[1], False])
         name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name, "is_full_recipe_video" : row[4]})
 
     ret = {"video_list" : video_list}
 
@@ -704,7 +704,7 @@ def skill_videos_contributor():
     c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ?", [contributor_id])
     videos = c.fetchall()
     for row in videos:
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3]})
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "is_full_recipe_video" : row[4]})
     
     ret = {"video_list" : video_list}
 
