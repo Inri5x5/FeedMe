@@ -7,7 +7,7 @@ import json
 
 from search import *
 from dash import *
-
+from auth import *
 
 def defaultHandler(err):
     response = err.get_response()
@@ -29,94 +29,43 @@ app.register_error_handler(Exception, defaultHandler)
 ########################## SPRINT 1 ##########################
 @app.route("/auth/register", methods = ['POST'])
 def register():
-    conn = db_connection()
-
     req = request.get_json()
     email = req['email']
     password = req['password']
     username = req['username']
 
-    if not email or not password or not username:
-        raise InputError
-    
-    # Check email format
-    if not valid_email(email):
-        raise InputError("Invalid email")
+    token = register_helper(email, password, username)
 
-    if email_already_exists(conn, email):
-        raise InputError("Email already in use")
-
-    ruser_id = get_new_user_id(conn)
-    print(ruser_id)
-    add_new_user(conn, ruser_id, email, password, username)
-
-    token = generate_token(email)
-    add_token(conn, token, ruser_id, False)
-
-    status_code = 200
-    response = {
-        "success": True,
-        "body": {
-            "token": token
-        }
+    return {
+        "body": {"token": token}
     }
-
-    return jsonify(response), status_code
     
-@app.route('/login', methods = ['POST', 'GET'])
+@app.route('/login', methods = ['POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('form.html')
-     
-    if request.method == 'POST':
-        conn = db_connection()
+    # Get params
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    is_contributor = req['is_contributor']
 
-        req = request.get_json()
-        email = req['email']
-        password = req['password']
-        is_contributor = req['is_contributor']
+    # Log in user
+    token = login_helper(email, password, is_contributor)
 
-        # Get user id
-        if is_contributor:
-            user_id = get_contributor(conn, email)
-        else:
-            user_id = get_ruser(conn, email)
-        
-        # User does not exist
-        if (user_id < 0):
-            raise InputError("User is not registered")
-
-        # Check password
-        if not check_password(conn, email, password, is_contributor):
-            raise InputError("Incorrect password")
-        
-        # Create token 
-        token = generate_token(email)
-
-        # Update tokens json file
-        add_token(conn, token, user_id, is_contributor)
-
-        return {
-            "status": 200,
-            "body": {"token": token , "is_contributor": is_contributor}
-        }
+    return {
+        "body": {"token": token , "is_contributor": is_contributor}
+    }
 
 @app.route('/logout', methods = ['POST'])
 def logout():
     conn = db_connection()
 
-    req = request.get_json()
     token = request.headers.get('token')
-
-    # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
         
-    # Delete token from tokens json file
     delete_token(conn, token)
 
     return {
-        "status": 200,
         "body": {}
     }
 
