@@ -540,7 +540,7 @@ def recipe_details_update():
     user_details = decode_token(conn, token)
     user_id = user_details["user_id"]
 
-    print(req)
+    #print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
@@ -550,13 +550,13 @@ def recipe_details_update():
         c.execute("SELECT * FROM recipes ORDER BY id DESC LIMIT 1")
         recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
+        insert_recipe_details(conn, user_details, recipe_id, req)
     # if recipe id != -1, update the recipe
         # delete existing data first 
     else:
-        c.execute('DELETE FROM recipes WHERE id = ?', [recipe_id])
+        update_recipe_details(conn, user_details, recipe_id, req)
         conn.commit()
     
-    update_recipe_details(conn, user_details, recipe_id, req)
     c.close()
 
     return {}
@@ -618,6 +618,168 @@ def get_all_tags():
         "tags": tags
     }
 
+@app.route('/ingredients/new', methods = ['PUT'])
+def ingredients_new():
+    conn = db_connection()
+    c = conn.cursor()
+
+    token = request.headers.get('token')
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    # Validate contributor status
+    if not user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    # Get Body
+    req = request.get_json()
+    ingredient_name = req['ingredient_name']
+    category_id = req['category_id']
+
+    # Check valid category id
+    c.execute("SELECT * FROM ingredientCategories ORDER BY id DESC LIMIT 1")
+    max_cat_id = c.fetchone()[0]
+    if category_id > max_cat_id:
+        raise InputError("Incorrect category id")
+    
+    # Check ingredient doesn't already exist
+    c.execute("SELECT * FROM ingredients WHERE name = ? COLLATE NOCASE", [ingredient_name])
+    if c.fetchone() is not None:
+        raise InputError("Ingredient already exists")
+
+    # make new ingredient id
+    c.execute("SELECT * FROM ingredients ORDER BY id DESC LIMIT 1")
+    new_ingredient_id = c.fetchone()[0]
+    new_ingredient_id = new_ingredient_id + 1
+
+    # add ingredient to "Ingredients" database
+    c.execute("INSERT INTO ingredients VALUES (?, ?, ?)", (new_ingredient_id, category_id, ingredient_name))
+    conn.commit()
+
+    return {
+        "ingredient_id" : new_ingredient_id
+    }
+
+@app.route('/skill_videos', methods = ['GET'])
+def skill_videos():
+    conn = db_connection()
+    c = conn.cursor()
+
+    video_list = []
+
+    c.execute("SELECT * FROM SkillVideos")
+    videos = c.fetchall()
+    for row in videos:
+        c.execute("SELECT username FROM Contributors WHERE id = ? AND is_full_recipe_video = ?", [row[1], 0])
+        name = c.fetchone()[0]
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name, "is_full_recipe_video" : row[4]})
+
+    ret = {"video_list" : video_list}
+
+    return ret
+
+@app.route('/skill_videos/contributor', methods = ['GET'])
+def skill_videos_contributor():
+    conn = db_connection()
+    c = conn.cursor()
+    token = request.headers.get('token')
+    
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    
+    # Validate contributor status
+    if not user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    contributor_id = user["user_id"]
+    video_list = []
+
+    c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ?", [contributor_id])
+    videos = c.fetchall()
+    for row in videos:
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "is_full_recipe_video" : row[4]})
+    
+    ret = {"video_list" : video_list}
+
+    return ret
+
+@app.route('/skill_videos/r_user', methods = ['GET'])
+def skill_videos_ruser():
+    conn = db_connection()
+    c = conn.cursor()
+    token = request.headers.get('token')
+    
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Validate contributor status
+    if user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    # Get user_id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+
+    c.execute("SELECT video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
+
+    if c.fetchone() is None:
+        return{"video_list" : []}
+
+    videos = c.fetchall()
+    video_list = []
+    for v in videos:
+        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v])
+        row = c.fetchone()
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        name = c.fetchone()[0]
+        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+
+    ret = {"video_list" : video_list}
+
+    return ret
+
+@app.route('/dash/update_details', methods = ['PUT'])
+def dash_update_details():
+    conn = db_connection()
+    c = conn.cursor()
+    
+    token = request.headers.get('token')
+     # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+
+    req = request.get_json()
+    username = req['username']
+    password = req['password']
+    dp = req['profile_pic']
+    email = req['email']
+
+    if user["is_contributor"]:
+        c.execute("UPDATE contributors SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE contributors SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE contributors SET password = ? WHERE id = ?", [password, user_id])
+        c.execute("UPDATE contributors SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    else:
+        c.execute("UPDATE rusers SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE rusers SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE rusers SET password = ? WHERE id = ?", [password, user_id])
+        c.execute("UPDATE rusers SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    
+    conn.commit()
+
+    return {}
+
 
 ########################## SPRINT 3 ##########################
 
@@ -642,14 +804,14 @@ def search_hassearched():
         # Get a new search id
         search_id = get_new_search_id(conn)
 
+        # Update Searches table
+        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
+
         # Insert rows of ingredient ids to IngredientInSearch table
         qry = '''INSERT INTO IngredientInSearch 
             (ingredient_id, search_id) VALUES (?, ?)'''
         for ingredient_id in ingredients_req:
             cur.execute(qry, [ingredient_id, search_id])
-
-        # Update Searches table
-        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
 
     # Existing search combination
     else:
@@ -665,8 +827,7 @@ def search_hassearched():
 def search_recommendation():
     '''Get ingredient recommendations in homepage search.'''
 
-    # TODO: Get the user's ingredient list
-    # user_ingredients = 
+    # frontend will remove ingredient if it is already in the search bar
 
     # Connect to database
     conn = db_connection()
@@ -686,9 +847,6 @@ def search_recommendation():
     ingredients = []
     rank = 1
     for i in info:
-        # TODO Skip ingredient if already exists in the user's list
-        # if id in user_ingredients: continue
-
         id, count, name = i
         i_dict = {"rank": rank, "id": id, "name": name}
         ingredients.append(i_dict)
@@ -696,13 +854,17 @@ def search_recommendation():
         rank += 1
 
     return {
-        "ingredients_list": ingredients[:10]
+        "ingredients_list": ingredients[:30]
     }
 
 @app.route('/search/no_recipe', methods = ['GET'])
 def search_norecipe():
     '''Get top ingredient search combinations which don't
     have recipes yet.'''
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
 
     # Validate token
     token = request.headers.get('token')
@@ -720,15 +882,16 @@ def search_norecipe():
 
     # Create a view of ingredients (ingredient_id, name, search_id) that 
     # are in searches but not in recipes
+    cur.execute("DROP VIEW IF EXISTS searches_minus_recipes")
     cur.execute('''
-        CREATE OR REPLACE VIEW searches_minus_recipes AS
+        CREATE VIEW searches_minus_recipes AS
         SELECT 
-            is.ingredient_id as ingredient_id, 
+            iss.ingredient_id as ingredient_id, 
             i.name as ingredient_name, 
-            is.search_id as search_id
-        FROM IngredientInSearch is
-            LEFT JOIN IngredientInRecipes ir on ir.ingredient_id = is.ingredient_id
-            LEFT JOIN Ingredients i on i.id = is.ingredient_id
+            iss.search_id as search_id
+        FROM IngredientInSearch iss
+            LEFT JOIN IngredientInRecipe ir on ir.ingredient_id = iss.ingredient_id
+            LEFT JOIN Ingredients i on i.id = iss.ingredient_id
         WHERE ir.ingredient_id is NULL
     ''')
     conn.commit()
@@ -752,6 +915,7 @@ def search_norecipe():
         # Get number of searches
         cur.execute('SELECT count FROM searches WHERE id = ?', [search_id])
         num_searches = cur.fetchone()
+        # rank based on count in searches table
 
         # Get ingredient list
         ingredient_list = get_searched_combinations(conn, search_id)
