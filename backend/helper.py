@@ -283,8 +283,23 @@ def get_recipe_details(conn, recipe_id, user_details):
     # get skill videos
     skill_videos = []
     c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
+    videos = c.fetchall()
+    for video in videos:
+        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [video[1]])
+        info = c.fetchone()
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [info[1]])
+        name = c.fetchone()[0]
+        prefix = "https://www.youtube.com/"
+        skill_videos.append({"video_id" : info[0], "title": info[2], "url": prefix + info[3], "is_full_recipe_video" : info[4], "creator" : name})
+    ret.update({'skill_videos' : skill_videos})
+
+
+    skill_videos = []
+    c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
     vids = c.fetchall()
     for row in vids:
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        name = c.fetchone()[0]
         c.execute("SELECT * FROM SkillVideos WHERE video_id = ?", [row[1]])
         skill_videos.append({"video_id" : c.fetchone()[3], "is_full_recipe_video" : c.fetchone()[4]})
     ret.update({'skill_videos' : skill_videos})
@@ -369,7 +384,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
     for s_dict in steps:
-        c.execute("INSERT or REPLACE INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
+        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
 
     # if contributor has public_state = public it should go into "Public Recipes"
     # if contributor has public_state = private it should go into "Personal Recipes"
@@ -395,25 +410,64 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     # Update data in "Recipe"
     c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=? WHERE id = ?", (req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings'], recipe_id))
     
+    ## Not a simple update function 
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
+    c.execute("DELETE FROM IngredientinRecipe WHERE recipe_id=?", [recipe_id])
     for i_dict in ingredients:
-        c.execute("UPDATE IngredientinRecipe SET ingredient_id=?, description=? WHERE recipe_id=?", (i_dict['ingredient_id'], i_dict['description'], recipe_id))
+        c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['description']))
+
+    # list_of_ingredients = [value for elem in ingredients
+    #                         for value in elem.values()]
+    # # If user takes away ingredient
+    # c.execute("SELECT * FROM IngrdientinRecipe WHERE recipe_id=?", [recipe_id])
+    # old_ingredients = c.fetchall()
+    # for row in old_ingredients:
+    #     if row[2] not in list_of_ingredients:
+    #         c.execute("DELETE FROM IngredientinRecipe WHERE recipe_id=? AND description=?", [recipe_id, row[2]])
+    # # If user updates existing or adds ingredient
+    # for i_dict in ingredients:
+    #     c.execute("SELECT * FROM IngredientinRecipe WHERE recipe_id=? AND ingredient_id=?", [recipe_id, i_dict['ingredient_id']])
+    #     if c.fetchone() is not None:
+    #         c.execute("UPDATE IngredientinRecipe SET ingredient_id=?, description=? WHERE recipe_id=?", (i_dict['ingredient_id'], i_dict['description'], recipe_id))
+    #     else:
+    #         c.execute("INSERT INTO IngredientinRecipe(recipe_id, ingredient_id, description) VALUES (?, ?, ?)", (recipe_id, i_dict['ingredient_id'], i_dict['description']))
 
     # Update data in "Tag in Recipe"
     tags = req['tags']
+    c.execute("DELETE FROM TaginRecipe WHERE recipe_id=?", [recipe_id])
     for t_dict in tags:
-        c.execute("UPDATE TaginRecipe SET tag_id=? WHERE recipe_id=?", (t_dict['tag_id'], recipe_id))
+        c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag_id']))
+    
+    # list_of_tags = [value for elem in tags
+    #                         for value in elem.values()]
+    # # If user takes away tag
+    # c.execute("SELECT * FROM TaginRecipe WHERE recipe_id=?", [recipe_id])
+    # old_tags = c.fetchall()
+    # for row in old_tags:
+    #     if row[1] not in list_of_tags:
+    #         c.execute("DELETE FROM TaginRecipe WHERE recipe_id=? AND tag_id=?", [recipe_id, row[1]])
+    # # If user updates existing or adds tags
+    # for t_dict in tags:
+    #     c.execute("SELECT * FROM TaginRecipe WHERE recipe_id=? AND tag_id=?", [recipe_id, t_dict['tag_id']])
+    #     if c.fetchone() is not None:
+    #         c.execute("UPDATE TaginRecipe SET tag_id=? WHERE recipe_id=?", (t_dict['tag_id'], recipe_id))
+    #     else:
+    #         c.execute("INSERT INTO TaginRecipe VALUES (?, ?)", (recipe_id, t_dict['tag_id']))
     
     # Update "Skill Video in Recipe" **(Pending Confirmation)
     videos = req['skill_videos']
+    c.execute("DELETE FROM SkillVideoinRecipe WHERE recipe_id=?", [recipe_id])
     for v in videos:
-        c.execute("UPDATE SkillVideoinRecipe SET video_id=? WHERE recipe_id-?", (v, recipe_id))
+        c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
+        # c.execute("UPDATE SkillVideoinRecipe SET video_id=? WHERE recipe_id-?", (v, recipe_id))
     
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
+    c.execute("DELETE FROM Steps WHERE recipe_id=?", [recipe_id])
     for s_dict in steps:
-        c.execute("UPDATE Steps SET step_number=?, description=?, image=? WHERE recipe_id=? ", (s_dict['step_id'], s_dict['description'], '', recipe_id,))
+        c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
+        #c.execute("UPDATE Steps SET step_number=?, description=?, image=? WHERE recipe_id=? ", (s_dict['step_id'], s_dict['description'], '', recipe_id,))
 
     # # if contributor has public_state = public it should go into "Public Recipes"
     # # if contributor has public_state = private it should go into "Personal Recipes"
