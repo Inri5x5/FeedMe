@@ -673,7 +673,7 @@ def skill_videos():
     c.execute("SELECT * FROM SkillVideos")
     videos = c.fetchall()
     for row in videos:
-        c.execute("SELECT username FROM Contributors WHERE id = ? AND is_full_recipe_video = ?", [row[1], 0])
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
         name = c.fetchone()[0]
         video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name, "is_full_recipe_video" : row[4]})
 
@@ -710,7 +710,7 @@ def skill_videos_contributor():
 
     return ret
 
-@app.route('/skill_videos/r_user', methods = ['GET'])
+@app.route('/skill_videos/ruser', methods = ['GET'])
 def skill_videos_ruser():
     conn = db_connection()
     c = conn.cursor()
@@ -719,24 +719,26 @@ def skill_videos_ruser():
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
-    
-    # Validate contributor status
-    if user["is_contributor"]:
-        raise AccessError("Action not permitted.")
-    
+
     # Get user_id
     user = decode_token(conn, token)
     user_id = user["user_id"]
 
-    c.execute("SELECT video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
+    # Validate contributor status
+    if user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    c.execute("SELECT skill_video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
 
-    if c.fetchone() is None:
+    
+    videos = c.fetchall()
+    
+    if videos is None:
         return{"video_list" : []}
 
-    videos = c.fetchall()
     video_list = []
     for v in videos:
-        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v])
+        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v[0]])
         row = c.fetchone()
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
         name = c.fetchone()[0]
