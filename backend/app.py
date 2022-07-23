@@ -674,8 +674,9 @@ def skill_videos():
     videos = c.fetchall()
     for row in videos:
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        prefix = "https://www.youtube.com/"
         name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name, "is_full_recipe_video" : row[4]})
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": name, "is_full_recipe_video" : row[4]})
 
     ret = {"video_list" : video_list}
 
@@ -704,7 +705,8 @@ def skill_videos_contributor():
     c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ?", [contributor_id])
     videos = c.fetchall()
     for row in videos:
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "is_full_recipe_video" : row[4]})
+        prefix = "https://www.youtube.com/"
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "is_full_recipe_video" : row[4]})
     
     ret = {"video_list" : video_list}
 
@@ -740,7 +742,8 @@ def skill_videos_ruser():
         row = c.fetchone()
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
         name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+        prefix = "https://www.youtube.com/"
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": name})
 
     ret = {"video_list" : video_list}
 
