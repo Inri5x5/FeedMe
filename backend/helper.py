@@ -416,12 +416,9 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     videos = req['skill_videos']
     c.execute("DELETE FROM SkillVideoinRecipe WHERE recipe_id=?", [recipe_id])
     for v in videos:
-<<<<<<< HEAD
-        c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
-=======
+
         c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v['skill_video_id']))
         # c.execute("UPDATE SkillVideoinRecipe SET video_id=? WHERE recipe_id-?", (v, recipe_id))
->>>>>>> sprint_three_data
     
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
@@ -430,8 +427,23 @@ def update_recipe_details(conn, user_details, recipe_id, req):
         c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
     
     # Update public or private state
-    #public_status = 
-    
+    public_status = req['public_state']
+
+    c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+    info = c.fetchone()
+    if info is not None and public_status == "private": # currently a public recipe and becomes private
+        # Delete from publicRecipes
+        c.execute("DELETE FROM publicRecipes WHERE recipe_id = ?", [recipe_id])
+        # Add to PersonalRecipes
+        if user_details["is_contributor"]:
+            c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+        else:
+            c.execute("INSERT INTO PersonalRecipes(ruser_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
+    elif info is None and public_status == "public": # currently a personal personal recipe and becomes public
+        # DO NOT Delete from personalRecipes since a contributor's public recipes is also their personal recipe
+        # c.execute("DELETE FROM personalRecipes WHERE recipe_id = ?", [recipe_id])
+        c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
+
     conn.commit()
     c.close()
     
