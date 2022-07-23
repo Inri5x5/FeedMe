@@ -22,6 +22,7 @@ def db_connection():
 
 ########################### TOKENS ##########################
 def generate_token(email):
+    # NOTE: use id instead of email in the token!
     payload = {"email": email, "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")}
     return jwt.encode(payload, "", algorithm="HS256")
 
@@ -292,17 +293,6 @@ def get_recipe_details(conn, recipe_id, user_details):
         prefix = "https://www.youtube.com/"
         skill_videos.append({"video_id" : info[0], "title": info[2], "url": prefix + info[3], "is_full_recipe_video" : info[4], "creator" : name})
     ret.update({'skill_videos' : skill_videos})
-
-
-    skill_videos = []
-    c.execute("SELECT * FROM SkillVideoinRecipe WHERE recipe_id = ?", [recipe_id])
-    vids = c.fetchall()
-    for row in vids:
-        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
-        name = c.fetchone()[0]
-        c.execute("SELECT * FROM SkillVideos WHERE video_id = ?", [row[1]])
-        skill_videos.append({"video_id" : c.fetchone()[3], "is_full_recipe_video" : c.fetchone()[4]})
-    ret.update({'skill_videos' : skill_videos})
     
     # get ratings
     c.execute("SELECT * FROM RecipeRatings WHERE recipe_id = ?", [recipe_id])
@@ -426,7 +416,12 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     videos = req['skill_videos']
     c.execute("DELETE FROM SkillVideoinRecipe WHERE recipe_id=?", [recipe_id])
     for v in videos:
+<<<<<<< HEAD
         c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v))
+=======
+        c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v['skill_video_id']))
+        # c.execute("UPDATE SkillVideoinRecipe SET video_id=? WHERE recipe_id-?", (v, recipe_id))
+>>>>>>> sprint_three_data
     
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
@@ -441,3 +436,56 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     c.close()
     
     return 
+
+########################### SEARCHES ##########################
+
+def get_new_search_id(conn):
+    cur = conn.cursor()
+    cur.execute('SELECT MAX(id) FROM Searches')
+    max = cur.fetchone()[0]
+    cur.close()
+    return max + 1
+
+def get_searched_combinations(conn, search_id):
+    '''Get the ingredients' ids and names of a 
+    particular search id'''
+
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT iss.ingredient_id, i.name
+        FROM IngredientInSearch iss
+            JOIN Ingredients i on i.id = iss.ingredient_id
+        WHERE search_id = ?''', [search_id])
+    
+    ingredients = []
+    info = cur.fetchall()
+    for i in info:
+        id, name = i
+        ingredients.append({"id": id, "name": name})
+
+    cur.close()
+
+    return ingredients
+
+def check_search_combinations(conn, ingredients_req):
+    new_combination = True
+    search_id = -1
+
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT s.id, GROUP_CONCAT(iis.ingredient_id)
+        FROM Searches s
+            JOIN IngredientInSearch iis on iis.search_id = s.id
+        GROUP BY s.id
+    ''')
+    info = cur.fetchall()
+    for i in info:
+        s_id, ingredients = i
+        ingredients_split = [int(j) for j in ingredients.split(',')]    
+        if set(ingredients_split) == set(ingredients_req):
+            new_combination = False
+            search_id = s_id
+            break
+    cur.close()
+
+    return new_combination, search_id

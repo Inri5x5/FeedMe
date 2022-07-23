@@ -245,8 +245,6 @@ VALUES
 cursor = cursor.execute(insert_into_ingredientInRecipe_query)
 conn.commit()
 
-
-
 # insert into TagInRecipe
 insert_into_tagInRecipe_query = """
 INSERT INTO 

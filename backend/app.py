@@ -540,7 +540,7 @@ def recipe_details_update():
     user_details = decode_token(conn, token)
     user_id = user_details["user_id"]
 
-    print(req)
+    #print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
@@ -712,7 +712,7 @@ def skill_videos_contributor():
 
     return ret
 
-@app.route('/skill_videos/r_user', methods = ['GET'])
+@app.route('/skill_videos/ruser', methods = ['GET'])
 def skill_videos_ruser():
     conn = db_connection()
     c = conn.cursor()
@@ -721,24 +721,26 @@ def skill_videos_ruser():
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
-    
-    # Validate contributor status
-    if user["is_contributor"]:
-        raise AccessError("Action not permitted.")
-    
+
     # Get user_id
     user = decode_token(conn, token)
     user_id = user["user_id"]
 
-    c.execute("SELECT video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
+    # Validate contributor status
+    if user["is_contributor"]:
+        raise AccessError("Action not permitted.")
+    
+    c.execute("SELECT skill_video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
 
-    if c.fetchone() is None:
+    
+    videos = c.fetchall()
+    
+    if videos is None:
         return{"video_list" : []}
 
-    videos = c.fetchall()
     video_list = []
     for v in videos:
-        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v])
+        c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v[0]])
         row = c.fetchone()
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
         name = c.fetchone()[0]
@@ -784,26 +786,158 @@ def dash_update_details():
     return {}
 
 
-# @app.route('/verify/token', methods = ['GET'])
-# def get_all_tags():
-#     conn = db_connection()
+########################## SPRINT 3 ##########################
 
-#     # Validate token
-#     token = request.headers.get('token')
-#     if not validate_token(conn, token):
-#         raise AccessError("Invalid token")
 
-#     user_details = decode_token(conn, token)
-#     if (user_details["is_contributor"] == True) :
-#         return {
-#             "is_contributor" : True
-#         }
-#     else :
-#         return {
-#             "is_contributor" : False
-#         }
-    
+@app.route('/search/has_searched', methods = ['POST'])
+def search_hassearched():
+    '''Add a search combination.'''
 
+    # Get params
+    req = request.get_json()
+    ingredients_req = req['ingredient_id_list']
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Check if search combination already exists
+    n_comb, search_id = check_search_combinations(conn, ingredients_req)
+
+    # New search combination
+    if n_comb:
+        # Get a new search id
+        search_id = get_new_search_id(conn)
+
+        # Update Searches table
+        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
+
+        # Insert rows of ingredient ids to IngredientInSearch table
+        qry = '''INSERT INTO IngredientInSearch 
+            (ingredient_id, search_id) VALUES (?, ?)'''
+        for ingredient_id in ingredients_req:
+            cur.execute(qry, [ingredient_id, search_id])
+
+    # Existing search combination
+    else:
+        # Update Searches table (increment count)
+        cur.execute('UPDATE Searches SET count = count + 1 WHERE id = ?', [search_id])
+
+    conn.commit()
+    cur.close()
+
+    return {}
+
+@app.route('/search/recommendation', methods = ['GET'])
+def search_recommendation():
+    '''Get ingredient recommendations in homepage search.'''
+
+    # frontend will remove ingredient if it is already in the search bar
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Get top ingredients in recipes
+    cur.execute('''
+        SELECT ir.ingredient_id, COUNT(ir.ingredient_id) AS occurence, i.name
+        FROM IngredientInRecipe ir
+            JOIN Ingredients i on i.id = ir.ingredient_id
+        GROUP BY ir.ingredient_id
+        ORDER BY occurence DESC
+    ''')
+    info = cur.fetchall()
+
+    # Add top ingredients to the recommendations
+    ingredients = []
+    rank = 1
+    for i in info:
+        id, count, name = i
+        i_dict = {"rank": rank, "id": id, "name": name}
+        ingredients.append(i_dict)
+
+        rank += 1
+
+    return {
+        "ingredients_list": ingredients[:30]
+    }
+
+@app.route('/search/no_recipe', methods = ['GET'])
+def search_norecipe():
+    '''Get top ingredient search combinations which don't
+    have recipes yet.'''
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Validate token
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Check if user is a contributor
+    user_details = decode_token(conn, token)
+    if user_details["is_contributor"] is False:
+        raise AccessError("User is not a Contributor")
+
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Create a view of ingredients (ingredient_id, name, search_id) that 
+    # are in searches but not in recipes
+    cur.execute("DROP VIEW IF EXISTS searches_minus_recipes")
+    cur.execute('''
+        CREATE VIEW searches_minus_recipes AS
+        SELECT 
+            iss.ingredient_id as ingredient_id, 
+            i.name as ingredient_name, 
+            iss.search_id as search_id
+        FROM IngredientInSearch iss
+            LEFT JOIN IngredientInRecipe ir on ir.ingredient_id = iss.ingredient_id
+            LEFT JOIN Ingredients i on i.id = iss.ingredient_id
+        WHERE ir.ingredient_id is NULL
+    ''')
+    conn.commit()
+
+    # From the previous view, order the ingredients by the number of times
+    # its search id occurs (descending)
+    cur.execute('''
+        SELECT search_id, COUNT(*)
+        FROM searches_minus_recipes
+        GROUP BY search_id
+        ORDER BY COUNT(*) DESC
+    ''')
+    info = cur.fetchall()
+
+    # From the search ids, get its ingredient combinations and add to return list
+    ic_list = []
+    rank = 1
+    for i in info:
+        search_id, count = i
+
+        # Get number of searches
+        cur.execute('SELECT count FROM searches WHERE id = ?', [search_id])
+        num_searches = cur.fetchone()
+        # rank based on count in searches table
+
+        # Get ingredient list
+        ingredient_list = get_searched_combinations(conn, search_id)
+
+        ic_list.append({
+            "rank": rank,
+            "num_searches": num_searches,
+            "ingredient_list": ingredient_list
+        })
+        
+        rank += 1
+
+    cur.close()
+
+    return {
+        "ingredient_combination_list": ic_list
+    }
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
