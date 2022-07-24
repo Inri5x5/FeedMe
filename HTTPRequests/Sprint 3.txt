@@ -24,7 +24,7 @@ errors:
 
 
 ******        Add search combination       ****** Nadya
-
+(already got this ??)
 path is /search/has_searched
 
 POST method
@@ -49,11 +49,11 @@ path is /search/recommendation
 GET method
 
 frontend body:
-no body, but we need a parameter of ingredients that the user currently has in their search bar e.g.
-'/search/recommendation?1 2 3 4'
-
+'/search/recommendation'
+(recommendations are the same for everyone, based on most popular ingredients in our recipes)
 backend response:
-(top 10?????)
+(top 30)
+(display 10)
 {"ingredient_list": [
   {"rank": 1, "id": 3, "name": "Chicken"},
   {"rank": 2, "id": 100, "name": "Potato"},
@@ -75,7 +75,7 @@ frontend body:
 contributor token
 
 backend response:
-(top 10?????)
+(top 10)
 {"ingredient_combination_list": 
   {"rank": 1, "num_searches" 300, "ingredient_list": [
       {"id": 3, "name": "Chicken"},
@@ -105,8 +105,8 @@ nothing
 
 backend response:
 {"video_list": [
-  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee"},
-  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya"},
+  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee", "profile_pic": "picture"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya", "profile_pic": "picture"},
   ...
 ]}
 
@@ -146,8 +146,8 @@ no body or params, but we need the token (otherwise if you wanted to send the ru
 
 backend response:
 {"video_list": [
-  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee"},
-  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya"},
+  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee", "profile_pic", "picture"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya", "profile_pic": "picture"},
   ...
 ]}
 
@@ -174,3 +174,9 @@ backend response:
 
 errors:
 -invalid token
+
+
+can we add new skill videos? Kaylee! (also delete skill video route)
+save video? Kaylee! (ruser can save from TeachMe! tab, also from the recipe details list of videos), remove video from save
+get user's profile details (Nadya)
+is_contributor route (Nadya)
