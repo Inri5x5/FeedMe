@@ -692,9 +692,9 @@ def get_profile_details():
 
     # Get user details from database
     if is_contributor:
-        cur.execute('SELECT * FROM Contributors WHERE id = ?', user_id)
+        cur.execute('SELECT * FROM Contributors WHERE id = ?', [user_id])
     else:
-        cur.execute('SELECT * FROM Rusers WHERE id = ?', user_id)
+        cur.execute('SELECT * FROM Rusers WHERE id = ?', [user_id])
 
     id, email, username, password, profile_picture = cur.fetchone()
     user_details = {
