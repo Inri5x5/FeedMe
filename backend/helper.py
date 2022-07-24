@@ -219,12 +219,17 @@ def get_recipe_details(conn, recipe_id, user_details):
     # Get General Recipe details
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
     recipe = c.fetchone()
-    # print(recipe)
+
     ret.update({'recipe_id' : recipe[0]})
     ret.update({'title' : recipe[1]})
     ret.update({'description' : recipe[2]})
     ret.update({'image' : recipe[3]})
-    ret.update({'video' : recipe[4]})
+
+    if not recipe[4]:
+        ret.update({'video' : None})
+    else:
+        ret.update({'video' : recipe[4]})
+    
     ret.update({'time_required' : recipe[5]})
     ret.update({'servings' : recipe[6]})
 
@@ -355,7 +360,13 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
 
     # Update data in "Recipe"
-    c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings']))
+    if not req['video']:
+        video = None
+    else:
+        video = req['video']
+    
+    c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], video, req['time_required'], req['servings']))
+    
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
     for i_dict in ingredients:
@@ -398,7 +409,11 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
 
     # Update data in "Recipe"
-    c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=? WHERE id = ?", (req['title'], req['description'], req['image'], req['video'], req['time_required'], req['servings'], recipe_id))
+    if not req['video']:
+        video = None
+    else:
+        video = req['video']
+    c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=? WHERE id = ?", (req['title'], req['description'], req['image'], video, req['time_required'], req['servings'], recipe_id))
 
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']

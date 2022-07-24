@@ -508,7 +508,7 @@ def recipe_details_view():
     if not validate_token(conn, token):
         user = -1
     else :
-        # Gey user_id
+        # Get user_id
         user = decode_token(conn, token)
 
     print(user)
@@ -674,9 +674,10 @@ def skill_videos():
     videos = c.fetchall()
     for row in videos:
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
+        creator_details = c.fetchone()
         prefix = "https://www.youtube.com/"
-        name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": name, "is_full_recipe_video" : row[4]})
+        if not row[4]:
+            video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[0], "creator_profile_pic" : creator_details[4]})
 
     ret = {"video_list" : video_list}
 
@@ -706,7 +707,10 @@ def skill_videos_contributor():
     videos = c.fetchall()
     for row in videos:
         prefix = "https://www.youtube.com/"
-        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "is_full_recipe_video" : row[4]})
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [contributor_id])
+        creator_details = c.fetchone()
+        if not row[4]:
+            video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[0], "creator_profile_pic" : creator_details[4]})
     
     ret = {"video_list" : video_list}
 
@@ -743,9 +747,10 @@ def skill_videos_ruser():
         c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v[0]])
         row = c.fetchone()
         c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
-        name = c.fetchone()[0]
+        creator_details = c.fetchone()
         prefix = "https://www.youtube.com/"
-        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": name})
+        if not row[4]:
+            video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[0], "creator_profile_pic" : creator_details[4]})
 
     ret = {"video_list" : video_list}
 
