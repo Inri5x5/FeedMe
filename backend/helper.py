@@ -314,7 +314,7 @@ def get_recipe_details(conn, recipe_id, user_details):
     ret.update({'avg_rating' : avg_rating})
 
     # get saved or not 
-    b = has_saved(conn, recipe_id, user_details)
+    b = has_saved_recipe(conn, recipe_id, user_details)
     ret.update({'saved' : b})
 
     # conn.close()
@@ -324,13 +324,22 @@ def get_recipe_details(conn, recipe_id, user_details):
 def valid_recipe_id(conn, recipe_id):
     c = conn.cursor()
     c.execute("SELECT * FROM recipes WHERE id = ?", [recipe_id])
-    recipe = c.fetchall()
+    recipe = c.fetchone()
     if recipe == None: 
         return False
     
     return True
 
-def has_saved(conn, recipe_id, user_details):
+def valid_video_id(conn, video_id):
+    c = conn.cursor()
+    c.execute("SELECT * FROM skillVideos WHERE id = ?", [video_id])
+    recipe = c.fetchone()
+    if recipe == None: 
+        return False
+    
+    return True
+
+def has_saved_recipe(conn, recipe_id, user_details):
     if (user_details == -1): return False
     c = conn.cursor()
     if user_details["is_contributor"] == False:
@@ -343,6 +352,17 @@ def has_saved(conn, recipe_id, user_details):
         return False
     
     return True
+
+def has_saved_video(conn, video_id, user_id):
+    c = conn.cursor()
+    c.execute("SELECT * FROM skillVideoSaves WHERE video_id = ? AND ruser_id = ?", [video_id, user_id])
+
+    info = c.fetchone()
+    if info is None:
+        return False
+    
+    return True
+
 
 def has_rated(conn, recipe_id, user_details):
     c = conn.cursor()
