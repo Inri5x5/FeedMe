@@ -41,7 +41,7 @@ def login_helper(email, password, is_contributor):
         raise InputError("Incorrect password")
     
     # Create token 
-    token = generate_token(email)
+    token = generate_token(user_id, is_contributor)
 
     # Update tokens json file
     add_token(conn, token, user_id, is_contributor)
