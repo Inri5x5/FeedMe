@@ -655,5 +655,58 @@ def search_norecipe():
         "ingredient_combination_list": ic_list
     }
 
+@app.route('/is_contributor', methods = ['GET'])
+def check_is_contributor():
+    # Connect to database
+    conn = db_connection()
+
+    # Get and validate token
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Decode token
+    user = decode_token(conn, token)
+
+    return {
+        "is_contributor": user["is_contributor"]
+    }
+
+@app.route('/profile_details', methods = ['GET'])
+def get_profile_details():
+    # Connect to database
+    conn = db_connection()
+    cur = conn.cursor()
+
+    # Get token
+    token = request.headers.get('token')
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Get user id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+    is_contributor = user["is_contributor"]
+
+    # Get user details from database
+    if is_contributor:
+        cur.execute('SELECT * FROM Contributors WHERE id = ?', user_id)
+    else:
+        cur.execute('SELECT * FROM Rusers WHERE id = ?', user_id)
+
+    id, email, username, password, profile_picture = cur.fetchone()
+    user_details = {
+        "user_id": user_id,
+        "email": email,
+        "username": username,
+        "profile_picture": profile_picture
+    }
+
+    return {
+        "user_details": user_details
+    }
+
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
