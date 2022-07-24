@@ -180,3 +180,4 @@ can we add new skill videos? Kaylee! (also delete skill video route)
 save video? Kaylee! (ruser can save from TeachMe! tab, also from the recipe details list of videos), remove video from save
 get user's profile details (Nadya)
 is_contributor route (Nadya)
+search videos (Kaylee)
