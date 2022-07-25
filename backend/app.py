@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, render_template, request
-from error import AccessError, InputError
-from helper import *
+from flask import Flask, request
 from json import dumps
-import json
-
+from error import *
+from helper import *
+from search import *
+from dash import *
+from auth import *
 
 def defaultHandler(err):
     response = err.get_response()
@@ -25,94 +26,43 @@ app.register_error_handler(Exception, defaultHandler)
 ########################## SPRINT 1 ##########################
 @app.route("/auth/register", methods = ['POST'])
 def register():
-    conn = db_connection()
-
     req = request.get_json()
     email = req['email']
     password = req['password']
     username = req['username']
 
-    if not email or not password or not username:
-        raise InputError
-    
-    # Check email format
-    if not valid_email(email):
-        raise InputError("Invalid email")
+    token = register_helper(email, password, username)
 
-    if email_already_exists(conn, email):
-        raise InputError("Email already in use")
-
-    ruser_id = get_new_user_id(conn)
-    print(ruser_id)
-    add_new_user(conn, ruser_id, email, password, username)
-
-    token = generate_token(email)
-    add_token(conn, token, ruser_id, False)
-
-    status_code = 200
-    response = {
-        "success": True,
-        "body": {
-            "token": token
-        }
+    return {
+        "body": {"token": token}
     }
-
-    return jsonify(response), status_code
     
-@app.route('/login', methods = ['POST', 'GET'])
+@app.route('/login', methods = ['POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('form.html')
-     
-    if request.method == 'POST':
-        conn = db_connection()
+    # Get params
+    req = request.get_json()
+    email = req['email']
+    password = req['password']
+    is_contributor = req['is_contributor']
 
-        req = request.get_json()
-        email = req['email']
-        password = req['password']
-        is_contributor = req['is_contributor']
+    # Log in user
+    token = login_helper(email, password, is_contributor)
 
-        # Get user id
-        if is_contributor:
-            user_id = get_contributor(conn, email)
-        else:
-            user_id = get_ruser(conn, email)
-        
-        # User does not exist
-        if (user_id < 0):
-            raise InputError("User is not registered")
-
-        # Check password
-        if not check_password(conn, email, password, is_contributor):
-            raise InputError("Incorrect password")
-        
-        # Create token 
-        token = generate_token(email)
-
-        # Update tokens json file
-        add_token(conn, token, user_id, is_contributor)
-
-        return {
-            "status": 200,
-            "body": {"token": token , "is_contributor": is_contributor}
-        }
+    return {
+        "body": {"token": token , "is_contributor": is_contributor}
+    }
 
 @app.route('/logout', methods = ['POST'])
 def logout():
     conn = db_connection()
 
-    req = request.get_json()
     token = request.headers.get('token')
-
-    # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
         
-    # Delete token from tokens json file
     delete_token(conn, token)
 
     return {
-        "status": 200,
         "body": {}
     }
 
@@ -171,7 +121,6 @@ def search_tag_tags():
     conn = db_connection()
 
     # Get params
-    # req = request.get_json()
     tag_category_id = request.args.get('tag_category_id')
 
     # Get tags
@@ -183,39 +132,18 @@ def search_tag_tags():
 
 @app.route('/search/recipes', methods = ['POST'])
 def search_recipes():
+    # Connect to database
     conn = db_connection()
     cur = conn.cursor()
 
     # Get params
     req = request.get_json()
-    token = request.headers.get('token')
-    if (token != '-1'):
-        user_details = decode_token(conn, token) 
-    else :
-        user_details = -1
-
-
     ingredients_req = req['ingredients_id']
+    token = request.headers.get('token')
 
-    cur.execute('''
-        SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
-        FROM    Recipes r
-                JOIN ingredientInRecipe ir on ir.recipe_id = r.id
-        GROUP BY r.id
-    ''')
-    info = cur.fetchall()
-    cur.close()
+    # Get recipes
+    recipes = search_for_recipes(token, ingredients_req)
 
-    recipes = []
-    for i in info:
-        recipe_id, ingredients = i
-        ingredients_split = ingredients.split(',')
-        ingredients_split_int = [int(i) for i in ingredients_split]    
-       
-        if set(ingredients_split_int) >= set(ingredients_req) or ingredients_req is None:
-            recipe_details = get_recipe_details(conn, recipe_id, user_details)
-            recipes.append(recipe_details)
-    
     return {
         "recipes": recipes
     }
@@ -225,7 +153,6 @@ def dash_statistics():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
@@ -234,69 +161,12 @@ def dash_statistics():
     user_details = decode_token(conn, token)
     if user_details["is_contributor"] is False:
         raise AccessError("User is not a Contributor")
-
-    # Get contributor id
     contributor_id = user_details["user_id"]
 
-    cur = conn.cursor()
-    qry = '''
-        SELECT r.id, 
-            SUM(CASE WHEN rr.rating = 1 THEN 1 ELSE 0 END) AS one_rating,
-            SUM(CASE WHEN rr.rating = 2 THEN 1 ELSE 0 END) AS two_rating,
-            SUM(CASE WHEN rr.rating = 3 THEN 1 ELSE 0 END) AS three_rating,
-            SUM(CASE WHEN rr.rating = 4 THEN 1 ELSE 0 END) AS four_rating,
-            SUM(CASE WHEN rr.rating = 5 THEN 1 ELSE 0 END) AS five_rating
-        FROM recipes r
-            LEFT JOIN publicRecipes pr ON pr.recipe_id = r.id
-            LEFT JOIN recipeRatings rr ON rr.recipe_id = r.id
-        WHERE pr.contributor_id = ?
-        GROUP BY r.id
-    '''
-    cur.execute(qry, [contributor_id])
-    info = cur.fetchall()
-    statistics = [] 
-
-    for i in info:
-        # Recipe id and number of ratings
-        recipe_id, one_rating, two_rating, three_rating, four_rating, five_rating = i
-
-        # Average rating = sum of ratings/total number of ratings
-        num_ratings = one_rating + two_rating + three_rating + four_rating + five_rating
-        sum_ratings = (one_rating + two_rating * 2 + three_rating * 3 + four_rating * 4 + five_rating * 5)
-
-        if num_ratings == 0:
-            avg_rating = 0
-        else:
-            avg_rating = sum_ratings/num_ratings
-
-        # Number of recipe saves
-        cur.execute('SELECT COUNT(*) FROM recipeSaves WHERE recipe_id = ?', [recipe_id])
-        info = cur.fetchone()
-        if not info:
-            num_saves = 0
-        else:
-            num_saves = info
-
-        recipe_stats = {
-            "recipe_id": recipe_id,
-            "stats": {
-                "one star": one_rating,
-                "two star": two_rating,
-                "three star": three_rating,
-                "four star": four_rating,
-                "five star": five_rating,
-                "avg rating": avg_rating,
-                "num saves": num_saves,
-                "num ratings": num_ratings
-            }
-        }
-
-        statistics.append(recipe_stats)
-
-    cur.close()
+    statistics_list = statistics(contributor_id)
 
     return {
-        "statistics": statistics
+        "statistics": statistics_list
     }
 
 @app.route('/dash/saved', methods = ['GET'])
@@ -304,26 +174,12 @@ def dash_saved():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    # Decode token to get user details
-    user = decode_token(conn, token)
-    cur = conn.cursor()
-    if user["is_contributor"]:  # Contributor
-        cur.execute('SELECT recipe_id FROM recipeSaves WHERE contributor_id = ?', [user["user_id"]])
-    else: # RUser
-        cur.execute('SELECT recipe_id FROM recipeSaves WHERE ruser_id = ?', [user["user_id"]])
-    info = cur.fetchall()
+    recipes = saved_recipes(token)
 
-    recipes = []
-    for i in info:
-        recipe_details = get_recipe_details(conn, i[0], user)
-        recipes.append(recipe_details)
-    
-    cur.close()
     return {
         "recipes": recipes
     }
@@ -333,49 +189,18 @@ def dash_rated():
     conn = db_connection()
 
     # Validate token
-    # req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
 
-    # Decode token to get user details
-    user = decode_token(conn, token)
-
-    cur = conn.cursor()
-    if user["is_contributor"]:  # Contributor
-        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
-            WHERE contributor_id = ?''', [user["user_id"]])
-    else: # RUser
-        cur.execute('''SELECT recipe_id, rating FROM recipeRatings
-            WHERE ruser_id = ?''', [user["user_id"]])
-    info = cur.fetchall()
-    cur.close()
-
-    # Create recipes list
-    one_star_recipes = []
-    two_star_recipes = []
-    three_star_recipes = []
-    four_star_recipes = []
-    five_star_recipes = []
-    for i in info:
-        recipe_id, rating = i
-        if rating == 1:
-            one_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 2:
-            two_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 3:
-            three_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        elif rating == 4:
-            four_star_recipes.append(get_recipe_details(conn, recipe_id, user))
-        else: # rating == 5
-            five_star_recipes.append(get_recipe_details(conn, recipe_id, user))
+    one, two, three, four, five = rated_recipes(token)
 
     return {
-        "1-star recipes": one_star_recipes,
-        "2-star recipes": two_star_recipes,
-        "3-star recipes": three_star_recipes,
-        "4-star recipes": four_star_recipes,
-        "5-star recipes": five_star_recipes,
+        "1-star recipes": one,
+        "2-star recipes": two,
+        "3-star recipes": three,
+        "4-star recipes": four,
+        "5-star recipes": five,
     }
 
 @app.route('/recipe_details/delete', methods = ['DELETE'])
@@ -618,6 +443,8 @@ def get_all_tags():
         "tags": tags
     }
 
+########################## SPRINT 3 ##########################
+
 @app.route('/ingredients/new', methods = ['PUT'])
 def ingredients_new():
     conn = db_connection()
@@ -782,10 +609,6 @@ def dash_update_details():
 
     return {}
 
-
-########################## SPRINT 3 ##########################
-
-
 @app.route('/search/has_searched', methods = ['POST'])
 def search_hassearched():
     '''Add a search combination.'''
@@ -794,66 +617,15 @@ def search_hassearched():
     req = request.get_json()
     ingredients_req = req['ingredient_id_list']
 
-    # Connect to database
-    conn = db_connection()
-    cur = conn.cursor()
-
-    # Check if search combination already exists
-    n_comb, search_id = check_search_combinations(conn, ingredients_req)
-
-    # New search combination
-    if n_comb:
-        # Get a new search id
-        search_id = get_new_search_id(conn)
-
-        # Update Searches table
-        cur.execute('INSERT INTO Searches (id, count) VALUES (?, ?)', [search_id, 1])
-
-        # Insert rows of ingredient ids to IngredientInSearch table
-        qry = '''INSERT INTO IngredientInSearch 
-            (ingredient_id, search_id) VALUES (?, ?)'''
-        for ingredient_id in ingredients_req:
-            cur.execute(qry, [ingredient_id, search_id])
-
-    # Existing search combination
-    else:
-        # Update Searches table (increment count)
-        cur.execute('UPDATE Searches SET count = count + 1 WHERE id = ?', [search_id])
-
-    conn.commit()
-    cur.close()
-
+    has_searched(ingredients_req)
+    
     return {}
 
 @app.route('/search/recommendation', methods = ['GET'])
 def search_recommendation():
     '''Get ingredient recommendations in homepage search.'''
 
-    # frontend will remove ingredient if it is already in the search bar
-
-    # Connect to database
-    conn = db_connection()
-    cur = conn.cursor()
-
-    # Get top ingredients in recipes
-    cur.execute('''
-        SELECT ir.ingredient_id, COUNT(ir.ingredient_id) AS occurence, i.name
-        FROM IngredientInRecipe ir
-            JOIN Ingredients i on i.id = ir.ingredient_id
-        GROUP BY ir.ingredient_id
-        ORDER BY occurence DESC
-    ''')
-    info = cur.fetchall()
-
-    # Add top ingredients to the recommendations
-    ingredients = []
-    rank = 1
-    for i in info:
-        id, count, name = i
-        i_dict = {"rank": rank, "id": id, "name": name}
-        ingredients.append(i_dict)
-
-        rank += 1
+    ingredients = recommendation()
 
     return {
         "ingredients_list": ingredients[:30]
@@ -866,7 +638,6 @@ def search_norecipe():
 
     # Connect to database
     conn = db_connection()
-    cur = conn.cursor()
 
     # Validate token
     token = request.headers.get('token')
@@ -878,62 +649,63 @@ def search_norecipe():
     if user_details["is_contributor"] is False:
         raise AccessError("User is not a Contributor")
 
+    ic_list = no_recipes()
+
+    return {
+        "ingredient_combination_list": ic_list
+    }
+
+@app.route('/is_contributor', methods = ['GET'])
+def check_is_contributor():
+    # Connect to database
+    conn = db_connection()
+
+    # Get and validate token
+    token = request.headers.get('token')
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    # Decode token
+    user = decode_token(conn, token)
+
+    return {
+        "is_contributor": user["is_contributor"]
+    }
+
+@app.route('/profile_details', methods = ['GET'])
+def get_profile_details():
     # Connect to database
     conn = db_connection()
     cur = conn.cursor()
 
-    # Create a view of ingredients (ingredient_id, name, search_id) that 
-    # are in searches but not in recipes
-    cur.execute("DROP VIEW IF EXISTS searches_minus_recipes")
-    cur.execute('''
-        CREATE VIEW searches_minus_recipes AS
-        SELECT 
-            iss.ingredient_id as ingredient_id, 
-            i.name as ingredient_name, 
-            iss.search_id as search_id
-        FROM IngredientInSearch iss
-            LEFT JOIN IngredientInRecipe ir on ir.ingredient_id = iss.ingredient_id
-            LEFT JOIN Ingredients i on i.id = iss.ingredient_id
-        WHERE ir.ingredient_id is NULL
-    ''')
-    conn.commit()
+    # Get token
+    token = request.headers.get('token')
 
-    # From the previous view, order the ingredients by the number of times
-    # its search id occurs (descending)
-    cur.execute('''
-        SELECT search_id, COUNT(*)
-        FROM searches_minus_recipes
-        GROUP BY search_id
-        ORDER BY COUNT(*) DESC
-    ''')
-    info = cur.fetchall()
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
 
-    # From the search ids, get its ingredient combinations and add to return list
-    ic_list = []
-    rank = 1
-    for i in info:
-        search_id, count = i
+    # Get user id
+    user = decode_token(conn, token)
+    user_id = user["user_id"]
+    is_contributor = user["is_contributor"]
 
-        # Get number of searches
-        cur.execute('SELECT count FROM searches WHERE id = ?', [search_id])
-        num_searches = cur.fetchone()
-        # rank based on count in searches table
+    # Get user details from database
+    if is_contributor:
+        cur.execute('SELECT * FROM Contributors WHERE id = ?', [user_id])
+    else:
+        cur.execute('SELECT * FROM Rusers WHERE id = ?', [user_id])
 
-        # Get ingredient list
-        ingredient_list = get_searched_combinations(conn, search_id)
-
-        ic_list.append({
-            "rank": rank,
-            "num_searches": num_searches,
-            "ingredient_list": ingredient_list
-        })
-        
-        rank += 1
-
-    cur.close()
+    id, email, username, password, profile_picture = cur.fetchone()
+    user_details = {
+        "user_id": user_id,
+        "email": email,
+        "username": username,
+        "profile_picture": profile_picture
+    }
 
     return {
-        "ingredient_combination_list": ic_list
+        "user_details": user_details
     }
 
 if __name__ == '__main__':

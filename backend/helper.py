@@ -16,39 +16,27 @@ def db_connection():
         conn = sqlite3.connect("./database/database.sqlite")
         cursor = conn.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
-    except sqlite3.error as e:
+    except sqlite3.Error as e:
         print(e)
     return conn
 
 ########################### TOKENS ##########################
-def generate_token(email):
+def generate_token(user_id, is_contributor):
     # NOTE: use id instead of email in the token!
-    payload = {"email": email, "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")}
+    payload = {
+        "user_id": user_id, 
+        "is_contributor": is_contributor, 
+        "datetime": datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)")
+    }
     return jwt.encode(payload, "", algorithm="HS256")
 
 def decode_token(conn, token):
-    cur = conn.cursor()
-
-    # Get email
+    # Get user details
     payload = jwt.decode(token, "", algorithms=["HS256"])
-    email = payload["email"]
-
-    # Check if contributor
-    cur = conn.cursor()
-    cur.execute('SELECT ruser_id, contributor_id FROM Tokens WHERE token = ?', [token])
-    info = cur.fetchone()
-    cur.close()
-
-    # Find user id
-    if info[1] is not None:
-        user_id = get_contributor(conn, email)
-        is_contributor = True
-    else:
-        user_id = get_ruser(conn, email)
-        is_contributor = False
+    user_id = payload["user_id"]
+    is_contributor = payload["is_contributor"]
 
     return {
-        "email": email, 
         "user_id": user_id,
         "is_contributor": is_contributor
     }
