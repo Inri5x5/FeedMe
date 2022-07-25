@@ -139,9 +139,16 @@ frontend body:
         ...
     ],
     "skill_videos": [
-        "youtube URL 1",
-        "youtube URL 2",
-        ...
+        {
+            "title": "How to Slice Sweet Potatoes",
+            "url": "https://www.youtube.com/watch?v=LYOofLe64IA",
+            "video_id": 281
+        },
+        {
+            "title": "How to Cook Perfect Quinoa",
+            "url": "https://www.youtube.com/watch?v=czVXWq_qCyk",
+            "video_id": 2
+        }
     ]
 }
 we also need to pass in the token as a header!!!
@@ -194,9 +201,16 @@ backend response:
         ...
     ],
     "skill_videos": [
-        "youtube URL 1",
-        "youtube URL 2",
-        ...
+        {
+            "title": "How to Slice Sweet Potatoes",
+            "url": "https://www.youtube.com/watch?v=LYOofLe64IA",
+            "video_id": 281
+        },
+        {
+            "title": "How to Cook Perfect Quinoa",
+            "url": "https://www.youtube.com/watch?v=czVXWq_qCyk",
+            "video_id": 2
+        }
     ]
     "avg_rating": 2.5
 }
