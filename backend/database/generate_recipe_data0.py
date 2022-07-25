@@ -26,7 +26,7 @@ for recipe in recipe_data:
         new_id = 0
     else:
         new_id = new_id[0] + 1
-    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], "", recipe['time'], recipe['servings']))
+    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], recipe['video'], recipe['time'], recipe['servings']))
     conn.commit()
 
 # insert into Steps
