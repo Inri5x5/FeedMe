@@ -255,7 +255,7 @@ def save():
     user_details = decode_token(conn, token) 
     id = user_details["user_id"]
     c = conn.cursor()
-    if has_saved(conn, recipe_id, user_details) == False:
+    if has_saved_recipe(conn, recipe_id, user_details) == False:
         if user_details['is_contributor'] == False:
             c.execute("INSERT INTO recipeSaves(ruser_id, recipe_id) VALUES (?, ?)", (id, recipe_id))
         else:
@@ -333,7 +333,7 @@ def recipe_details_view():
     if not validate_token(conn, token):
         user = -1
     else :
-        # Gey user_id
+        # Get user_id
         user = decode_token(conn, token)
 
     print(user)
@@ -500,9 +500,10 @@ def skill_videos():
     c.execute("SELECT * FROM SkillVideos")
     videos = c.fetchall()
     for row in videos:
-        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
-        name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name, "is_full_recipe_video" : row[4]})
+        c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
+        creator_details = c.fetchone()
+        prefix = "https://www.youtube.com/"
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
 
     ret = {"video_list" : video_list}
 
@@ -531,7 +532,10 @@ def skill_videos_contributor():
     c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ?", [contributor_id])
     videos = c.fetchall()
     for row in videos:
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "is_full_recipe_video" : row[4]})
+        prefix = "https://www.youtube.com/"
+        c.execute("SELECT * FROM Contributors WHERE id = ?", [contributor_id])
+        creator_details = c.fetchone()
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
     
     ret = {"video_list" : video_list}
 
@@ -567,9 +571,10 @@ def skill_videos_ruser():
     for v in videos:
         c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v[0]])
         row = c.fetchone()
-        c.execute("SELECT username FROM Contributors WHERE id = ?", [row[1]])
-        name = c.fetchone()[0]
-        video_list.append({"id" : row[0], "title" : row[2], "url" : row[3], "creator": name})
+        c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
+        creator_details = c.fetchone()
+        prefix = "https://www.youtube.com/"
+        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
 
     ret = {"video_list" : video_list}
 
@@ -608,6 +613,124 @@ def dash_update_details():
     conn.commit()
 
     return {}
+
+@app.route('/skill_videos/add', methods = ['PUT'])
+def skill_videos_add():
+    req = request.get_json()
+    video_name = req['title']
+    full_url = req['url']
+
+    temp_url = full_url.split('watch?v=', 1)
+    url = "watch?v=" + temp_url[1]
+
+    token = request.headers.get('token')
+    
+    # Connect to db 
+    conn = db_connection()
+    c = conn.cursor()
+
+    user_details = decode_token(conn, token)
+    if not user_details["is_contributor"]:
+        raise AccessError("Do not have permission to upload skill video.")
+    
+    c.execute("SELECT * FROM skillVideos ORDER BY id DESC LIMIT 1")
+    video_id = c.fetchone()[0]
+    video_id = video_id + 1
+
+    c.execute("INSERT INTO SkillVideos VALUES (?, ?, ? ,?)", [video_id, user_details["user_id"], video_name, url])
+    conn.commit()
+     
+    return {}
+
+
+@app.route('/skill_videos/delete', methods = ['DELETE'])
+def skill_videos_delete():
+    # delete from skillVideos, skillVideoSaves, skillVideoInRecipe
+    # Connect to db 
+    conn = db_connection()
+    c = conn.cursor()
+
+    req = request.get_json()
+    video_id = req['video_id']
+    token = request.headers.get('token')
+
+    user_details = decode_token(conn, token)
+    if not user_details["is_contributor"]:
+        raise AccessError("Do not have permission to delete skill video.")
+    
+    if not valid_video_id(conn, video_id):
+        raise InputError("video id does not exist.")
+
+    c.execute("SELECT * FROM SkillVideos WHERE contributor_id = ? AND id = ?", [user_details["user_id"], video_id])
+    if c.fetchone() is None:
+        raise AccessError("You cannot delete another contributor's video.")
+
+    c.execute("DELETE FROM SkillVideos WHERE id = ?", [video_id])
+
+    conn.commit()
+
+    return {}
+
+@app.route('/skill_videos/save', methods = ['POST'])
+def save_skill_videos():
+    req = request.get_json()
+    video_id = req['video_id']
+    token = request.headers.get('token')
+
+    # Connect to db 
+    conn = db_connection()
+    c = conn.cursor()
+
+    # Validate token
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+
+    # Validate recipe_id
+    if not valid_video_id(conn, video_id):
+        raise InputError("No such recipe id")
+
+    # Get user id
+    user_details = decode_token(conn, token)
+    if user_details["is_contributor"]:
+        raise AccessError["Contributors cannot save skill videos"]
+
+    user_id = user_details["user_id"]
+    if has_saved_video(conn, video_id, user_id):
+        c.execute("DELETE FROM skillVideoSaves WHERE skill_video_id = ? AND ruser_id = ?", [video_id, user_id])
+    else:
+        c.execute("INSERT INTO SkillVideoSaves VALUES (?, ?)", [user_id, video_id])
+    
+    conn.commit()
+
+    return {}
+
+@app.route('/skill_videos/search', methods = ['GET'])
+def skill_videos_search():
+    video_list = []
+
+    req = request.get_json()
+    search_string = req['search_string'].lower()
+
+    # Connect to db 
+    conn = db_connection()
+    c = conn.cursor()
+
+    # NOTE: I'm not sure if this query will work - to avoid case sensitivity, I've made all strings upper case
+    c.execute("SELECT * FROM skillVideos WHERE LOWER(title) LIKE ?", ['%'+search_string+'%'])
+    videos = c.fetchall()
+    for v in videos:
+        c.execute("SELECT * FROM Contributors WHERE id = ?", [v[1]])
+        creator_details = c.fetchone()
+        prefix = "https://www.youtube.com/"
+        video_list.append({"id" : v[0], "title" : v[2], "url" : prefix + v[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
+
+    ret = {"video_list" : video_list}
+
+    return ret
+
+
+########################## SPRINT 3 ##########################
+
 
 @app.route('/search/has_searched', methods = ['POST'])
 def search_hassearched():
@@ -672,7 +795,7 @@ def check_is_contributor():
         "is_contributor": user["is_contributor"]
     }
 
-@app.route('/profile_details', methods = ['GET'])
+@app.route('/dash/get_details', methods = ['GET'])
 def get_profile_details():
     # Connect to database
     conn = db_connection()
