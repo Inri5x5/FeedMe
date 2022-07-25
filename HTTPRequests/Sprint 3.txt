@@ -96,7 +96,7 @@ errors:
 
 ******        Get all skills videos       ****** Kaylee
 
-path is /skills_videos
+path is /skill_videos
 
 GET method
 
@@ -116,7 +116,7 @@ none
 
 ******        Get a particular contributor's skill videos       ****** Kaylee
 
-path is /skills_videos/contributor
+path is /skill_videos/contributor
 
 GET method
 
@@ -125,11 +125,10 @@ no body or params, but we need the token (otherwise if you wanted to send the co
 
 backend response:
 {"video_list": [
-  {"id": 1, "title": "stir", "url": "www.youtube.stir"},
-  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg"},
+  {"creator": "kaylee", "creator_profile_pic": "picture", "id": 1, "title": "stir", "url": "www.youtube.stir"},
+  {"creator": "nadya", "creator_profile_pic": "picture", "id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg"},
   ...
 ]}
-(would frontend also like to know the creator of each video i.e. the username of the logged-in contributor?)
 
 errors:
 -invalid token
@@ -137,7 +136,7 @@ errors:
 
 
 ******        Get an ruser's saved videos       ****** Kaylee
-path is /skills_videos/ruser
+path is /skill_videos/ruser
 
 GET method
 
@@ -146,8 +145,8 @@ no body or params, but we need the token (otherwise if you wanted to send the ru
 
 backend response:
 {"video_list": [
-  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee", "profile_pic", "picture"},
-  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya", "profile_pic": "picture"},
+  {"id": 1, "title": "stir", "url": "www.youtube.stir", "creator": "kaylee", "creator_profile_pic", "picture"},
+  {"id": 2, "title": "crack an egg", "url": "www.youtube.crack_an_egg", "creator": "nadya", "creator_profile_pic": "picture"},
   ...
 ]}
 
@@ -157,7 +156,7 @@ errors:
 
 
 ******        Update an ruser's or contributors details       ****** Kaylee
-path is /dashboard/update_details
+path is /dash/update_details
 
 PUT method
 
@@ -176,8 +175,111 @@ errors:
 -invalid token
 
 
-can we add new skill videos? Kaylee! (also delete skill video route)
-save video? Kaylee! (ruser can save from TeachMe! tab, also from the recipe details list of videos), remove video from save
-get user's profile details (Nadya)
-is_contributor route (Nadya)
-search videos (Kaylee)
+******        Get an ruser's or contributors details       ****** Nadya
+path is /dash/get_details
+
+GET method
+
+frontend body:
+none
+but we need the ruser's or contributor's token as a header
+
+backend response:
+{
+    "user_details": {
+        "email": "kweber@hotmail.com",
+        "profile_picture": "",
+        "user_id": 0,
+        "username": "deputy"
+    }
+}
+
+
+******        Find whether a user is an ruser or contributor       ****** Nadya
+path is /is_contributor
+
+GET method
+
+frontend body:
+none
+but we need the contributor or ruser's token as a header
+
+backend response:
+{
+  "is_contributor": true
+}
+
+
+******        Add new skill video       ****** Kaylee
+path is /skill_videos/add
+
+PUT method
+
+frontend body:
+{
+  "title": "How to Fry an Egg",
+  "url": "youtube url"
+}
+we also need the contributor's token in the header
+
+backend response:
+{}
+
+
+******        Delete skill video       ****** Kaylee
+path is /skill_videos/delete
+
+DELETE method
+
+frontend body:
+{
+  "video_id": 100
+}
+we also need the contributor's token as a header
+
+backend response:
+{}
+
+
+******        Ruser save or unsave a skill video       ****** Kaylee
+path is /skill_videos/save
+
+POST method
+
+frontend body:
+{
+  "video_id": 100
+}
+we also need the ruser's token as a header
+
+backend response:
+{}
+
+
+******        Search skill videos       ****** Kaylee
+path is /skill_videos/search
+
+GET method
+
+frontend body:
+no body as it's a get method
+but we need a parameter, which is the search_string
+e.g. http://localhost:5000/skill_videos/search?search_string=boil
+
+backend response:
+"video_list": [
+    {
+        "creator": "chimney",
+        "creator_profile_pic": "",
+        "id": 0,
+        "title": "How to Make Boiled Water",
+        "url": "https://www.youtube.com/watch?v=7_j5S38m3wY"
+    },
+    {
+        "creator": "chimney",
+        "creator_profile_pic": "",
+        "id": 14,
+        "title": "How to Parboil Tomatoes",
+        "url": "https://www.youtube.com/watch?v=30bwbsB1_cM"
+    }
+}
