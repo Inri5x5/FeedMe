@@ -3,10 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea, CardActions } from '@mui/material';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GradeIcon from '@mui/icons-material/Grade';
@@ -14,20 +11,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 import styles from './styles/RecipeCard.module.css'
+import TagLabel from './TagLabel';
 import { APICall } from '../helperFunc';
 import { useNavigate } from 'react-router-dom';
 
 export default function RecipeCard(props) {
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  console.log(props.object)
+  // const [anchorEl, setAnchorEl] = React.useState(null);
+  // const open = Boolean(anchorEl);
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
 
   const handleLike = async() => {
     try {
@@ -43,6 +42,14 @@ export default function RecipeCard(props) {
     } catch (err) {
       alert(err);
     }
+  }
+
+  const renderTags = (tagData) => {
+    let content = [];
+    for (let i = 0; i < tagData.length; i++) {
+      content.push(<TagLabel isCard={true} object={tagData[i]} clickFunction={{}}></TagLabel>)
+    }
+    return content
   }
 
   return (
@@ -65,8 +72,17 @@ export default function RecipeCard(props) {
           <div className={styles.card_title}>
             {props.object.recipe_name}
           </div>
-          <div className={styles.card_desc}>
+          {/* <div className={styles.card_desc}>
             {props.object.recipe_desc}
+          </div> */}
+          <div style={{
+            display:'flex',
+            height: '70px',
+            flexWrap: 'wrap',
+            overflow: 'clip',
+            textOverlow:'ellipsis',
+          }}>
+            {renderTags(props.object.recipe_tags)}
           </div>
         </CardContent>
       </CardActionArea>

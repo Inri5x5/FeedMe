@@ -39,3 +39,11 @@ h1 {
   color: darkred;
 }
 
+.recommended {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.1em;
+  text-align: center;
+  font-family: 'Righteous', serif;
+  color: darkred;
+}

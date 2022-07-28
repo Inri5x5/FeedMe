@@ -6,8 +6,12 @@ const TagLabel = (props) => {
   
   if (props.object.name === '+') {
     style = styles.add_tag
-  } else if (props.isSelected) {
-    style = styles.tag_focus
+  } else if (props.isExcluded) {
+    style = styles.tag_excluded
+  } else if (props.isIncluded) {
+    style = styles.tag_included
+  } else if (props.isCard) {
+    style = styles.tag_card
   } else {
     style = styles.tag
   }

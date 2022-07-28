@@ -35,6 +35,47 @@
     cursor: pointer;
 }
 
+.tag_excluded {
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 10px;
+	font-size: 15px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+	color: white;
+	background: red;
+	cursor: pointer;
+}
+
+.tag_excluded:hover{
+	color: #000000;
+	background: rgb(231, 113, 113);
+}
+
+.tag_included {
+	width: auto;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 10px;
+	font-size: 15px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+	color: black;
+	background: rgb(56, 235, 36);
+	cursor: pointer;
+}
+
+.tag_included:hover{
+	color: #ffffff;
+	background: rgb(6, 79, 17);
+}
 /* .add_tag:hover {
 	color: #821D30;
 	background: #FFC5D0;

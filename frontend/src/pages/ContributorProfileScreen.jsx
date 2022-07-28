@@ -13,6 +13,8 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import RecipeImg from '../assets/recipe-book.png';
 import VideoFileIcon from '@mui/icons-material/VideoFile';
 import IngImg from '../assets/harvest.png'
+import AddIngredientModal from '../components/AddIngredientModal';
+import AddVideoModal from '../components/AddVideoModal';
 
 export default function ContributorProfileScreen () {
   const navigate = useNavigate();
@@ -22,6 +24,22 @@ export default function ContributorProfileScreen () {
   const [draftRecipes, setDraftRecipes] = React.useState([])
   const [ratedRecipes, setRatedRecipes] = React.useState([])
   const [statistic, setStatistic] = React.useState([])
+
+  const [openAddIngredientModal, setOpenAddIngredientModal] = React.useState(false);
+  const handleOpenIngredient = () => {
+    setOpenAddIngredientModal(true);
+  };
+  const handleCloseIngredient = () => {
+    setOpenAddIngredientModal(false);
+  };
+
+  const [openVideoModal, setOpenVideoModal] = React.useState(false);
+  const handleOpenVideo = () => {
+    setOpenVideoModal(true);
+  };
+  const handleCloseVideo = () => {
+    setOpenVideoModal(false);
+  };
 
   
   React.useEffect(() => {
@@ -93,8 +111,6 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/statistics', 'GET', headers);
-      console.log("My reicpeeeee")
-      console.log(temp_data)
       setStatistic(temp_data.statistics)
     } catch (err) {
       alert(err);
@@ -279,8 +295,8 @@ export default function ContributorProfileScreen () {
       
   const actions = [
     { icon: <img src={RecipeImg} style={{width: '45px', height: '45px'}} />, name: 'Add New Recipe', onClick: () => navigate(`/recipe/add`) },
-    { icon: <img src={IngImg} style={{width: '45px', height: '45px'}} />, name: 'Add New Ingredient' },
-    { icon: <VideoFileIcon sx={{width: '45px', height: '45px'}}/>, name: 'Add New Video' },
+    { icon: <img src={IngImg} style={{width: '45px', height: '45px'}} />, name: 'Add New Ingredient', onClick: () => handleOpenIngredient() },
+    { icon: <VideoFileIcon sx={{width: '45px', height: '45px'}}/>, name: 'Add New Video', onClick: () => handleOpenVideo() },
   ];
 
 
@@ -339,11 +355,13 @@ export default function ContributorProfileScreen () {
             icon={action.icon}
             tooltipTitle={action.name}
             onClick={action.onClick}
-            // tooltipOpen
             />
             ))}
         </SpeedDial>
       </Box>
+      
+      <AddIngredientModal open={openAddIngredientModal} handleOpen={handleOpenIngredient} handleClose={handleCloseIngredient}></AddIngredientModal>
+      <AddVideoModal open={openVideoModal} handleOpen={handleOpenVideo} handleClose={handleCloseVideo}></AddVideoModal>
     </>
   )
 }
