@@ -11,6 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { APICall } from '../helperFunc';
 
 const AddIngredientModal = (props) => {
@@ -31,6 +34,25 @@ const AddIngredientModal = (props) => {
       alert(err);
     }
   }
+
+  const addIngredient = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const requestBody = {
+        "ingredient_name" : name,
+        "category_id": categoryId
+      }
+      data = await APICall(requestBody, '/ingredients/new', 'PUT', headers);
+      console.log(data)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
   const renderCategoriesMenuItem = () => {
     let content = []
     for (let i = 0; i < listCategories.length; i++ ) {
@@ -86,9 +108,35 @@ const AddIngredientModal = (props) => {
       setErrorName(true)
       setErrorNameText("Pick a category")
     }
-    if (valid) console.log(categoryId + name)
-
+    if (valid) {
+      addIngredient()
+      handleClick()
+      props.handleClose()
+    }
   }
+
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   
   return (
@@ -133,6 +181,13 @@ const AddIngredientModal = (props) => {
           <Button onClick={handleAdd}>Add</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Ingredient Succesfully Added"
+        action={action}
+      />
     </div>
   );
 }

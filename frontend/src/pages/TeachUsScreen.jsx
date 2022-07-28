@@ -1,77 +1,116 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { APICall } from '../helperFunc';
+import Pagination from '@mui/material/Pagination';
 import NavigationBarHome from '../components/NavigationBarHome';
 import VideoCard from '../components/VideoCard';
-import VideoFrame from '../components/VideoFrame';
 import VideoSearchBar from '../components/VideoSearchBar';
 
 export default function TeachUsScreen () {
-  const dummyVid = [
-    "https://www.youtube.com/watch?v=LB9KDxAOMvI",
-    "https://www.youtube.com/watch?v=a-2n_g4AdDM",
-    "https://www.youtube.com/watch?v=tpikKCfm-kU&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=3",
-    "https://www.youtube.com/watch?v=XhRIqzUDqAM&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=4",
-    "https://www.youtube.com/watch?v=2ZxMNXBwHfQ&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=5",
-    "https://www.youtube.com/watch?v=ie6GyJbtDP8&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=6",
 
-    "https://www.youtube.com/watch?v=LB9KDxAOMvI",
-    "https://www.youtube.com/watch?v=a-2n_g4AdDM",
-    "https://www.youtube.com/watch?v=tpikKCfm-kU&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=3",
-    "https://www.youtube.com/watch?v=XhRIqzUDqAM&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=4",
-    "https://www.youtube.com/watch?v=2ZxMNXBwHfQ&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=5",
-    "https://www.youtube.com/watch?v=ie6GyJbtDP8&list=PLTzMGnJjrsSy6H8uiX3XKWtUhhj2Vilw1&index=6",
-  ]
+  const [skillVideos, setSkillVideos] = React.useState([])
+  const [isContributor, setIsContributor] = React.useState('')
+  const [foundVideos, setFoundVideos] = React.useState([])
+  const [currentPage, setCurrentPage] = React.useState(-1)
+  const [maxPage, setMaxPage] = React.useState(-1)
 
-  const navigate = useNavigate();
+  const handleChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const getSkillVideos = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      data = await APICall(null, `/skill_videos`, 'GET', headers);
+      setSkillVideos(data.video_list);
+      setFoundVideos(data.video_list)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const checkIfContributor = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      data = await APICall(null, `/is_contributor`, 'GET', headers);
+      setIsContributor(data.is_contributor)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  React.useEffect(() => {
+    getSkillVideos()
+    checkIfContributor()
+  },[])
 
   const [searchedTitle, setSearchedTitle] = React.useState("")
-  const [open, setOpen] = React.useState(false);
-  const [selectedVideo, setSelectedVideo] = React.useState('')
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
 
-  const handleClickVideoCard = (url) => {
-    setSelectedVideo(url)
-    handleClickOpen()
-  }
-  const handleCloseVideoCard = () => {
-    setSelectedVideo('')
-    handleClose()
-  }
+  React.useEffect(() => {
+    let temp;
+    if (searchedTitle !== '') {
+      temp = skillVideos.filter((video) => {
+        if (video.title.toLowerCase().includes(searchedTitle.toLowerCase())) return video
+      })
+      setFoundVideos(temp)
+    } else {
+      temp = skillVideos
+      setFoundVideos(temp)
+    }
+    setMaxPage(Math.ceil(temp.length / 9))
+  }, [searchedTitle])
+  
+  React.useEffect(() => {
+    setCurrentPage(1)
+  },[foundVideos])
+
+
   const renderVideoCard = () => {
     let content = []
-    for (let i = 0; i < dummyVid.length; i++) {
-      content.push(
-        <VideoCard url={dummyVid[i]} onClick={handleClickVideoCard}/>
+    if (foundVideos.length !== 0) {
+      let index = (currentPage - 1 ) * 9
+      let times = 9
+      if (currentPage === maxPage) times = foundVideos.length % 9
+      if (times === 0) times = 9
+      for (let i = 0; i < times; i++) {
+        content.push(
+          <VideoCard url={foundVideos[index]['url']} object={foundVideos[index]} isContributor={isContributor}/>
+        )
+        index++;
+      }
+      return (
+        <div style={{width: '100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+          <div style={{
+            width: '95%',
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-evenly',
+            alignContent: 'space-between',
+            marginTop: '20px',
+          }}>
+            {content}
+          </div>
+          <Pagination count={maxPage} page={currentPage} onChange={handleChange} size="large" color='primary' sx={{paddingBottom: 5, paddingTop: 5}}/>
+        </div>
       )
     }
-    return content
   }
 
 
   return (
   <div>
-    <NavigationBarHome style={{ alignSelf: 'start' }} isLogin={true} ></NavigationBarHome>
+    <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
     <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
       <VideoSearchBar wordEntered={searchedTitle} setWordEntered={setSearchedTitle}></VideoSearchBar>
-      <div style={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        flexWrap: 'wrap',
-        alignContent: 'flex-start',
-        marginTop: '20px',
-        marginLeft: '20px',
-      }}>
-        {renderVideoCard()}
-      </div>
+      {renderVideoCard()}
     </div>
-    <VideoFrame openState={open} url={selectedVideo} handleClose={handleCloseVideoCard} handleClickOpen={handleClickOpen}></VideoFrame>
   </div>
   )
 }

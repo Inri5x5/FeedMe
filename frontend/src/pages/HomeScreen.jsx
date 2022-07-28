@@ -29,7 +29,6 @@ const HomeScreen = () => {
           "ingredients_id" : ing_ids,
         }
         temp_data = await APICall(requestBody, '/search/recipes', 'POST', headers);
-        console.log(temp_data)
 
         for(let i = 0; i < temp_data.recipes.length; i++) {
           data.push({

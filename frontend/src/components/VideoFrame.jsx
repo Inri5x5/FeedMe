@@ -14,9 +14,6 @@ const VideoFrame = (props) => {
 
   return (
     <div>
-      {/* <Button variant="outlined" onClick={() => props.handleClickOpen()}>
-        Slide in alert dialog
-      </Button> */}
       <Dialog
         open={props.openState}
         fullWidth={true}
@@ -32,9 +29,9 @@ const VideoFrame = (props) => {
             aspectRatio: 4 / 1.7,
           }}
           src={`https://www.youtube.com/embed/${id}`}
-          frameborder="0"
+          frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope;"
-          allowfullscreen>  
+          allowFullScreen>  
         </iframe>
       </Dialog>
     </div>

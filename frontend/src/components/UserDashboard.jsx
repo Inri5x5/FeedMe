@@ -7,6 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
 import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
 import { IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import styles from './styles/UserDashboard.module.css'
@@ -81,6 +82,7 @@ const UserDashboard = (props) => {
               <Tab icon={<FavoriteIcon />} iconPosition="start" label={ (matches) ? "Saved Recipe" : "" } value="Saved"/>
               <Tab icon={<GradeIcon />} iconPosition="start" label={ (matches) ? "Rated Recipe" : "" } value="Rated"/>
               <Tab icon={<PersonIcon />} iconPosition="start" label={ (matches) ? "My Recipe" : "" } value="Own"/>
+              <Tab icon={<VideoFileIcon />} iconPosition="start" label={ (matches) ? "Saved Video" : "" } value="Video"/>
             </Tabs>
           </div>
         </div>

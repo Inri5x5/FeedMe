@@ -5,7 +5,6 @@ import ContributorDashboard from '../components/ContributorDashboard';
 import RecipeCard from '../components/RecipeCard';
 import ContributorRecipeCard from '../components/ContributorRecipeCard'
 import { APICall } from '../helperFunc';
-import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
@@ -15,6 +14,8 @@ import VideoFileIcon from '@mui/icons-material/VideoFile';
 import IngImg from '../assets/harvest.png'
 import AddIngredientModal from '../components/AddIngredientModal';
 import AddVideoModal from '../components/AddVideoModal';
+import VideoCard from '../components/VideoCard';
+import Pagination from '@mui/material/Pagination';
 
 export default function ContributorProfileScreen () {
   const navigate = useNavigate();
@@ -24,6 +25,13 @@ export default function ContributorProfileScreen () {
   const [draftRecipes, setDraftRecipes] = React.useState([])
   const [ratedRecipes, setRatedRecipes] = React.useState([])
   const [statistic, setStatistic] = React.useState([])
+  
+  const [publishedVideos, setPublishedVideos] = React.useState([])
+  const [currentPage, setCurrentPage] = React.useState(-1)
+  const [maxPage, setMaxPage] = React.useState(-1)
+  const handleChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   const [openAddIngredientModal, setOpenAddIngredientModal] = React.useState(false);
   const handleOpenIngredient = () => {
@@ -83,8 +91,6 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
-      console.log("My reicpeeeee")
-      console.log(temp_data)
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
         data.push({
@@ -99,6 +105,21 @@ export default function ContributorProfileScreen () {
         })
       }
       setDraftRecipes(data)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const fetchPublishedVideos = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const temp_data = await APICall(null, '/skill_videos/contributor', 'GET', headers);
+      setPublishedVideos(temp_data.video_list)
+      setMaxPage(Math.ceil(temp_data.video_list.length / 9))
+      setCurrentPage(1)
     } catch (err) {
       alert(err);
     }
@@ -156,6 +177,7 @@ export default function ContributorProfileScreen () {
       alert(err);
     }
   }
+
   
   React.useEffect(() => {
     //Fetch the recipe
@@ -168,7 +190,7 @@ export default function ContributorProfileScreen () {
     } else if (tabValue === 'Published') {
       fetchPublishedRecipes()
     } else if (tabValue === 'Video') {
-      // TODO
+      fetchPublishedVideos()
     }
   }, [tabValue])
   
@@ -188,15 +210,15 @@ export default function ContributorProfileScreen () {
       content.push(
         <RecipeCard object={listRecipes[i]} isDelete={false} handleAfterLike={func}/>
         )
-      }
-      return content
     }
+    return content
+  }
     
   const renderRatedRecipes = () => {
     let data = []
     for (const [key, value] of Object.entries(ratedRecipes)) {
       let content = []
-      if (value.length === 0) break
+      if (value.length === 0) continue
       for (let j = 0; j < value.length; j++) {
         content.push(
           <RecipeCard object={{
@@ -271,6 +293,40 @@ export default function ContributorProfileScreen () {
     }
     return content
   }
+
+  const renderVideoCard = () => {
+    let content = []
+    if (publishedVideos.length !== 0) {
+      let index = (currentPage - 1 ) * 9
+      let times = 9
+      if (currentPage === maxPage) times = publishedVideos.length % 9
+      if (times === 0) times = 9
+      for (let i = 0; i < times; i++) {
+        content.push(
+          <VideoCard url={publishedVideos[index]['url']} object={publishedVideos[index]} isContributor={true} isDeleteable={true} afterDelete={handleAfterVideoDelete}/>
+        )
+        index++
+      }
+      return (
+        <div style={{width: '100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+          <div style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            flexWrap: 'wrap',
+            alignContent: 'flex-start',
+            marginTop: '20px',
+            marginLeft: '20px',
+            width: '90%',
+          }}>
+            {content}
+          </div>
+          <Pagination count={maxPage} page={currentPage} onChange={handleChange} size="large" color='primary' sx={{paddingBottom: 5, paddingTop: 5}}/>
+        </div>
+      )
+    }
+  }
       
   const handleAfterLike = async() => {
     await fetchStatistics()
@@ -282,6 +338,15 @@ export default function ContributorProfileScreen () {
     setStatistic(newStat)
     const newPublRecipes = publishedRecipes.filter((recipe) => recipe.recipe_id !== recipe_id)
     setPublishedRecipes(newPublRecipes)
+  }
+
+  const handleAfterVideoDelete = (video_id) => {
+    const newPublVideos = publishedVideos.filter((video) => video.id !== video_id)
+    setMaxPage(Math.ceil(newPublVideos.length / 9))
+    if ((Math.ceil(newPublVideos.length / 9)) < currentPage ) {
+      setCurrentPage(Math.ceil(newPublVideos.length / 9))
+    }
+    setPublishedVideos(newPublVideos)
   }
       
   const style = {
@@ -323,9 +388,6 @@ export default function ContributorProfileScreen () {
           width: '90%'
         }}>
           {renderContributorRecipesCard()}
-          {/* <Fab color="primary" aria-label="add" size="large" style={style} onClick={()=>navigate(`/recipe/add`)}>
-            <AddIcon />
-          </Fab> */}
         </div>}
         {(tabValue == 'Saved' || tabValue == 'Drafted') && <div style={{
           position: 'relative',
@@ -341,7 +403,11 @@ export default function ContributorProfileScreen () {
           {renderRecipesCard()}
         </div>}
         {(tabValue === "Rated") && renderRatedRecipes()}
+        {(tabValue == 'Video') && renderVideoCard()}
+    
       </div>
+
+
       <Box style={style} sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1 }}>
         <SpeedDial
           ariaLabel="SpeedDial basic example"
@@ -361,7 +427,7 @@ export default function ContributorProfileScreen () {
       </Box>
       
       <AddIngredientModal open={openAddIngredientModal} handleOpen={handleOpenIngredient} handleClose={handleCloseIngredient}></AddIngredientModal>
-      <AddVideoModal open={openVideoModal} handleOpen={handleOpenVideo} handleClose={handleCloseVideo}></AddVideoModal>
+      <AddVideoModal open={openVideoModal} handleOpen={handleOpenVideo} handleClose={handleCloseVideo} handleAfterAdd={(tabValue === 'Video') ? fetchPublishedVideos : null}></AddVideoModal>
     </>
   )
 }

@@ -13,6 +13,7 @@ import { IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ChefHatIcon from '../assets/chef-hat.svg'
+import VideoFileIcon from '@mui/icons-material/VideoFile';
 
 import styles from './styles/ContributorDashboard.module.css'
 
@@ -90,7 +91,7 @@ const ContributorDashboard = (props) => {
               <Tab icon={<ModeEditIcon />} iconPosition="start" label={ (matches) ? "Recipe Draft" : "" } value="Drafted"/>
               <Tab icon={<FavoriteIcon />} iconPosition="start" label={ (matches) ? "Saved Recipe" : "" } value="Saved"/>
               <Tab icon={<GradeIcon />} iconPosition="start" label={ (matches) ? "Rated Recipe" : "" } value="Rated"/>
-              <Tab icon={<PersonIcon />} iconPosition="start" label={ (matches) ? "Published Video" : "" } value="Video"/>
+              <Tab icon={<VideoFileIcon />} iconPosition="start" label={ (matches) ? "Published Video" : "" } value="Video"/>
             </Tabs>
           </div>
         </div>

@@ -18,15 +18,6 @@ import { useNavigate } from 'react-router-dom';
 export default function RecipeCard(props) {
 
   const navigate = useNavigate();
-  console.log(props.object)
-  // const [anchorEl, setAnchorEl] = React.useState(null);
-  // const open = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
 
   const handleLike = async() => {
     try {
@@ -53,14 +44,7 @@ export default function RecipeCard(props) {
   }
 
   return (
-    <Card sx={{ maxWidth: 345, m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
-      {/* {(props.isEditable) && <IconButton onClick={handleClick} sx={{ position: 'absolute', zIndex: 10, right: 6, top: 3, backgroundColor:'red'}}>
-        <MoreHorizIcon />
-      </IconButton>}
-      {(props.isEditable) && <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-      </Menu>} */}
+    <Card sx={{ width: 360, m: 2, boxShadow: "0 4px 14px rgba(0, 0, 0, 0.7)", borderRadius: '30px', position: 'relative'}} className={styles.card}>
       <CardActionArea onClick={() => navigate(`/recipe_details/${props.object.recipe_id}`)}>
         <CardMedia
           component="img"
@@ -72,15 +56,13 @@ export default function RecipeCard(props) {
           <div className={styles.card_title}>
             {props.object.recipe_name}
           </div>
-          {/* <div className={styles.card_desc}>
-            {props.object.recipe_desc}
-          </div> */}
           <div style={{
             display:'flex',
-            height: '70px',
+            flexDirection: 'row',
             flexWrap: 'wrap',
-            overflow: 'clip',
-            textOverlow:'ellipsis',
+            justifyContent: 'flex-start',
+            alignContent: 'flex-start',
+            height: '45px',
           }}>
             {renderTags(props.object.recipe_tags)}
           </div>

@@ -6,15 +6,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { APICall } from '../helperFunc';
 
-const AddVideoModal
- = (props) => {
+const AddVideoModal= (props) => {
 
   const [title, setTitle] = React.useState('');
   const [errorTitle, setErrorTitle] = React.useState(false)
@@ -49,18 +46,63 @@ const AddVideoModal
       setErrorTitle(true)
       setErrorTitleText("Please input a title")
     }
-    if (valid) console.log("it works")
+    if (valid) {
+      addVideo()
+      handleClick()
+      props.handleClose()
+    }
 
   }
 
-  
+  const addVideo = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const requestBody = {
+        "title" : title,
+        "url": url
+      }
+      data = await APICall(requestBody, '/skill_videos/add', 'PUT', headers);
+      props.handleAfterAdd()
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
+
   return (
     <div>
       <Dialog open={props.open} onClose={props.handleClose} maxWidth="md" fullWidth>
         <DialogTitle>Add Video</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To add ingredients, please type in the URL and Title
+            To add videos, please type in Youtube URL and Title
           </DialogContentText>
           <div style={{display: 'flex', flexDirection:'column', justifyContent:'space-between'}}>
             <TextField
@@ -94,6 +136,13 @@ const AddVideoModal
           <Button onClick={handleAdd}>Add</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Video Succesfully Added"
+        action={action}
+      />
     </div>
   );
 }
