@@ -494,16 +494,22 @@ def ingredients_new():
 def skill_videos():
     conn = db_connection()
     c = conn.cursor()
-
+    
     video_list = []
 
-    c.execute("SELECT * FROM SkillVideos")
-    videos = c.fetchall()
-    for row in videos:
-        c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
-        creator_details = c.fetchone()
-        prefix = "https://www.youtube.com/"
-        video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
+    token = request.headers.get('token')
+    
+    if not validate_token(conn, token):
+        raise AccessError("Invalid token")
+    
+    if token == -1:
+        video_list = get_skill_videos(conn, -1)
+    else:
+        user = decode_token(conn, token)
+        if user["is_contributor"]:
+            video_list = get_skill_videos(conn, -1)
+        else:
+            video_list = get_skill_videos(conn, user["user_id"])
 
     ret = {"video_list" : video_list}
 

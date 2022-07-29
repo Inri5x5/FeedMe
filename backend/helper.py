@@ -471,7 +471,34 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     conn.commit()
     c.close()
     
-    return 
+    return
+
+def get_skill_videos(conn, user_id):
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM SkillVideos")
+    videos = c.fetchall()
+    
+    video_list = []
+    if user_id == -1:
+        for row in videos:
+            c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
+            creator_details = c.fetchone()
+            prefix = "https://www.youtube.com/"
+            video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4], "isSaved" : False})
+    else:
+        for row in videos:
+            c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
+            creator_details = c.fetchone()
+            prefix = "https://www.youtube.com/"
+            c.execute("SELECT * FROM SkillVideoSaves WHERE ruser_id = ? AND skill_video_id = ?", [user_id, row[0]])
+            has_saved = c.fetchone()
+            if has_saved is None:
+                video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4], "isSaved" : False})
+            else:
+                video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4], "isSaved" : True})
+
+    return video_list
 
 ########################### SEARCHES ##########################
 
