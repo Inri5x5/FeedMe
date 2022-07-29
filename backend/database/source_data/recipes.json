@@ -2067,10 +2067,10 @@
       "GET AHEAD For the stuffing, put a high-sided roasting tray (25cm x 30cm) on a medium-high heat with 2 tablespoons of olive oil. Squeeze the sausagemeat out of the skins straight into the pan, breaking it up with the back of a spoon. Let the sausage start to crisp up, stirring occasionally, then tear in the sage leaves. Trim the fennel, peel the onions, then roughly chop both, add to the tray, and cook on a medium heat for 20 minutes, or until soft and caramelized, stirring occasionally. Pour in the wine and let it completely cook away, then season to perfection, tasting and tweaking. Chop the bread into 2cm chunks and stir in, then turn the heat off and leave to cool completely.",
       "Lay out the lamb on a clean work surface. Scrunch and spread the cold stuffing all over the meat, then roll it up, sealing the filling inside (if any falls out, just poke it back in at the ends once tied up). Cut yourself eight 60cm lengths of string, slide them underneath the lamb at regular intervals, then tie them up at the top. Wipe out the tray, chuck in the lamb bones, break apart and add the unpeeled garlic bulb, then sit the lamb on top. Cover and refrigerate overnight.",
       "ON THE DAY Preheat the oven to full whack (240\u00b0C/475\u00b0F/gas 9). Get the lamb tray out of the fridge, rub the meat with a little olive oil, place in the oven, and turn the temperature down to 150\u00baC. Roast for 4 hours, or until tender, basting every hour with the tray juices and adding a splash of water each time. Remove from the oven and transfer the lamb to a serving platter. Cover with tin foil and a clean tea towel, and leave to rest for 1 hour. Use a spoon to skim the fat off the tray of bones (save it in a jar for tasty cooking another day). Put the tray over a medium heat on the hob and stir in the flour, jam and a swig of red wine vinegar, scraping up all the sticky bits from the base of the tray. Cook for a couple of minutes, then pour in 1.2 litres of water. Let it simmer on a low heat to the consistency of your liking, stirring occasionally. Pass the gravy through a sieve into a pan and season to perfection, tasting and tweaking. Simmer on the lowest heat until needed.",
-      "TO SERVE Uncover the lamb, spooning any resting juices into the gravy. Cut away the string, then spoon over the Green sauce. Take it to the table, ready to carve in front of your guests."
+      "TO SERVE Uncover the lamb, spooning any resting juices into the gravy. Cut away the string. Take it to the table, ready to carve in front of your guests."
     ],
-    "servings": "12 with leftover meat",
-    "time": ""
+    "servings": "12",
+    "time": "300"
   },
   {
     "name": "Farmhouse roast chicken",
@@ -2095,7 +2095,7 @@
       "Use a slotted spoon to transfer the garlicky mushrooms to a serving platter, sitting the chicken on top to rest. Place the tray of juices on a high heat on the hob, add the spinach, then drain and add the lentils. Stir until the spinach has wilted, then, off the heat, ripple through the cre\u0300me frai\u0302che and season to perfection. Pick the tarragon leaves over the chicken, and serve it all together."
     ],
     "servings": "6",
-    "time": "PT1H30M"
+    "time": "90"
   },
   {
     "name": "Perfect pork belly",
@@ -2133,8 +2133,8 @@
       "Gradually stir in the flour, then pour in 1.5 litres of boiling water and stir on the heat for 15 minutes, or until thickened and reduced.",
       "When it\u2019s time to dish up, arrange the veg on a serving platter with the pork and strain the gravy into a jug. Carve or pull the pork and plate it up with a little bit of everything. Delicious served with a simple watercress and apple salad, and a dollop of English mustard."
     ],
-    "servings": "8 to 10, with leftovers",
-    "time": "PT3H"
+    "servings": "10",
+    "time": "300"
   },
   {
     "name": "Roast topside of beef",
@@ -2168,7 +2168,7 @@
       "Carve the beef into lovely thin slices, and serve with all the usual trimmings \u2013 delicious with Yorkshire puddings, roast potatoes, watercress and a dollop of horseradish."
     ],
     "servings": "12",
-    "time": "PT2H"
+    "time": "120"
   },
   {
     "name": "Roasted salmon & artichokes",
@@ -2200,8 +2200,8 @@
       "Place in the middle of the oven and immediately reduce the temperature to 180\u00baC/350\u00baF/gas 4. Roast for 35 to 40 minutes, or until the bacon and salmon skin are golden and crisp.",
       "Rest for 10 minutes, then serve with lemon wedges for squeezing over. Delicious with buttered new potatoes and a crisp green salad."
     ],
-    "servings": "12 to 14",
-    "time": "PT1H25M"
+    "servings": "14",
+    "time": "85"
   },
   {
     "name": "Sweet chicken surprise",
@@ -2223,7 +2223,7 @@
       "Add a splash of water to the pan and give it a gentle shimmy to pick up all the sticky bits. Pick over the tarragon, and dish up."
     ],
     "servings": "2",
-    "time": "PT48M"
+    "time": "48"
   },
   {
     "name": "Balsamic lamb shoulder",
@@ -2251,8 +2251,8 @@
       "Pick and roughly chop the leaves from 1 bunch of fresh mint. Skim away the fat from the top of the roasting tray and place on the hob over a medium heat. Whisk in 1 heaped tablespoon of plain flour, pour in 400ml of boiling water then add the mint and simmer gently for 10 minutes, or until thick and glossy, stirring regularly.",
       "Sieve the minty gravy into a jug and serve alongside the lamb with some potato and celeriac mash and steamed seasonal greens, if you like."
     ],
-    "servings": "6 to 8, with leftovers",
-    "time": "PT5H30M"
+    "servings": "8",
+    "time": "330"
   },
   {
     "name": "Roasted salmon & veg traybake",
@@ -2285,7 +2285,7 @@
       "Scrape the mixture into a bowl and add the mustard, 4 tablespoons of Greek yoghurt and the remaining lemon juice. Add 1 tablespoon of extra virgin olive oil, mix well, season to taste and serve with the salmon traybake."
     ],
     "servings": "4",
-    "time": "PT20M"
+    "time": "20"
   },
   {
     "name": "Spiced sea bass with caramelised fennel",
@@ -2311,7 +2311,7 @@
       "Serve with the fennel, scattered with the reserved tops."
     ],
     "servings": "2",
-    "time": "PT45M"
+    "time": "45"
   },
   {
     "name": "Sweet &amp; sticky roast quail",
@@ -2342,7 +2342,7 @@
       "Place the quail on the bread and lettuce, then drizzle over the remaining marinade from the roasting tin. Great with a green salad and crusty bread."
     ],
     "servings": "4",
-    "time": "PT40M"
+    "time": "40"
   },
   {
     "name": "Leg of lamb with amazing gravy",
