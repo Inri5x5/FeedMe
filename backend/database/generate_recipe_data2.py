@@ -640,4 +640,385 @@ insert_SkillVideoInRecipe_qry = '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
+############### 46: Spring Chicken Stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (46, 864, "olive oil"),
+        (46, 874, "2 rashers of higher-welfare smoked streaky bacon"),
+        (46, 527, "2 sprigs of fresh rosemary"),
+        (46, 796, "2 onions"),
+        (46, 815, "2 carrots"),
+        (46, 820, "400 g new potatoes"),
+        (46, 125, "100 g pearl barley"),
+        (46, 146, "1 heaped tablespoon plain wholemeal flour"),
+        (46, 887, "500 ml organic chicken stock"),
+        (46, 179, "500 ml semi-skimmed milk"),
+        (46, 875, "2 courgettes"),
+        (46, 818, "1 bunch of asparagus (350g)"),
+        (46, 790, "200 g green beans"), 
+        (46, 594, "4 x 120 g free-range skinless chicken breasts"),
+        (46, 525, "1 tablespoon mint sauce")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (46, 9),
+        (46, 18),
+        (46, 20)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (46, 116),
+        (46, 272),
+        (46, 215)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 47: Beef Brisket with Red Wine & Shallots ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (47, 797, "12 shallots"),
+        (47, 522, "6 cloves of garlic"),
+        (47, 865, "2 tablespoons extra virgin olive oil"),
+        (47, 592, "1.5 kg brisket of beef rolled and tied"),
+        (47, 777, "1 whole nutmeg for grating"),
+        (47, 811, "1 x 400 g tin of chopped tomatoes"),
+        (47, 860, "2 tablespoons tomato pur\u00e9e"),
+        (47, 111, "250 ml red wine"),
+        (47, 876, "2 fresh bay leaves"),
+        (47, 771, "1 stick of cinnamon"),
+        (47, 673, "1 small handful of black olives"),
+        (47, 778, "1 teaspoon dried oregano"),
+        (47, 532, "a few sprigs of fresh thyme"), 
+        (47, 687, "2 tablespoons red wine vinegar")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (47, 9),
+        (47, 18),
+        (47, 20)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (47, 11)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 48: Curried Fish Stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (48, 870, "6 spring onions"),
+        (48, 869, "1 fresh red chilli"),
+        (48, 774, "5 cm piece of ginger"),
+        (48, 864, "olive oil"),
+        (48, 534, "1 handful of curry leaves"),
+        (48, 903, "1 teaspoon black mustard seeds"),
+        (48, 782, "1 level teaspoon ground turmeric"),
+        (48, 904, "\u00bd teaspoon chilli powder"),
+        (48, 905, "\u00bd teaspoon cumin seeds"),
+        (48, 882, "\u00bd teaspoon fennel seeds"),
+        (48, 737, "12 large raw shell-on king prawns from sustainable sources"),
+        (48, 147, "300 g brown rice"),
+        (48, 459, "250 g ripe mixed-colour cherry tomatoes"), 
+        (48, 77, "1 x 400 g tin of light coconut milk"),
+        (48, 238, "6 x 100 g white fish fillets such as bream or haddock, skin on, scaled and pin-boned, from sustainable sources"),
+        (48, 78, "1 lemon"),
+        (48, 906, "12 uncooked poppadoms")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (48, 2),
+        (48, 9),
+        (48, 18),
+        (48, 20)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (48, 302),
+        (48, 16),
+        (48, 18),
+        (48, 121)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 49: Sweet and Sour Rabbit ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (49, 626, "1 whole rabbit (1.2kg) skinned, jointed, with offal"),
+        (49, 864, "olive oil"),
+        (49, 830, "1 red onion"),
+        (49, 459, "5 ripe cherry tomatoes"),
+        (49, 869, "1 fresh red chilli"),
+        (49, 876, "5 fresh bay leaves"),
+        (49, 908, "50 g pine nuts"),
+        (49, 640, "50 g blanched almonds"),
+        (49, 772, "\u00bd teaspoon ground cloves",
+        (49, 111, "150 ml full-bodied Sicilian red wine"),
+        (49, 866, "100 ml thick balsamic vinegar"),
+        (49, 681, "1 tablespoon runny honey")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (49, 1),
+        (49, 9),
+        (49, 18),
+        (49, 13),
+        (49, 14)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (49, 131),
+        (49, 27)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 50: Mushroom Bourguignon ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (50, 797, "12 shallots"),
+        (50, 499, "25 g dried porcini mushrooms"),
+        (50, 499, "4 portobello mushrooms"),
+        (50, 499, "120 g shiitake mushrooms",
+        (50, 499, "200 g chestnut mushrooms"),
+        (50, 148, "25 g unsalted butter"),
+        (50, 815, "2 large carrots"),
+        (50, 522, "2 cloves of garlic"),
+        (50, 532, "6 sprigs of fresh thyme"),
+        (50, 876, "2 fresh bay leaves"),
+        (50, 111, "500 ml red wine"),
+        (50, 860, "1 tablespoon tomato pur\u00e9e")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (50, 5),
+        (50, 9),
+        (50, 18),
+        (50, 11),
+        (50, 13)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (50, 152),
+        (50, 201),
+        (50, 24),
+        (50, 215)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 51: Balinese Pork Stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (51, 897, "750 g skinless boneless higher-welfare pork belly cut into finger-length strips"),
+        (51, 897, "750 g higher-welfare pork belly ribs halved"),
+        (51, 864, "olive oil"),
+        (51, 790, "300 g Chinese long beans or green beans"),
+        (51, 472, "300 g pattypan squash"),
+        (51, 800, "\u00bd a Chinese cabbage"),
+        (51, 213, "7 lime leaves"),
+        (51, 77, "2 x 400 g tins of light coconut milk"),
+        (51, 129, "500 g jasmine rice"),
+        (51, 442, "4 limes"),
+        (51, 782, "20 g fresh turmeric"),
+        (51, 774, "80 g galangal or ginger"),
+        (51, 797, "500 g small Thai shallots"), 
+        (51, 522, "1 bulb of garlic"),
+        (51, 869, "4 fresh red bird's-eye chillies"),
+        (51, 869, "3 fresh red chillies"),
+        (51, 646, "5 candlenuts or macadamia nuts"),
+        (51, 780, "1 tablespoon each of black and white peppercorns"),
+        (51, 4, "50 g palm sugar"),
+        (51, 912, "1 teaspoon shrimp paste"),
+        (51, 211, "2 sticks lemongrass"),
+        (51, 498, "coconut oil")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (51, 9),
+        (51, 20),
+        (51, 13),
+        (51, 14)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (51, 259),
+        (51, 126)
+        (51, 217),
+        (51, 291),
+        (51, 131)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 52: Morrocan Lamb Stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (52, 527, "1 bunch of fresh rosemary"),
+        (52, 774, "10 cm piece of ginger"),
+        (52, 905, "\u00bd teaspoon cumin seeds"),
+        (52, 861, "1 tablespoon coriander seeds"),
+        (52, 882, "1 teaspoon fennel seeds"),
+        (52, 869, "3-4 small dried chillies"),
+        (52, 865, "extra virgin olive oil"),
+        (52, 596, "4 small quality lamb neck fillets"),
+        (52, 817, "4 sweet potatoes"),
+        (52, 830, "2 red onions"),
+        (52, 522, "4 cloves of garlic"),
+        (52, 811, "12 ripe plum tomatoes"),
+        (52, 771, "1 cinnamon stick"), 
+        (52, 876, "2 bay leaves"),
+        (52, 366, "1 handful of dried apricots"),
+        (52, 145, "350 g couscous"),
+        (52, 687, "red or white wine vinegar",
+        (52, 517, "1 big bunch of fresh coriander"),
+        (52, 180, "4 tablespoons fat-free natural yoghurt"),
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (52, 9),
+        (52, 20),
+        (52, 17)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (52, 46),
+        (52, 206),
+        (52, 125)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 54: Oxtail Stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (53, 146, "50 g plain flour"),
+        (53, 627, "2.5 kg quality trimmed oxtail, cut into rounds (ask your butcher to do this)"),
+        (53, 797, "500 g shallots"),
+        (53, 522, "4 cloves of garlic"),
+        (53, 774, "5-6 5cm pieces of ginger"),
+        (53, 864, "olive oil"),
+        (53, 772, "1 teaspoon ground cloves"),
+        (53, 777, "1 whole nutmeg for grating"),
+        (53, 396, "1 large orange or 2-3 strips of dried orange peel"),
+        (53, 379, "1 punnet of dates (soft, such as medjool, or semi-dried work best)"),
+        (53, 866, "balsamic or sherry vinegar"),
+        (53, 843, "1 large bunch of kale"),
+        (53, 874, "3 thick slices of streaky bacon"),
+        (53, 869, "1 fresh red chilli or to taste")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (53, 10),
+        (53, 18),
+        (53, 14)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (53, 338),
+        (53, 336),
+        (53, 10),
+        (53, 311)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
 cursor.close()

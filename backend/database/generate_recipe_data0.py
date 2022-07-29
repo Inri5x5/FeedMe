@@ -115,7 +115,8 @@ tags_data = [
     {"id": 19, "category_id": 3, "name": "Entree"},
     {"id": 20, "category_id": 3, "name": "Main"},
     {"id": 21, "category_id": 3, "name": "Dessert"},
-    {"id": 22, "category_id": 3, "name": "Snack"}
+    {"id": 22, "category_id": 3, "name": "Snack"},
+    {"id": 23, "category_id": 3, "name": "Drink"}
 ]
 
 insert_into_tags_query = """
