@@ -20,6 +20,27 @@ const NavigationBarHome = (props) => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const is_contributor = localStorage.getItem('is_contributor');
+
+
+  const [profileData, setProfileData] = React.useState('')
+
+  const getProfile = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const temp_data = await APICall(null, '/dash/get_details', 'GET', headers);
+      setProfileData(temp_data.user_details)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  React.useEffect(() => {
+    getProfile()
+  }, [])
+
   const checkUser = () => {
     if(!token) {
       navigate('/login');
@@ -123,7 +144,9 @@ const NavigationBarHome = (props) => {
               {(!props.isLogin) && 
                 (<Tooltip title="Open Profile">
                   <IconButton onClick={checkUser} sx={{ p: 0 }}>
-                    <Avatar alt="profile-picture"/>
+                    <Avatar alt="profile-picture"
+                    src={(localStorage.getItem('token')) && profileData.profile_picture}
+                    />
                   </IconButton>
                 </Tooltip>)
               }

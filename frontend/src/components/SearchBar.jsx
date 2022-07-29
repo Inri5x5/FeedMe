@@ -9,6 +9,8 @@ import CategoryLabel from './CategoryLabel';
 import IngredientLabel from './IngredientLabel';
 import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import homeChef from '../assets/homeChef.png'
 
 const SearchBar = (props) => {
@@ -104,10 +106,22 @@ const SearchBar = (props) => {
       return selIngr.i_id !== object.i_id;
     }))
   }
+  const removeAllIngredients = () => {
+    props.setSelectedIngredients([])
+  }
   const renderSelectedIngredient = (list_selected_ingredients) => {
     let content = list_selected_ingredients.map((object, index) => {
       return (<SelectedIngredientLabel object={object} removeIngredient={removeIngredientOnClick}></SelectedIngredientLabel>)
     })
+    if (list_selected_ingredients.length > 0) content.push(
+      <IconButton onClick={removeAllIngredients} sx={{marginRight: '10px', backgroundColor:'red', color:'white', 
+      '&:hover': {
+        backgroundColor: "orange",
+        color: "red"
+      }}}>
+        <DeleteIcon />
+      </IconButton>
+    )
     return content;
   }
   const checkIfSelected = (object) => {
@@ -159,9 +173,10 @@ const SearchBar = (props) => {
       const headers = {
         'Content-Type': 'application/json',
       };
-      data = await APICall(null, `/ingredients?query= `, 'GET', headers);
-      for (let i = 0; i < data.body.suggestions.length; i++) {
-        temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
+      data = await APICall(null, `/search/recommendation `, 'GET', headers);
+      console.log(data.ingredients_list)
+      for (let i = 0; i < data.ingredients_list.length; i++) {
+        temp.push({"i_id": data.ingredients_list[i].id, "name": data.ingredients_list[i].name})
       }
       setRecommendedIngredients(temp);
     } catch (err) {

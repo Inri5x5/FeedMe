@@ -26,6 +26,8 @@ export default function TeachUsScreen () {
       data = await APICall(null, `/skill_videos`, 'GET', headers);
       setSkillVideos(data.video_list);
       setFoundVideos(data.video_list)
+      setMaxPage(Math.ceil(data.video_list.length / 9))
+      setCurrentPage(1)
     } catch (err) {
       alert(err);
     }

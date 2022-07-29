@@ -39,7 +39,6 @@ const AddVideoModal= (props) => {
       valid = false;
       setErrorUrl(true)
       setErrorUrlText("Please input a url")
-    
     }
     if (title === '') {
       valid = false;
@@ -51,7 +50,6 @@ const AddVideoModal= (props) => {
       handleClick()
       props.handleClose()
     }
-
   }
 
   const addVideo = async() => {

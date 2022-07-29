@@ -144,7 +144,7 @@ const VideoCard = (props) => {
                 {props.object.title}
               </div>
             </div>
-            <div style={{marginTop: '10px'}}> {props.object.creator}</div>
+            <div style={{marginTop: '10px', fontSize:'1.1em', fontWeight:'bolder'}}> @{props.object.creator}</div>
           </CardContent>
         </CardActionArea>
 

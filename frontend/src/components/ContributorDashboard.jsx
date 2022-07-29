@@ -14,6 +14,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ChefHatIcon from '../assets/chef-hat.svg'
 import VideoFileIcon from '@mui/icons-material/VideoFile';
+import { APICall } from '../helperFunc';
 
 import styles from './styles/ContributorDashboard.module.css'
 
@@ -36,6 +37,24 @@ const ContributorDashboard = (props) => {
       },
     },
   });
+  const [profileData, setProfileData] = React.useState('')
+
+  const getProfile = async() => {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      const temp_data = await APICall(null, '/dash/get_details', 'GET', headers);
+      setProfileData(temp_data.user_details)
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  React.useEffect(() => {
+    getProfile()
+  }, [])
 
   //Modal State
   const [open, setOpen] = React.useState(false);
@@ -54,19 +73,25 @@ const ContributorDashboard = (props) => {
           <div className={styles.contributorContainer}>
             <div style={{position:'relative'}}> 
               <Avatar
-              alt="Remy Sharp"
-              src="/static/images/avatar/1.jpg"
+              alt="profile picture"
+              src={profileData.profile_picture}
               sx={{ width: 250, height: 250 }}
               />
               <div className={styles.chefHat}>
                 <img src={ChefHatIcon} alt="Admin" style={{width:30, height:30,}} />
               </div>
-            </div>
-            <div className={styles.name}> 
-              Admin Name
-              <IconButton aria-label="Edit profile" sx={{backgroundColor: "aquamarine", ml: 2, '&:hover':{backgroundColor:"green"}}} onClick={handleOpen}>
+              <IconButton aria-label="Edit profile" onClick={handleOpen} sx={{
+                backgroundColor: "aquamarine", ml: 2, '&:hover':{backgroundColor:"green"},
+                position:'absolute', bottom: 0, right: 30
+              }}>
                 <EditIcon />
               </IconButton>
+            </div>
+            <div className={styles.name}> 
+              {profileData.username}
+            </div>
+            <div>
+              {profileData.email}
             </div>
           </div>
           <div className={styles.tabsContainer}>
@@ -95,7 +120,7 @@ const ContributorDashboard = (props) => {
             </Tabs>
           </div>
         </div>
-        <EditProfileModal open={open} setOpen={setOpen}></EditProfileModal>
+        <EditProfileModal isContributor={true} open={open} setOpen={setOpen} handleAfterUpdate={getProfile}></EditProfileModal>
       </ThemeProvider>
     </>
   )
