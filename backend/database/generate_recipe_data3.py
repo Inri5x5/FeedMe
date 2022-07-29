@@ -449,5 +449,254 @@ VALUES
 cursor.execute(insert_skillVideoInRecipe_query)
 conn.commit()
 
+################################# RECIPE ID = 69 = Lamb with Gravy #################################
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (69, 596, "2.5-3 kg leg of lamb"),
+    (69, 830, "4 red onions"),
+    (69, 522, "2 bulbs of garlic"),
+    (69, 148, "100 g unsalted butter"),
+    (69, 532, "\u00bd a bunch of fresh thyme"),
+    (69, 527, "\u00bd a bunch of fresh rosemary"),
+    (69, 146, "3 tablespoons plain flour"),
+    (69, 110, "port"),
+    (69, 887, "1 litre hot organic chicken stock"),
+    (69, 913 "1 celeriac"),
+    (69, 820, "1 kg potatoes"),
+    (69, 865, "extra virgin olive oil"),
+    (69, 777, "1 whole nutmeg for grating"),
+    (69, 525, "1 big bunch of fresh mint"),
+    (69, 687, "2 tablespoons red wine vinegar"),
+    (69, 4, "1 tablespoon soft brown sugar")
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (69, 1),
+    (69, 17),
+    (69, 20),
+    (69, 10)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (69, 322),
+    (69, 227),
+    (69, 46),
+    (69, 193)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+################################# RECIPE ID = 70 = Porchetta #################################
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (70, 599, "4-5 kg boneless jacket of pork, loin and belly attached"),
+    (70, 104, "50 ml vin santo or other sweet dessert wine"),
+    (70, 815, "6 large carrots"),
+    (70, 117, "200 ml white wine"),
+    (70, 796, "3 onions"),
+    (70, 522, "4 cloves of garlic"),
+    (70, 914, "200 g free-range chicken livers"),
+    (70, 527, "4 sprigs of fresh rosemary"),
+    (70, 532, "4 sprigs of fresh thyme"),
+    (70, 29, "250 g fresh breadcrumbs"),
+    (70, 864, "olive oil"),
+    (70, 897, "400 g higher-welfare minced pork belly"),
+    (70, 528, "10 fresh sage leaves"),
+    (70, 104, "120 ml vin santo or other sweet dessert wine"),
+    (70, 908, "25 g pine nuts"),
+    (70, 915, "40 g sultanas"),
+    (70, 146, "3 heaped tablespoons plain flour"),
+    (70, 117, "120 ml white wine"),
+    (70, 887, "1.5 litres organic chicken stock")
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (70, 1),
+    (70, 17),
+    (70, 20),
+    (70, 10)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (70, 90),
+    (70, 318),
+    (70, 46),
+    (70, 61)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+################################# RECIPE ID = 71 = Green Tea Fish #################################
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description),
+VALUES
+    (71, 147, "150 g brown rice"),
+    (71, 243, "1 x 500 g salmon tail, skin on, scaled, bone in, from sustainable sources"),
+    (71, 63, "1 green tea bag"),
+    (71, 650, "sesame oil"),
+    (71, 522, "1 clove of garlic"),
+    (71, 813, "320 g mixed salad veg, such as carrots, cucumber, tomato, chicory"),
+    (71, 392, "1 small ripe mango"),
+    (71, 442, "1 lime"),
+    (71, 665, "low-salt soy sauce"),
+    (71, 869, "1 fresh red chilli"),
+    (71, 774, "1 x 3cm piece of ginger"),
+    (71, 650, "1 teaspoon sesame seeds"),
+    (71, 541, "\u00bd a punnet of cress")
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (71, 0),
+    (71, 3),
+    (71, 18),
+    (71, 9)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (71, 90),
+    (71, 318),
+    (71, 46)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+################################# RECIPE ID = 72 = Roast Onions #################################
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description),
+VALUES
+    (72, 796, "6 large white onions peeled"),
+    (72, 865, "5 tablespoons extra-virgin olive oil"),
+    (72, 905, "1 teaspoon cumin seeds lightly crushed"),
+    (72, 861, "1 tablespoon coriander seeds lightly crushed"),
+    (72, 131, "100 g white basmati rice"),
+    (72, 572, "100 g brown lentils"),
+    (72, 917, "1/2 teaspoon ground tumeric"),
+    (72, 783, "1 teaspoon ground allspice"),
+    (72, 771, "1 teaspoon cinnamon"),
+    (72, 916, "400 ml vegetable stock"),
+    (72, 640, "50 g flaked almonds lightly toasted, plus extra to garnish"),
+    (72, 779, "1 large handful of flat-leaf parsley chopped"),
+    (72, 687, "2 tablespoons red wine vinegar"),
+    (72, 4, "1 pinch of caster sugar"),
+    (72, 540, "rocket salad to serve")
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (72, 11),
+    (72, 12),
+    (72, 14),
+    (72, 20),
+    (72, 9)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (72, 153),
+    (72, 162),
+    (72, 195),
+    (72, 49)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+################################# RECIPE ID = 73 = Roast Goose #################################
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description),
+VALUES
+    (73, 613, "1 x 4 kg whole goose (ask your butcher for the giblets, too)"),
+    (73, 864, "olive oil"),
+    (73, 443, "1 clementine"),
+    (73, 527, "\u00bd a bunch of fresh rosemary (15g)"),
+    (73, 796, "2 onions"),
+    (73, 815, "3 carrots"),
+    (73, 770, "3 sticks of celery"),
+    (73, 876, "1 handful of fresh bay leaves"),
+    (73, 110, "1 lug of port"),
+    (73, 146, "2 heaped tablespoons plain flour"),
+    (73, 887, "1 litre organic chicken stock"),
+    (73, 447, "1 pomegranate"),
+    (73, 766, "90 g star anise"),
+    (73, 882, "90 g fennel seeds"),
+    (73, 517, "75 g coriander seeds"),
+    (73, 780, "30 g Sichuan pepper"),
+    (73, 772, "15 g cloves"),
+    (73, 771, "60 g cinnamon sticks"),
+    (73, 781, "1 large pinch of saffron"),
+    (73, 4, "90 g soft brown sugar"),
+    (73, 3, "60 g sea salt"),
+    (73, 780, "30 g whole black peppercorns")
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (73, 9),
+    (73, 20),
+    (73, 19),
+    (73, 14)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (73, 195),
+    (73, 261),
+    (73, 226),
+    (73, 13)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 cursor.close()

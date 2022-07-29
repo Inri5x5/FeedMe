@@ -2314,7 +2314,7 @@
     "time": "45"
   },
   {
-    "name": "Sweet &amp; sticky roast quail",
+    "name": "Sweet and sticky roast quail",
     "description": "Za\u2019atar, a Lebanese herb mix, is available at larger supermarkets and speciality shops. You can easily make it by crushing dried thyme and marjoram using a pestle and mortar, then stirring through some sesame seeds.",
     "image": "https://img.jamieoliver.com/jamieoliver/recipe-database/FxVhCZ9zK528-i-zdq1McB.jpg",
     "video": null,
@@ -2380,7 +2380,7 @@
       "Pick and finely chop the mint. Pop the reserved onion half out of its skin and finely chopping it with the mint, then mix them together in a bowl with the vinegar and sugar. Take everything to the table, and dig in!"
     ],
     "servings": "8",
-    "time": "PT2H45M"
+    "time": "165"
   },
   {
     "name": "Porchetta di davida",
@@ -2424,7 +2424,7 @@
       "After another 3 to 4 minutes, stir in the chicken stock and continue to cook for 10 minutes. Strain the gravy and serve with the pork, which can be eaten hot or cold."
     ],
     "servings": "8",
-    "time": "PT4H35M"
+    "time": "275"
   },
   {
     "name": "Green tea roasted salmon",
@@ -2459,7 +2459,7 @@
       "Snip the cress over the salad, and serve with the salmon and rice."
     ],
     "servings": "2",
-    "time": "PT35M"
+    "time": "35"
   },
   {
     "name": "Roast mejadra onions",
@@ -2493,7 +2493,7 @@
       "Sprinkle over the red wine vinegar and sugar, cover the dish tightly with tinfoil and bake in the oven for 25 minutes, removing the foil for the last 5 minutes. Scatter with the remaining flaked almonds. Serve the stuffed onions warm, with a rocket salad on the side."
     ],
     "servings": "4",
-    "time": "PT2H30M"
+    "time": "150"
   },
   {
     "name": "Spiced roast goose",
@@ -2525,29 +2525,20 @@
       "30 g whole black peppercorns"
     ],
     "steps": [
-      "x 4 kg whole goose , (ask your butcher for the giblets, too)",
-      "olive oil",
-      "clementine",
-      "\u00bd a bunch of fresh rosemary , (15g)",
-      "onions",
-      "carrots",
-      "sticks of celery",
-      "handful of fresh bay leaves",
-      "lug of port",
-      "heaped tablespoons plain flour",
-      "litre organic chicken stock",
-      "pomegranate",
-      "SPICE MIX",
-      "g star anise",
-      "g fennel seeds",
-      "g coriander seeds",
-      "g Sichuan pepper",
-      "g cloves",
-      "g cinnamon sticks",
-      "large pinch of saffron",
-      "g soft brown sugar",
-      "g sea salt",
-      "g whole black peppercorns"
+      "Preheat the oven to 180ºC/350ºF/gas 4.",
+      "To make the spice mix, blitz all of the ingredients in a food processor to a fine powder. Pour through a coarse sieve into an airtight jar, then discard any woody bits left behind in the sieve.",
+      "With a fork or the tip of a sharp knife, prick the fatty lump under the goose’s wing to help the fat melt out.",
+      "Rub the goose all over with a little olive oil and 2 heaped tablespoons of the spice mix, making sure you get into all the nooks and crannies. Keep the remaining spice mix for another day – it’s incredible on all roasted or grilled meats.",
+      "Prick the clementine all over with a sharp knife, then place into the goose's cavity with a few rosemary sprigs.",
+      "Peel and quarter the onions, then chop the carrots and celery into large chunks. Place into a large roasting tray with the remaining rosemary, the bay and goose giblets. Toss well, add 150ml of cold water, then place the tray on the bottom shelf of the oven.",
+      "Pop the goose directly on the bars above, so the juices from the goose drip into the tray, leaving you with crisp, beautifully succulent meat. Cook for around 3 hours, or until cooked through, golden and crisp. To check, insert a skewer into the thickest part of the thigh – if the juices run clear, it’s done.",
+      "When the goose has been roasting for 2 hours, remove the veg tray from the oven and replace it with another tray. Skim away the fat from the veg tray (reserve it in a jar with a few extra bay leaves to make amazing roasties or my sweet glazed carrots), then place the tray on the hob over a high heat.",
+      "Add the port and cook for around 3 minutes, or until reduced. Stir in the flour for a minute, then pour in the stock. Reduce to a simmer for around 10 minutes, or until thickened to a nice gravy consistency. Sieve into a medium pan, then set aside.",
+      "When the time’s up on the goose, remove it from the oven, cover with a double layer of tin foil and a tea towel and leave to rest for 20 to 25 minutes.",
+      "Remove the tray from the oven, skim away and reserve the fat, then pour any juices into the gravy. Warm up the gravy on a medium heat.",
+      "Once rested, place the goose on a board and remove the skin – pop this into the oven for another 10 minutes to crisp it up nicely (keep an eye on it!).",
+      "Carve away the legs, then shred the meat with two forks, discarding the bones. Carefully slice away the breasts, then slice up and place on a platter with the remaining shredded meat.",
+      "Halve the pomegranate, then holding it in the palm of your hand cut-side down over the platter, bash the back with a wooden spoon so the seeds come tumbling out. Snap the crispy skin over the top, then serve with your hot gravy and all the trimmings."
     ],
     "servings": "8",
     "time": "PT3H45M"
