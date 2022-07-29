@@ -499,10 +499,7 @@ def skill_videos():
 
     token = request.headers.get('token')
     
-    if not validate_token(conn, token):
-        raise AccessError("Invalid token")
-    
-    if token == -1:
+    if token == str(-1) or not validate_token(conn, token):
         video_list = get_skill_videos(conn, -1)
     else:
         user = decode_token(conn, token)
