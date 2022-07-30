@@ -884,6 +884,7 @@
 {"ingredient_id": 883, "ingredient_category_id": 17, "name": "Mussels"},
 {"ingredient_id": 884, "ingredient_category_id": 16, "name": "Samphire"},
 {"ingredient_id": 885, "ingredient_category_id": 5, "name": "Creme Fraiche"},
+{"ingredient_id": 886, "ingredient_category_id": 1, "name": "Vegetable Stock"},
 {"ingredient_id": 887, "ingredient_category_id": 1, "name": "Chicken Stock"},
 {"ingredient_id": 888, "ingredient_category_id": 14, "name": "Chorizo"},
 {"ingredient_id": 889, "ingredient_category_id": 19, "name": "Piquillo Pepper"},
@@ -911,5 +912,7 @@
 {"ingredient_id": 911, "ingredient_category_id": 4, "name": "Granola"},
 {"ingredient_id": 912, "ingredient_category_id": 1, "name": "Shrimp Paste"},
 {"ingredient_id": 913, "ingredient_category_id": 19, "name": "Celeriac"},
-{"ingredient_id": 914, "ingredient_category_id": 19, "name": "Liver"} 
+{"ingredient_id": 914, "ingredient_category_id": 14, "name": "Liver"},
+{"ingredient_id": 915, "ingredient_category_id": 9, "name": "Sultana"},
+{"ingredient_id": 916, "ingredient_category_id": 18, "name": "Tumeric"}
 ]
