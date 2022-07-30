@@ -187,7 +187,7 @@ const SearchBar = (props) => {
     let i = 0
     let index = 0
     let content = []
-    while (i < 8 && index < recommendedIngredients.length) {
+    while (i < 10 && index < recommendedIngredients.length) {
       if (!checkIfSelected(recommendedIngredients[index])) {
         content.push(
           <IngredientLabel object={recommendedIngredients[index]} isSelected={false} clickFunction={addIngredientOnClick}></IngredientLabel>
