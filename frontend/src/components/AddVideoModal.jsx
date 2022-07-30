@@ -53,7 +53,6 @@ const AddVideoModal= (props) => {
   }
 
   const addVideo = async() => {
-    let data = []; let temp = [];
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -63,7 +62,7 @@ const AddVideoModal= (props) => {
         "title" : title,
         "url": url
       }
-      data = await APICall(requestBody, '/skill_videos/add', 'PUT', headers);
+      await APICall(requestBody, '/skill_videos/add', 'PUT', headers);
       props.handleAfterAdd()
     } catch (err) {
       alert(err);

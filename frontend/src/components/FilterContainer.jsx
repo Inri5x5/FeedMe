@@ -20,7 +20,7 @@ const FilterContainer = (props) => {
   const handleClose = () => setOpen(false);
 
   const getAllTags = async() => {
-		let tag_cat_data = []; let tag_data =[]; let temp = [];
+		let tag_cat_data = []; let tag_data =[];
 		try {
 			const headers = {
 			  'Content-Type': 'application/json',

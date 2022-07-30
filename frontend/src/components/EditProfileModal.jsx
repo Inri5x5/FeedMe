@@ -10,7 +10,6 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { APICall, fileToDataUrl } from '../helperFunc';
-import { useNavigate } from 'react-router-dom';
 
 export default function EditProfileModal(props) {
   
@@ -24,8 +23,6 @@ export default function EditProfileModal(props) {
   const [password, setPassword] = React.useState('')
   const [errorPassword, setErrorPassword] = React.useState(false)
   const [errorPasswordText, setErrorPasswordText] = React.useState('')
-
-  const navigate = useNavigate();
 
   const getProfile = async() => {
     try {
@@ -111,14 +108,13 @@ export default function EditProfileModal(props) {
         'Content-Type': 'application/json',
         'token' : localStorage.getItem('token')
       };
-
       const body = {
         'email': email,
         'username': username,
         'password': password,
         'profile_pic': profilePic,
       }
-      const temp_data = await APICall(body, '/dash/update_details', 'PUT', headers);
+      await APICall(body, '/dash/update_details', 'PUT', headers);
     } catch (err) {
       alert(err);
     }

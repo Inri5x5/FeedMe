@@ -36,7 +36,7 @@ const AddIngredientModal = (props) => {
   }
 
   const addIngredient = async() => {
-    let data = []; let temp = [];
+    let data = []; 
     try {
       const headers = {
         'Content-Type': 'application/json',

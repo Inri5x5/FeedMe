@@ -7,7 +7,6 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import GradeIcon from '@mui/icons-material/Grade';
-import PersonIcon from '@mui/icons-material/Person';
 import MostNoRecipe from './MostNoRecipe';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';

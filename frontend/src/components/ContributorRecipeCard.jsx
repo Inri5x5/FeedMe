@@ -3,10 +3,7 @@ import RatingsField from './RatingsField';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea, CardActions } from '@mui/material';
 import StarRateIcon from '@mui/icons-material/StarRate';
@@ -21,15 +18,7 @@ import styles from './styles/ContributorRecipeCard.module.css'
 
 export default function ContributorRecipeCard(props) {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
+
   const deleteRecipe = async() => {
     try {
       const headers = {

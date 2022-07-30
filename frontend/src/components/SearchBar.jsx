@@ -209,7 +209,7 @@ const SearchBar = (props) => {
     )
   }
   const renderHomeTitle = () => {
-    if (props.selectedIngredients.length == 0){
+    if (props.selectedIngredients.length === 0){
       return "Let's Start Cooking!"
     } else {
       return "Today I have"
@@ -229,8 +229,6 @@ const SearchBar = (props) => {
       searchIngredient(input, listIngredient, category);
     }
   },[dropdownState]);
-
-
 
   return (
     <>
@@ -283,7 +281,7 @@ const SearchBar = (props) => {
 
           <input type="text" placeholder={"Search Your Ingredient " + ((category.name === 'Category') ? "" : "in " + category.name) } value={input} onInput={(e) => onInput(e)}/>
         </div>
-        <a href="#" className={styles.search_btn}>
+        <a className={styles.search_btn}>
           <SearchIcon className={styles.search_btn_icon}></SearchIcon>
         </a>
       </div>
