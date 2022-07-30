@@ -174,7 +174,6 @@ const SearchBar = (props) => {
         'Content-Type': 'application/json',
       };
       data = await APICall(null, `/search/recommendation `, 'GET', headers);
-      console.log(data.ingredients_list)
       for (let i = 0; i < data.ingredients_list.length; i++) {
         temp.push({"i_id": data.ingredients_list[i].id, "name": data.ingredients_list[i].name})
       }

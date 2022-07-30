@@ -8,6 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import GradeIcon from '@mui/icons-material/Grade';
 import PersonIcon from '@mui/icons-material/Person';
+import MostNoRecipe from './MostNoRecipe';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -86,6 +87,7 @@ const ContributorDashboard = (props) => {
               }}>
                 <EditIcon />
               </IconButton>
+              <MostNoRecipe></MostNoRecipe>
             </div>
             <div className={styles.name}> 
               {profileData.username}

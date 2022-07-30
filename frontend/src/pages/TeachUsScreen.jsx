@@ -22,12 +22,21 @@ export default function TeachUsScreen () {
     try {
       const headers = {
         'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
       };
       data = await APICall(null, `/skill_videos`, 'GET', headers);
       setSkillVideos(data.video_list);
-      setFoundVideos(data.video_list)
-      setMaxPage(Math.ceil(data.video_list.length / 9))
-      setCurrentPage(1)
+      let temp;
+      if (searchedTitle !== '') {
+        temp = data.video_list.filter((video) => {
+          if (video.title.toLowerCase().includes(searchedTitle.toLowerCase())) return video
+        })
+        setFoundVideos(temp)
+      } else {
+        temp = data.video_list
+        setFoundVideos(temp)
+      }
+      setMaxPage(Math.ceil(temp.length / 9))
     } catch (err) {
       alert(err);
     }
@@ -53,8 +62,7 @@ export default function TeachUsScreen () {
   },[])
 
   const [searchedTitle, setSearchedTitle] = React.useState("")
-
-  React.useEffect(() => {
+  const filterVideo = () => {
     let temp;
     if (searchedTitle !== '') {
       temp = skillVideos.filter((video) => {
@@ -66,11 +74,13 @@ export default function TeachUsScreen () {
       setFoundVideos(temp)
     }
     setMaxPage(Math.ceil(temp.length / 9))
-  }, [searchedTitle])
+  }
   
   React.useEffect(() => {
     setCurrentPage(1)
-  },[foundVideos])
+    filterVideo()
+  }, [searchedTitle])
+  
 
 
   const renderVideoCard = () => {
@@ -82,7 +92,7 @@ export default function TeachUsScreen () {
       if (times === 0) times = 9
       for (let i = 0; i < times; i++) {
         content.push(
-          <VideoCard url={foundVideos[index]['url']} object={foundVideos[index]} isContributor={isContributor}/>
+          <VideoCard url={foundVideos[index]['url']} object={foundVideos[index]} isContributor={isContributor} afterLike={() => {getSkillVideos()}}/>
         )
         index++;
       }

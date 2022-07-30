@@ -17,6 +17,7 @@ const VideoCard = (props) => {
   // Erivan's test email credentials
   // const API_Key = 'AIzaSyB7_DOdz0dsKg1OX52J_URhxapYF05DUwg'
   const API_Key = 'AIzaSyC2_FbK76-gw9IAHVu7h4DK-zSSO3CetZg'
+  // console.log(props)
   
   const [url, setUrl] = React.useState('')
   const [videoData, setVideoData] = React.useState({
@@ -107,6 +108,7 @@ const VideoCard = (props) => {
       }
       await APICall(requestBody, '/skill_videos/save', 'POST', headers);
       if (props.handleAfterLike) props.handleAfterLike(props.object.id)
+      if (props.afterLike) props.afterLike()
     } catch (err) {
       alert(err);
     }
@@ -177,8 +179,8 @@ const VideoCard = (props) => {
             </div>
           </div>
           
-          {(props.isContributor !== false) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => saveVideo()} sx={{marginRight: '10px'}}>
-            <FavoriteIcon />
+          {(props.isContributor == false) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => saveVideo()} sx={{marginRight: '10px'}}>
+            <FavoriteIcon style={{color: ((props.object.isSaved) || (props.isSaved)) && 'red'}}/>
           </IconButton>}
           {(props.isDeleteable) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => deleteVideo()} sx={{marginRight: '10px'}}>
             <DeleteIcon />

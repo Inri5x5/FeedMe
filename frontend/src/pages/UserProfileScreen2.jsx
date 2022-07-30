@@ -227,7 +227,7 @@ export default function UserProfileScreen2 () {
       if (times === 0) times = 9
       for (let i = 0; i < times; i++) {
         content.push(
-          <VideoCard url={publishedVideos[index]['url']} object={publishedVideos[index]} isContributor={false} handleAfterLike={handleAfterLike}/>
+          <VideoCard url={publishedVideos[index]['url']} object={publishedVideos[index]} isContributor={false} isSaved={true} handleAfterLike={handleAfterLike}/>
         )
         index++
       }
