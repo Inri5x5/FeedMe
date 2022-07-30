@@ -15,9 +15,7 @@ import VideoFrame from './VideoFrame';
 const VideoCard = (props) => {
   const getYouTubeId = require('get-youtube-id')
   // Erivan's test email credentials
-  // const API_Key = 'AIzaSyB7_DOdz0dsKg1OX52J_URhxapYF05DUwg'
-  const API_Key = 'AIzaSyC2_FbK76-gw9IAHVu7h4DK-zSSO3CetZg'
-  // console.log(props)
+  const API_Key = 'AIzaSyB7_DOdz0dsKg1OX52J_URhxapYF05DUwg'
   
   const [url, setUrl] = React.useState('')
   const [videoData, setVideoData] = React.useState({
