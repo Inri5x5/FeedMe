@@ -25,7 +25,7 @@ const APICall = (requestBody, path, methodType, headersData) => {
   }
 
 const fileToDataUrl = (file) => {
-  const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg']
+  const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/mp3']
   const valid = validFileTypes.find(type => type === file.type);
   // Bad data, let's walk away.
   if (!valid) {
