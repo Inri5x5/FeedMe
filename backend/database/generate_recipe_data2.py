@@ -1,4 +1,6 @@
-# recipe id 32 - 60
+# recipe id 32 - 60 
+# recipe id 111 - 131
+
 import sqlite3
 import json
 
@@ -506,7 +508,7 @@ insert_IngredientInRecipe_qry = '''
     VALUES
         (43, 36, "12 Jacob's cream crackers"),
         (43, 527, "4 sprigs of fresh rosemary"),
-        (43, 803, "2 heaped teaspoons Dijon mustard"),
+        (43, 919, "2 heaped teaspoons Dijon mustard"),
         (43, 880, "500 g quality minced beef, pork, or a mixture of the two"),
         (43, 778, "1 heaped tablespoon dried oregano"),
         (43, 591, "1 large free-range egg"),
@@ -792,7 +794,7 @@ insert_IngredientInRecipe_qry = '''
         (49, 876, "5 fresh bay leaves"),
         (49, 908, "50 g pine nuts"),
         (49, 640, "50 g blanched almonds"),
-        (49, 772, "\u00bd teaspoon ground cloves",
+        (49, 772, "\u00bd teaspoon ground cloves"),
         (49, 111, "150 ml full-bodied Sicilian red wine"),
         (49, 866, "100 ml thick balsamic vinegar"),
         (49, 681, "1 tablespoon runny honey")
@@ -831,7 +833,7 @@ insert_IngredientInRecipe_qry = '''
         (50, 797, "12 shallots"),
         (50, 499, "25 g dried porcini mushrooms"),
         (50, 499, "4 portobello mushrooms"),
-        (50, 499, "120 g shiitake mushrooms",
+        (50, 499, "120 g shiitake mushrooms"),
         (50, 499, "200 g chestnut mushrooms"),
         (50, 148, "25 g unsalted butter"),
         (50, 815, "2 large carrots"),
@@ -917,7 +919,7 @@ insert_SkillVideoInRecipe_qry = '''
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
         (51, 259),
-        (51, 126)
+        (51, 126),
         (51, 217),
         (51, 291),
         (51, 131)
@@ -946,9 +948,9 @@ insert_IngredientInRecipe_qry = '''
         (52, 876, "2 bay leaves"),
         (52, 366, "1 handful of dried apricots"),
         (52, 145, "350 g couscous"),
-        (52, 687, "red or white wine vinegar",
+        (52, 687, "red or white wine vinegar"),
         (52, 517, "1 big bunch of fresh coriander"),
-        (52, 180, "4 tablespoons fat-free natural yoghurt"),
+        (52, 180, "4 tablespoons fat-free natural yoghurt")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
 conn.commit()
@@ -975,7 +977,7 @@ insert_SkillVideoInRecipe_qry = '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
-############### 54: Oxtail Stew ###############
+############### 53: Oxtail Stew ###############
 insert_IngredientInRecipe_qry = '''
     INSERT INTO 
         IngredientInRecipe(recipe_id, ingredient_id, description)
@@ -1004,6 +1006,7 @@ insert_TagInRecipe_qry = '''
     VALUES
         (53, 10),
         (53, 18),
+        (53, 17),
         (53, 14)
 '''
 cursor.execute(insert_TagInRecipe_qry)
@@ -1013,10 +1016,157 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (53, 338),
-        (53, 336),
-        (53, 10),
-        (53, 311)
+        (53, 217),
+        (53, 291)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 54: Mexican-style roasted veg ragù ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (54, 817, "2 sweet potatoes"),
+        (54, 474, "300 g butternut squash or pumpkin"),
+        (54, 815, "2 carrots"),
+        (54, 588, "150 g frozen sweetcorn"),
+        (54, 861, "1 tablespoon coriander seeds"),
+        (54, 778, "\u00bd tablespoon dried oregano"),
+        (54, 864, "olive oil"),
+        (54, 796, "2 onions"),
+        (54, 522, "2 cloves of garlic"),
+        (54, 869, "1 fresh red chilli"),
+        (54, 809, "1 green pepper"),
+        (54, 770, "2 sticks of celery"),
+        (54, 562, "2 x 400 g tins of black beans"),
+        (54, 811, "1 x 400 g tin of quality plum tomatoes"),
+        (54, 525, "1 bunch of fresh mint (30g)"),
+        (54, 870, "8 spring onions"),
+        (54, 442, "4 limes"),
+        (54, 916, "1-2 teaspoons chipotle Tabasco sauce"),
+        (54, 147, "300 g brown rice")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (54, 9),
+        (54, 11),
+        (54, 12),
+        (54, 13),
+        (54, 14),
+        (54, 20)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (54, 287),
+        (54, 281),
+        (54, 250),
+        (54, 227),
+        (54, 317),
+        (54, 336)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 55: Sweetcorn and mussel chowder ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (55, 864, "olive oil"),
+        (55, 874, "2 rashers higher-welfare bacon chopped"),
+        (55, 796, "1 small white onion finely chopped"),
+        (55, 770, "2 sticks celery finely chopped"),
+        (55, 869, "1 fresh red chilli deseeded and finely chopped"),
+        (55, 588, "4 ears sweetcorn"),
+        (55, 820, "2 medium potatoes peeled and chopped"),
+        (55, 886, "900 ml organic vegetable or fish stock hot"),
+        (55, 883, "1 handful fresh, live mussels from sustainable sources, ask your fishmonger, cleaned and drained"),
+        (55, 184, "4 tablespoons single cream"),
+        (55, 779, "1 small handful chopped fresh parsley")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (55, 8),
+        (55, 13),
+        (55, 18)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (55, 261),
+        (55, 131),
+        (55, 272),
+        (55, 260),
+        (55, 110)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 56: Incredible Sicilian aubergine stew (Caponata) ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (56, 827, "2 large aubergines"),
+        (56, 830, "1 small red onion"),
+        (56, 522, "2 cloves of garlic"),
+        (56, 779, "\u00bd a bunch fresh flat-leaf parsley (15g)"),
+        (56, 538, "2 tablespoons salted capers"),
+        (56, 673, "1 handful of green olives"),
+        (56, 811, "5 large ripe tomatoes"),
+        (56, 864, "olive oil"),
+        (56, 778, "1 heaped teaspoon dried oregano"),
+        (56, 687, "2-3 tablespoons best-quality herb vinegar"),
+        (56, 640, "2 tablespoons slivered almonds")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (56, 8),
+        (56, 1),
+        (56, 11),
+        (56, 12),
+        (56, 13),
+        (56, 14),
+        (56, 20),
+        (56, 18)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (56, 49),
+        (56, 19),
+        (56, 338),
+        (56, 27),
+        (56, 336)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
