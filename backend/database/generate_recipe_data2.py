@@ -2006,7 +2006,7 @@ insert_IngredientInRecipe_qry = '''
         (129, 120, "2 parts Grey Goose vodka"),
         (129, 79, "4 parts organic tomato juice"),
         (129, 78, "\u00bd part of lemon juice (to taste)"),
-        (129, 928, "4 dashes of Worcestershire sauce"),
+        (129, 930, "4 dashes of Worcestershire sauce"),
         (129, 916, "4 dashes of Tabasco (or hot pepper sauce)"),
         (129, 3, "1 pinch of fleur de sel (or sea salt)"),
         (129, 780, "1 pinch of black pepper"),
