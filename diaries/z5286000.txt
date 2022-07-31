@@ -23,3 +23,18 @@ We had our progressive demo A in this week's lab. Everything went smoothly and w
 
 Week 6
 Started working on sprint 2. Started by modifying the code to adjust to MySQL as we only used JSON in the first sprint.
+
+Week 7
+Finishing the routes for sprint 2. The team had routine meetings throughout the week.
+I mostly wrote the dash and search routes, which was all great but debugging was another problem. At first we all kind of waited on each other, because backend couldn't really test our code without the frontend. This led us to debugging our code a bit later than we had hoped for. Fortunately in the last minute we found out about postman and finished most sprint 2 before the demo next Tuesday.
+
+Week 8
+Tuesday was Demo B. It went well, although there were some tickets that we weren't able to finish. Overall, I think we did a great job and had great teamwork. During lab, we did our Retro B and had a few discussions about how we will be going with Sprint 3. 
+On Wednesday, Angeline divided up the routes for Kaylee and I (Backend) so we can write our code and debug it with Postman before the end of the week so that the integration with frontend runs smooth. We did so and finished on Sunday. I continued with the dash and search routes. 
+On Sunday, we had a full team meeting and discussed on our progress. We added a few more routes and plan to finish them before lab on Tuesday.
+
+Week 9
+In this week's lab, we just asked a few questions to Tam about the final demo and the final report. We started talking about the work division for the final report but we're still mainly focusing on working on the code for the final demo.
+This week the backend team finished up on our routes and then started working on the database by adding recipes. We're hoping for 150 recipes and so we had to write around 50 each.
+
+Week 10
