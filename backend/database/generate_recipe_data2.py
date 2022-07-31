@@ -1357,4 +1357,149 @@ insert_SkillVideoInRecipe_qry = '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
+############### 111: Super Green Smoothie ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (111, 369, "1 ripe banana"),
+        (111, 364, "1 apple"),
+        (111, 828, "80 g baby spinach"),
+        (111, 128, "60 g porridge oats"),
+        (111, 179, "300 ml semi-skimmed milk"),
+        (111, 684, "2 tablespoons almond butter or peanut butter"),
+        (111, 924, "1 handful of ice cubes")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (111, 23),
+        (111, 11),
+        (111, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (111, 60)
+        (112, 50)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 112: Almond, banana & passion fruit smoothie ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (112, 369, "1 large ripe banana"),
+        (112, 893, "500 ml almond milk"),
+        (112, , "1 teaspoon almond essence optional"),
+        (112, 400, "4 ripe passion fruit")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (112, 23),
+        (112, 11),
+        (112, 14),
+        (112, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (112, 50)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 113: Grapefruit, carrot & apple juice ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (113, 439, "\u00bd a grapefruit"),
+        (113, 364, "1 apple"),
+        (113, 815, "3 medium carrots")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (113, 23),
+        (113, 11),
+        (113, 12),
+        (113, 13),
+        (113, 14),
+        (113, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (113, 50)
+        (113, 215)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 114: Grapefruit, carrot & apple juice ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (114, 435, "500 g strawberries"),
+        (114, 525, "1 sprig of fresh mint"),
+        (114, 924, "ice cubes"),
+        (114, 441, "1 lemon"),
+        (114, 4, "1 teaspoon golden caster suger")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (114, 23),
+        (114, 11),
+        (114, 12),
+        (114, 13),
+        (114, 14),
+        (114, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (114, 145)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+
 cursor.close()

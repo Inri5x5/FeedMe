@@ -3620,7 +3620,7 @@
       "Pour into 2 big glasses or decant into bottles and enjoy."
     ],
     "servings": "2",
-    "time": "PT5M"
+    "time": "5"
   },
   {
     "name": "Almond, banana & passion fruit smoothie",
@@ -3638,8 +3638,8 @@
       "Halve the passion fruit, then scrape most of the pulp into the blender and blitz to combine.",
       "Serve in tall glasses, over ice if you like, with the remaining passion fruit pulp spooned over the top."
     ],
-    "servings": "1 litre",
-    "time": "PT5M"
+    "servings": "4",
+    "time": "5"
   },
   {
     "name": "Grapefruit, carrot & apple juice",
@@ -3656,8 +3656,8 @@
       "Push the grapefruit, carrots and apple through a juicer, straight into the glass.",
       "Stir well before serving."
     ],
-    "servings": "150ml",
-    "time": "PT5M"
+    "servings": "1",
+    "time": "5"
   },
   {
     "name": "Strawberry slushie",
@@ -3683,7 +3683,7 @@
       "Pour into the jug and stir with a wooden spoon."
     ],
     "servings": "8",
-    "time": "PT15M"
+    "time": "15"
   },
   {
     "name": "Mango lassi",
