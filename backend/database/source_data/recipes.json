@@ -3704,7 +3704,7 @@
       "Blitz until smooth, have a taste, and add a little more honey, if needed. Serve immediately."
     ],
     "servings": "6",
-    "time": "PT10M"
+    "time": "10"
   },
   {
     "name": "Oat, pear & cardamom smoothie",
@@ -3716,17 +3716,16 @@
       "6 cardamom pods",
       "500 ml oat milk",
       "100 g natural yoghurt",
-      "2 teaspoons runny honey",
-      "2 teaspoons bee pollen"
+      "2 teaspoons runny honey"
     ],
     "steps": [
       "The night before you want to make your smoothie, peel and core the pears. Pop them into the freezer.",
       "Open the cardamom pods and extract the seeds, then crush up in a pestle and mortar.",
       "Tip the crushed seeds into a blender, then add the frozen pears, oat milk, yoghurt and honey. Blitz until smooth.",
-      "Divide between two glasses and sprinkle over the bee pollen."
+      "Divide between two glasses and sprinkle over some bee pollen."
     ],
     "servings": "2",
-    "time": "PT15M"
+    "time": "15"
   },
   {
     "name": "Super smoothie ice lollies",
@@ -3747,7 +3746,7 @@
       "Divide the mixture between 8 ice lolly moulds, then pop a stick into each one. Put the ice lollies in the freezer for at least 4 hours, or until solid."
     ],
     "servings": "8",
-    "time": "PT10M"
+    "time": "10"
   },
   {
     "name": "Kiwi fruit, ginger and banana smoothie",
@@ -3769,7 +3768,7 @@
       "Top and tail the kiwi fruit and stand them on their ends. Slice the skin off in vertical strips with a sharp knife. Whiz the kiwi fruit with the remaining ingredients, apart from the honey, in a blender for 30 seconds and pour into 4 tall glasses. Sweeten with a little honey, if you like."
     ],
     "servings": "4",
-    "time": "PT10M"
+    "time": "10"
   },
   {
     "name": "Pomegranate, ginger & lime flavoured water",
@@ -3808,7 +3807,7 @@
       "Peel and slice your banana and put it into a blender with your frozen fruit and the yoghurt. Whiz it up and add the oats and nuts. Add the soya milk, skimmed milk, or apple juice and whiz again, until nice and smooth. If it's a bit too thick for you, just add a splash more milk or juice and whiz around again. Give it a good stir, then have a taste. Rarely with a frozen fruit smoothie should you need to sweeten it, but if you think it needs a bit of extra sweetness you can add a little honey to taste \u2014 you won't need much."
     ],
     "servings": "2",
-    "time": "PT5M"
+    "time": "5"
   },
   {
     "name": "Pink pepper negroni",
@@ -3828,7 +3827,7 @@
       "Stir into a glass of ice and add a nice slice of orange to garnish."
     ],
     "servings": "1",
-    "time": "PT5M"
+    "time": "5"
   },
   {
     "name": "Limoncello",
@@ -3847,7 +3846,7 @@
       "Strain the lemony alcohol through a fine sieve and add it to the sugar water. Shake well to combine and serve as a digestif after your meal."
     ],
     "servings": "1 litre",
-    "time": "PT15M"
+    "time": "15"
   },
   {
     "name": "Hot rummy lemonade",
@@ -3868,7 +3867,7 @@
       "To serve, add a shot of rum to a heatproof glass or mug, then top with the hot lemonade. Bottoms up!"
     ],
     "servings": "15",
-    "time": ""
+    "time": "5"
   },
   {
     "name": "Dry passion fruit daiquiri",
@@ -3889,7 +3888,7 @@
       "Garnish with a slice of passion fruit and serve."
     ],
     "servings": "1",
-    "time": ""
+    "time": "5"
   },
   {
     "name": "Spiced chai",
@@ -3912,7 +3911,7 @@
       "Strain into a teapot or straight into cute little heatproof glasses. Serve with a drizzle of honey, agave or maple syrup to sweeten, if you like."
     ],
     "servings": "4",
-    "time": "PT15M"
+    "time": "15"
   },
   {
     "name": "Mulled pear &amp; ginger",
@@ -3936,7 +3935,7 @@
       "Serve warm in glasses or mugs, with a good shot of spiced rum and a cinnamon stick."
     ],
     "servings": "10",
-    "time": ""
+    "time": "10"
   },
   {
     "name": "Blood orange mimosa",
@@ -3955,7 +3954,7 @@
       "Garnish with the orange peel and serve."
     ],
     "servings": "1",
-    "time": ""
+    "time": "5"
   },
   {
     "name": "Sangria Latina",
@@ -3972,23 +3971,16 @@
       "watermelon segment"
     ],
     "steps": [
-      "",
       "Put the watermelon chunks into a jug",
-      "",
       "Add the juice of 1 whole lime lime juice and ginger syrup",
-      "",
       "Muddle the watermelon to break it down and release the flavours",
-      "",
       "Add the Bacardi Superior rum and stir",
-      "",
       "Fill the jug with cubed ice and top up with Martini Prosecco",
-      "",
       "Fill the glasses with ice and pour in the cocktail",
-      "",
       "Garnish with a segment of watermelon and straw and serve"
     ],
     "servings": "5",
-    "time": ""
+    "time": "10"
   },
   {
     "name": "Bloody Mary",
@@ -4014,8 +4006,8 @@
       "Add your garnishes. Any fresh herbs and a celery stick work well",
       "Tabasco tip: if you're making Bloody Marys for a group of people, make a jug without spice and let people add their own Tabasco. Some like it hot, others not so much!"
     ],
-    "servings": "",
-    "time": ""
+    "servings": "4",
+    "time": "15"
   },
   {
     "name": "Christmas pudding vodka",
@@ -4040,8 +4032,8 @@
       "To bottle the vodka, line a sieve with muslin and strain. Discard the cinnamon sticks, but reserve the soaked fruits for other uses.",
       "Decant the vodka into clean bottles and seal \u2013 this will store for up to one year, and can be served from the freezer or at room temperature."
     ],
-    "servings": "1 litres ",
-    "time": "PT15M"
+    "servings": "5",
+    "time": "15"
   },
   {
     "name": "Elderflower lemonade with frozen berries",
@@ -4059,7 +4051,7 @@
       "Squeeze the juice of one lemon into a jug, add sugar to taste, elderflower cordial and mix well to dissolve. Put a few ice cubes in each glass, slice the remaining lemon and add to the glasses along with the frozen berries. Top up with sparkling water to taste and mix with a straw."
     ],
     "servings": "2",
-    "time": ""
+    "time": "5"
   },
   {
     "name": "Gluten-free one-cup pancakes",

@@ -1388,8 +1388,8 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (111, 60)
-        (112, 50)
+        (111, 60),
+        (111, 50)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
@@ -1401,7 +1401,7 @@ insert_IngredientInRecipe_qry = '''
     VALUES
         (112, 369, "1 large ripe banana"),
         (112, 893, "500 ml almond milk"),
-        (112, , "1 teaspoon almond essence optional"),
+        (112, 640, "1 teaspoon almond essence optional"),
         (112, 400, "4 ripe passion fruit")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
@@ -1458,7 +1458,7 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (113, 50)
+        (113, 50),
         (113, 215)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
@@ -1500,6 +1500,614 @@ insert_SkillVideoInRecipe_qry = '''
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
+
+############### 115: Mango Lassi ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (115, 768, "6 green cardamom pods optional"),
+        (115, 392, "2 ripe mangos"),
+        (115, 180, "500 g low-fat natural yoghurt"),
+        (115, 924, "100 g ice cubes"),
+        (115, 681, "runny honey optional")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (115, 23),
+        (115, 11),
+        (115, 13),
+        (115, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 116: Oat, pear & cardamom smoothie ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (116, 404, "2 pears"),
+        (116, 768, "6 cardamom pods"),
+        (116, 925, "500 ml oat milk"),
+        (116, 180, "100 g natural yoghurt"),
+        (116, 681, "2 teaspoons runny honey")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (116, 23),
+        (116, 11),
+        (116, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (116, 251),
+        (116, 266)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 117: Super smoothie ice lollies ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (117, 369, "1 small ripe banana"),
+        (117, 926, "1 mug of fresh or frozen berries (150g)"),
+        (117, 174, "1 mug of milk (300ml)"),
+        (117, 180, "3 tablespoons natural yoghurt"),
+        (117, 681, "1 tablespoon runny honey"),
+        (117, 525, "6 mint leaves")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (117, 23),
+        (117, 11),
+        (117, 13),
+        (117, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (117, 50)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 118: Kiwi fruit, ginger and banana smoothie ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (118, 388, "3 kiwi fruit"),
+        (118, 128, "4 tablespoons organic porridge oats"),
+        (118, 369, "1 banana"),
+        (118, 924, "8 ice cubes"),
+        (118, 174, "200 ml organic milk"),
+        (118, 180, "250 g organic fat-free natural yoghurt"),
+        (118, 774, "\u00bd cm piece fresh ginger finely grated"),
+        (118, 681, "honey optional")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (118, 23),
+        (118, 11),
+        (118, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (118, 50)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 119: Pomegranate, ginger & lime flavoured water ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (119, 447, "\u00bd pomegranate"),
+        (119, 774, "2cm piece of ginger"),
+        (119, 442, "1 lime"),
+        (119, 924, "ice cubes")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (119, 23),
+        (119, 11),
+        (119, 12),
+        (119, 13),
+        (119, 14),
+        (119, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (119, 13),
+        (119, 71)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 120: Frozen fruit smoothies ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (120, 369, "1 ripe banana"),
+        (120, 926, "1 glass frozen fruit"),
+        (120, 180, "2 heaped tablespoons natural yoghurt"),
+        (120, 128, "1 small handful of oats"),
+        (120, 664, "1 small handful of mixed nuts"),
+        (120, 68, "1 glass of organic soya milk, skimmed milk or apple juice"),
+        (120, 681, "honey to taste, optional")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (120, 23),
+        (120, 11),
+        (120, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (120, 78)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 121: Pink pepper negroni ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (121, 95, "25 ml Bombay Sapphire gin"),
+        (121, 121, "25 ml Martini Rosso (red vermouth)"),
+        (121, 927, "25 ml Campari or bitter liqueur"),
+        (121, 780, "5 whole pink peppercorns"),
+        (121, 396, "1 blood orange or regular orange")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (121, 23),
+        (121, 11),
+        (121, 12),
+        (121, 14),
+        (121, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 122: Limoncello ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (122, 441, "3 Amalfi lemons"),
+        (122, 69, "250 ml 95% pure gain alcohol"),
+        (122, 4, "250 g granulated sugar")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (122, 23),
+        (122, 11),
+        (122, 12),
+        (122, 13),
+        (122, 14),
+        (122, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 123: Hot rummy lemonade ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (123, 774, "300 g ginger"),
+        (123, 441, "6 lemons"),
+        (123, 497, "1.5 litres fresh cloudy apple juice"),
+        (123, 681, "runny honey"),
+        (123, 96, "15 x 25 ml shots of Bacardi Oro")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (123, 23),
+        (123, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 124: Dry passion fruit daiquiri ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (124, 4, "caster sugar"),
+        (124, 96, "50 ml Bacardi Superior rum"),
+        (124, 442, "1 lime"),
+        (124, 927, "10 ml Campari"),
+        (124, 400, "1 passion fruit plus extra to serve")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (124, 23),
+        (124, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 125: Spiced Chai ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (125, 62, "4 English breakfast tea bags"),
+        (125, 771, "2 cinnamon sticks"),
+        (125, 772, "4 cloves"),
+        (125, 774, "1 teaspoon ground ginger"),
+        (125, 174, "600ml milk"),
+        (125, 777, "1 whole nutmeg for grating"),
+        (125, 681, "honey or maple or agave syrup")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (125, 23),
+        (125, 11),
+        (125, 13),
+        (125, 8)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 126: Mulled Pear Ginger ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (126, 497, "2 litres cloudy apple juice"),
+        (126, 774, "2 thumb-sized ginger pieces sliced"),
+        (126, 404, "2 ripe pears sliced"),
+        (126, 771, "2 cinnamon sticks plus extra to serve"),
+        (126, 768, "4 cardamom pods"),
+        (126, 4, "3 tablespoons light brown sugar"),
+        (126, 442, "4 limes juice of"),
+        (126, 442, "2 limes zest of"),
+        (126, 96, "500 ml Bacardi Oro")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (126, 23),
+        (126, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 127: Blood Orange Mimosa ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (127, 396, "60ml blood orange juice fresh or from a carton (cold)"),
+        (127, 117, "Prosecco top up"),
+        (127, 396, "1 blood orange zest of")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (127, 23),
+        (127, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 128: Sangria Latina ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (128, 877, "2 large chunks of fresh watermelon aprrox 150g, plus extra to garnish"),
+        (128, 442, "1 lime"),
+        (128, 774, "50 ml ginger syrup"),
+        (128, 96, "300 ml Bacardi Carta Blanco"),
+        (128, 117, "Martini Prosecco"),
+        (128, 924, "ice cubed"),
+        (128, 877, "watermelon segment")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (128, 23),
+        (128, 11),
+        (128, 12),
+        (128, 13),
+        (128, 14),
+        (128, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 129: Bloody Mary ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (129, 120, "2 parts Grey Goose vodka"),
+        (129, 79, "4 parts organic tomato juice"),
+        (129, 78, "\u00bd part of lemon juice (to taste)"),
+        (129, 928, "4 dashes of Worcestershire sauce"),
+        (129, 916, "4 dashes of Tabasco (or hot pepper sauce)"),
+        (129, 3, "1 pinch of fleur de sel (or sea salt)"),
+        (129, 780, "1 pinch of black pepper"),
+        (129, 770, "1 stick of celery"),
+        (129, 519, "1 bunch of aromatic herbs"),
+        (129, 924, "ice cubed")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (129, 23),
+        (129, 11),
+        (129, 12),
+        (129, 14),
+        (129, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 130: Chirstmas Pudding Vodka ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (130, 775, "1 piece of blade mace"),
+        (130, 771, "2 sticks of cinnamon"),
+        (130, 783, "2 teaspoons ground mixed spice"),
+        (130, 441, "1 lemon"),
+        (130, 396, "1 orange"),
+        (130, 375, "300 g currants"),
+        (130, 202, "200 g chopped mixed peel"),
+        (130, 4, "450 g light muscovado sugar"),
+        (130, 120, "1 litre quality vodka")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (130, 23),
+        (130, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
+
+############### 131: Elderflower lemonade with frozen berries ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (131, 441, "2 lemons"),
+        (131, 4, "caster sugar"),
+        (131, 381, "35 ml elderflower cordial"),
+        (131, 926, "1 handful of frozen berries"),
+        (131, 8, "sparkling water to top up")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (131, 23),
+        (131, 9)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+# insert_SkillVideoInRecipe_qry = '''
+#     INSERT INTO
+#         SkillVideoInRecipe(recipe_id, skill_video_id)
+#     VALUES
+#         ()
+# '''
+# cursor.execute(insert_SkillVideoInRecipe_qry)
+# conn.commit()
 
 
 cursor.close()
