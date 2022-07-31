@@ -16,3 +16,31 @@ We submitted the proposal Sunday night!
 
 Week 4
 Today during the lab, I started my setup which took longer than expected.
+We also discussed the tickets to be included in the first sprint and split up the work.
+I wrote the ingredients and categories routes.
+I also searched for an existing database of ingredients mapped to categories to use for next week's demo. Luckily, I found a pretty comprehensive one but had to clean to data up a little bit. 
+
+Week 5
+The demo went well and we conducted our retro meeting afterwards.
+We discussed what functionalities and tickets to include in sprint 2. Angeline later split these up and wrote the HTTP routes.
+I decide to wait until a database was decided to write large chunks of code.
+
+Week 6
+Luckily Tam said we could use sqlite as our database so I decided to watch a few tutorials and edit sprint one's code.
+I then started working on my routes for sprint 2. I started with viewing recipes since it required me to access many tables. I though it was a good introduction to our data system and sqlite.
+
+
+Week 7
+I started writing the saving and rating recipe routes before finally finihsing the recipe update route which was still a bit buggy.
+We also had backend specific meetings stream lining the way we access data and discussing how code we write (esp. helper functions) impact each other.
+We also started using postman to debug to backend before integrating with the frontend.
+
+Week 8
+Unfortunately I had contracted covid and was not able to be physically present for Demo B but I thought it went well! There were a lot of tickets and I'm proud of what the group achieved given the time we had!
+We conducted the retro afterwards and discussed things to do for sprint 3.
+We comprehensively debugged the backend using postmand and I fixed up the recipe update route.
+
+Week 9
+I wrote my routes for sprint 3 which included adding ingredients and the skill video routes. We also deugged these routes using postman.
+I started manually entering recipe, ingredient and skill video data to populate out database. 
+
