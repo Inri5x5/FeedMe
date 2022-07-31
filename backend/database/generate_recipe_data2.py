@@ -947,7 +947,7 @@ insert_IngredientInRecipe_qry = '''
         (52, 771, "1 cinnamon stick"), 
         (52, 876, "2 bay leaves"),
         (52, 366, "1 handful of dried apricots"),
-        (52, 145, "350 g couscous"),
+        (52, 923, "350 g couscous"),
         (52, 687, "red or white wine vinegar"),
         (52, 517, "1 big bunch of fresh coriander"),
         (52, 180, "4 tablespoons fat-free natural yoghurt")
@@ -977,25 +977,22 @@ insert_SkillVideoInRecipe_qry = '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
-############### 53: Oxtail Stew ###############
+############### 53: Beef Stroganoff ###############
 insert_IngredientInRecipe_qry = '''
     INSERT INTO 
         IngredientInRecipe(recipe_id, ingredient_id, description)
     VALUES
-        (53, 146, "50 g plain flour"),
-        (53, 627, "2.5 kg quality trimmed oxtail, cut into rounds (ask your butcher to do this)"),
-        (53, 797, "500 g shallots"),
-        (53, 522, "4 cloves of garlic"),
-        (53, 774, "5-6 5cm pieces of ginger"),
+        (53, 830, "1 red onion"),
+        (53, 522, "1 clove of garlic"),
+        (53, 441, "1 lemon"),
+        (53, 499, "2 handfuls of wild mushrooms"),
+        (53, 779, "2-3 sprigs of fresh flat-leaf parsley"),
+        (53, 592, "500 g fillet steak"),
+        (53, 890, "1 teaspoon paprika"),
         (53, 864, "olive oil"),
-        (53, 772, "1 teaspoon ground cloves"),
-        (53, 777, "1 whole nutmeg for grating"),
-        (53, 396, "1 large orange or 2-3 strips of dried orange peel"),
-        (53, 379, "1 punnet of dates (soft, such as medjool, or semi-dried work best)"),
-        (53, 866, "balsamic or sherry vinegar"),
-        (53, 843, "1 large bunch of kale"),
-        (53, 874, "3 thick slices of streaky bacon"),
-        (53, 869, "1 fresh red chilli or to taste")
+        (53, 148, "1 knob of unsalted butter"),
+        (53, 83, "1 small glass of brandy"),
+        (53, 184, "50 ml sour cream")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
 conn.commit()
@@ -1004,10 +1001,10 @@ insert_TagInRecipe_qry = '''
     INSERT INTO
         TagInRecipe(recipe_id, tag_id)
     VALUES
-        (53, 10),
+        (53, 8),
         (53, 18),
-        (53, 17),
-        (53, 14)
+        (53, 20),
+        (53, 13)
 '''
 cursor.execute(insert_TagInRecipe_qry)
 conn.commit()
@@ -1016,36 +1013,32 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (53, 217),
-        (53, 291)
+        (53, 336),
+        (53, 338),
+        (53, 331)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
-############### 54: Mexican-style roasted veg ragù ###############
+############### 54: Oxtail Stew ###############
 insert_IngredientInRecipe_qry = '''
     INSERT INTO 
         IngredientInRecipe(recipe_id, ingredient_id, description)
     VALUES
-        (54, 817, "2 sweet potatoes"),
-        (54, 474, "300 g butternut squash or pumpkin"),
-        (54, 815, "2 carrots"),
-        (54, 588, "150 g frozen sweetcorn"),
-        (54, 861, "1 tablespoon coriander seeds"),
-        (54, 778, "\u00bd tablespoon dried oregano"),
+        (54, 146, "50 g plain flour"),
+        (54, 627, "2.5 kg quality trimmed oxtail, cut into rounds (ask your butcher to do this)"),
+        (54, 797, "500 g shallots"),
+        (54, 522, "4 cloves of garlic"),
+        (54, 774, "5-6 5cm pieces of ginger"),
         (54, 864, "olive oil"),
-        (54, 796, "2 onions"),
-        (54, 522, "2 cloves of garlic"),
-        (54, 869, "1 fresh red chilli"),
-        (54, 809, "1 green pepper"),
-        (54, 770, "2 sticks of celery"),
-        (54, 562, "2 x 400 g tins of black beans"),
-        (54, 811, "1 x 400 g tin of quality plum tomatoes"),
-        (54, 525, "1 bunch of fresh mint (30g)"),
-        (54, 870, "8 spring onions"),
-        (54, 442, "4 limes"),
-        (54, 916, "1-2 teaspoons chipotle Tabasco sauce"),
-        (54, 147, "300 g brown rice")
+        (54, 772, "1 teaspoon ground cloves"),
+        (54, 777, "1 whole nutmeg for grating"),
+        (54, 396, "1 large orange or 2-3 strips of dried orange peel"),
+        (54, 379, "1 punnet of dates (soft, such as medjool, or semi-dried work best)"),
+        (54, 866, "balsamic or sherry vinegar"),
+        (54, 843, "1 large bunch of kale"),
+        (54, 874, "3 thick slices of streaky bacon"),
+        (54, 869, "1 fresh red chilli or to taste")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
 conn.commit()
@@ -1054,12 +1047,10 @@ insert_TagInRecipe_qry = '''
     INSERT INTO
         TagInRecipe(recipe_id, tag_id)
     VALUES
-        (54, 9),
-        (54, 11),
-        (54, 12),
-        (54, 13),
-        (54, 14),
-        (54, 20)
+        (54, 10),
+        (54, 18),
+        (54, 17),
+        (54, 14)
 '''
 cursor.execute(insert_TagInRecipe_qry)
 conn.commit()
@@ -1068,32 +1059,36 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (54, 287),
-        (54, 281),
-        (54, 250),
-        (54, 227),
-        (54, 317),
-        (54, 336)
+        (54, 217),
+        (54, 291)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
-############### 55: Sweetcorn and mussel chowder ###############
+############### 55: Mexican-style roasted veg ragù ###############
 insert_IngredientInRecipe_qry = '''
     INSERT INTO 
         IngredientInRecipe(recipe_id, ingredient_id, description)
     VALUES
+        (55, 817, "2 sweet potatoes"),
+        (55, 474, "300 g butternut squash or pumpkin"),
+        (55, 815, "2 carrots"),
+        (55, 588, "150 g frozen sweetcorn"),
+        (55, 861, "1 tablespoon coriander seeds"),
+        (55, 778, "\u00bd tablespoon dried oregano"),
         (55, 864, "olive oil"),
-        (55, 874, "2 rashers higher-welfare bacon chopped"),
-        (55, 796, "1 small white onion finely chopped"),
-        (55, 770, "2 sticks celery finely chopped"),
-        (55, 869, "1 fresh red chilli deseeded and finely chopped"),
-        (55, 588, "4 ears sweetcorn"),
-        (55, 820, "2 medium potatoes peeled and chopped"),
-        (55, 886, "900 ml organic vegetable or fish stock hot"),
-        (55, 883, "1 handful fresh, live mussels from sustainable sources, ask your fishmonger, cleaned and drained"),
-        (55, 184, "4 tablespoons single cream"),
-        (55, 779, "1 small handful chopped fresh parsley")
+        (55, 796, "2 onions"),
+        (55, 522, "2 cloves of garlic"),
+        (55, 869, "1 fresh red chilli"),
+        (55, 809, "1 green pepper"),
+        (55, 770, "2 sticks of celery"),
+        (55, 562, "2 x 400 g tins of black beans"),
+        (55, 811, "1 x 400 g tin of quality plum tomatoes"),
+        (55, 525, "1 bunch of fresh mint (30g)"),
+        (55, 870, "8 spring onions"),
+        (55, 442, "4 limes"),
+        (55, 916, "1-2 teaspoons chipotle Tabasco sauce"),
+        (55, 147, "300 g brown rice")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
 conn.commit()
@@ -1102,9 +1097,12 @@ insert_TagInRecipe_qry = '''
     INSERT INTO
         TagInRecipe(recipe_id, tag_id)
     VALUES
-        (55, 8),
+        (55, 9),
+        (55, 11),
+        (55, 12),
         (55, 13),
-        (55, 18)
+        (55, 14),
+        (55, 20)
 '''
 cursor.execute(insert_TagInRecipe_qry)
 conn.commit()
@@ -1113,31 +1111,32 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (55, 261),
-        (55, 131),
-        (55, 272),
-        (55, 260),
-        (55, 110)
+        (55, 287),
+        (55, 281),
+        (55, 250),
+        (55, 227),
+        (55, 317),
+        (55, 336)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
 
-############### 56: Incredible Sicilian aubergine stew (Caponata) ###############
+############### 56: Sweetcorn and mussel chowder ###############
 insert_IngredientInRecipe_qry = '''
     INSERT INTO 
         IngredientInRecipe(recipe_id, ingredient_id, description)
     VALUES
-        (56, 827, "2 large aubergines"),
-        (56, 830, "1 small red onion"),
-        (56, 522, "2 cloves of garlic"),
-        (56, 779, "\u00bd a bunch fresh flat-leaf parsley (15g)"),
-        (56, 538, "2 tablespoons salted capers"),
-        (56, 673, "1 handful of green olives"),
-        (56, 811, "5 large ripe tomatoes"),
         (56, 864, "olive oil"),
-        (56, 778, "1 heaped teaspoon dried oregano"),
-        (56, 687, "2-3 tablespoons best-quality herb vinegar"),
-        (56, 640, "2 tablespoons slivered almonds")
+        (56, 874, "2 rashers higher-welfare bacon chopped"),
+        (56, 796, "1 small white onion finely chopped"),
+        (56, 770, "2 sticks celery finely chopped"),
+        (56, 869, "1 fresh red chilli deseeded and finely chopped"),
+        (56, 588, "4 ears sweetcorn"),
+        (56, 820, "2 medium potatoes peeled and chopped"),
+        (56, 886, "900 ml organic vegetable or fish stock hot"),
+        (56, 883, "1 handful fresh, live mussels from sustainable sources, ask your fishmonger, cleaned and drained"),
+        (56, 184, "4 tablespoons single cream"),
+        (56, 779, "1 small handful chopped fresh parsley")
 '''
 cursor.execute(insert_IngredientInRecipe_qry)
 conn.commit()
@@ -1147,12 +1146,7 @@ insert_TagInRecipe_qry = '''
         TagInRecipe(recipe_id, tag_id)
     VALUES
         (56, 8),
-        (56, 1),
-        (56, 11),
-        (56, 12),
         (56, 13),
-        (56, 14),
-        (56, 20),
         (56, 18)
 '''
 cursor.execute(insert_TagInRecipe_qry)
@@ -1162,11 +1156,203 @@ insert_SkillVideoInRecipe_qry = '''
     INSERT INTO
         SkillVideoInRecipe(recipe_id, skill_video_id)
     VALUES
-        (56, 49),
-        (56, 19),
-        (56, 338),
-        (56, 27),
-        (56, 336)
+        (56, 261),
+        (56, 131),
+        (56, 272),
+        (56, 260),
+        (56, 110)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 57: Incredible Sicilian aubergine stew (Caponata) ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (57, 827, "2 large aubergines"),
+        (57, 830, "1 small red onion"),
+        (57, 522, "2 cloves of garlic"),
+        (57, 779, "\u00bd a bunch fresh flat-leaf parsley (15g)"),
+        (57, 538, "2 tablespoons salted capers"),
+        (57, 673, "1 handful of green olives"),
+        (57, 811, "5 large ripe tomatoes"),
+        (57, 864, "olive oil"),
+        (57, 778, "1 heaped teaspoon dried oregano"),
+        (57, 687, "2-3 tablespoons best-quality herb vinegar"),
+        (57, 640, "2 tablespoons slivered almonds")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (57, 8),
+        (57, 1),
+        (57, 11),
+        (57, 12),
+        (57, 13),
+        (57, 14),
+        (57, 20),
+        (57, 18)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (57, 49),
+        (57, 19),
+        (57, 338),
+        (57, 27),
+        (57, 336)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 58: Jools’ simple chicken & veg stew ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (58, 793, "2 medium leeks"),
+        (58, 815, "2 carrots"),
+        (58, 770, "2 sticks of celery"),
+        (58, 522, "2 cloves of garlic"),
+        (58, 532, "3 sprigs of fresh thyme"),
+        (58, 874, "3 rashers of higher-welfare smoked streaky bacon"),
+        (58, 864, "olive oil"),
+        (58, 913, "200 g celeriac"),
+        (58, 816, "2 parsnips"),
+        (58, 820, "6 new potatoes"),
+        (58, 594, "8 free-range chicken thighs skin off, bone out"),
+        (58, 921, "1 heaped teaspoon Marmite"),
+        (58, 886, "600 ml organic vegetable stock")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (58, 9),
+        (58, 14),
+        (58, 17)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (58, 8),
+        (58, 215),
+        (58, 226),
+        (58, 261)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 59: Simon Pegg's lamb tagine ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (59, 781, "1 large pinch of saffron"),
+        (59, 922, "8 dried prunes (stone in)"),
+        (59, 796, "2 onions"),
+        (59, 522, "2 cloves of garlic"),
+        (59, 774, "1 teaspoon ground ginger"),
+        (59, 864, "olive oil"),
+        (59, 771, "1 stick of cinnamon"),
+        (59, 596, "750 g diced lamb shoulder"),
+        (59, 875, "12 mixed-colour baby courgettes"),
+        (59, 815, "300 g mixed-colour baby carrots"),
+        (59, 474, "\u00bd a butternut squash (600g)"),
+        (59, 923, "250 g couscous"),
+        (59, 772, "2 cloves"),
+        (59, 112, "2 tablespoons rose harissa"),
+        (59, 180, "250 g natural yoghurt"),
+        (59, 525, "\u00bd a bunch of fresh mint (15g)")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (59, 10),
+        (59, 18),
+        (59, 20)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (59, 328),
+        (59, 291),
+        (59, 215),
+        (59, 250),
+        (59, 333)
+'''
+cursor.execute(insert_SkillVideoInRecipe_qry)
+conn.commit()
+
+############### 60: Jools’ sausage & smoky bean casserole ###############
+insert_IngredientInRecipe_qry = '''
+    INSERT INTO 
+        IngredientInRecipe(recipe_id, ingredient_id, description)
+    VALUES
+        (60, 599, "12 higher-welfare pork chipolatas"),
+        (60, 793, "2 medium leeks"),
+        (60, 770, "2 sticks of celery"),
+        (60, 522, "2 cloves of garlic"),
+        (60, 809, "2 red peppers"),
+        (60, 864, "olive oil"),
+        (60, 890, "2 teaspoons sweet smoked paprika"),
+        (60, 773, "1 teaspoon ground cumin"),
+        (60, 459, "12 ripe cherry tomatoes"),
+        (60, 687, "1 tablespoon red wine vinegar"),
+        (60, 860, "500 ml passata"),
+        (60, 4, "1 teaspoon demerara sugar optional"),
+        (60, 919, "1 teaspoon Dijon mustard"),
+        (60, 562, "2 x 400 g tins of mixed beans"),
+        (60, 779, "a few sprigs of fresh flat-leaf parsley optional")
+'''
+cursor.execute(insert_IngredientInRecipe_qry)
+conn.commit()
+
+insert_TagInRecipe_qry = '''
+    INSERT INTO
+        TagInRecipe(recipe_id, tag_id)
+    VALUES
+        (60, 9),
+        (60, 17),
+        (60, 18),
+        (60, 14)
+'''
+cursor.execute(insert_TagInRecipe_qry)
+conn.commit()
+
+insert_SkillVideoInRecipe_qry = '''
+    INSERT INTO
+        SkillVideoInRecipe(recipe_id, skill_video_id)
+    VALUES
+        (60, 8),
+        (60, 261),
+        (60, 91),
+        (60, 336),
+        (60, 49)
 '''
 cursor.execute(insert_SkillVideoInRecipe_qry)
 conn.commit()
