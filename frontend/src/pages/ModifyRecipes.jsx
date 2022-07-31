@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchBarRecipe from '../components/SearchBarRecipe';
+import SearchSkillAddBar from '../components/SearchSkillAddBar';
 
 export default function ModifyRecipes () {
   const id = useParams();
@@ -16,6 +17,7 @@ export default function ModifyRecipes () {
   const [ingredients, setIngredients] = React.useState([{}])
   const [steps, setSteps] = React.useState([{description: '', step_id: 0}])
   const [tags, setTags] = React.useState([])
+  const [recipeVideos, setRecipeVideos] = React.useState([]);
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
   const is_contributor = localStorage.getItem('is_contributor');
@@ -24,7 +26,22 @@ export default function ModifyRecipes () {
   /* For SearchBar */
 	const [listIngredient, setListIngredient] = React.useState([]);
 	const [listCategories, setListCategories] = React.useState([]);
-  const [tagData, setTagData] = React.useState([])
+  const [tagData, setTagData] = React.useState([]);
+  const [skillVideos, setSkillVideos] = React.useState([]);
+  
+  const getSkillVideos = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      data = await APICall(null, `/skill_videos`, 'GET', headers);
+      setSkillVideos(data.video_list);
+    } catch (err) {
+      alert(err);
+    }
+  }
   
   const getAllCategories = async() => {
 		let data = []; let temp = [];
@@ -82,6 +99,7 @@ export default function ModifyRecipes () {
     getAllCategories();
 		getAllIngredients();
 		getAllTags();
+		getSkillVideos();
     return () => isFetch = false;
   }, [id])
   
@@ -101,6 +119,7 @@ export default function ModifyRecipes () {
       setIngredients(data.ingredients);
       setSelected(data.ingredients);
       setSteps(data.steps);
+      setRecipeVideos(data.skill_videos);
     } catch (err) {
       alert(err);
     }
@@ -148,7 +167,6 @@ export default function ModifyRecipes () {
     list[index][name] = value;
     setSteps(list);
     setRecipe({...recipe, steps: list})
-    console.log(list)
   };
 
   const handleStepsRemove = (e, index) => {
@@ -162,27 +180,6 @@ export default function ModifyRecipes () {
   const handleStepsAdd = (e) => {
     e.preventDefault()
     setSteps([...steps, { description: "" , step_id: steps.length}]);
-  };
-  
-  // const handleTagsChange = (e, index) => {
-  //   const { name, value } = e.target;
-  //   const list = [...tags];
-  //   list[index][name] = value;
-  //   setTags(list);
-  //   setRecipe({...recipe, tags: list})
-  // };
-
-  const handleTagsRemove = (e, index) => {
-    e.preventDefault()
-    const list = [...tags];
-    list.splice(index, 1);
-    setTags(list);
-    setRecipe({...recipe, tags: list})
-  };
-
-  const handleTagsAdd = (e) => {
-    e.preventDefault()
-    setTags([...tags, { tags: "" }]);
   };
   
   const handleFoodPic = (e) => {
@@ -211,18 +208,12 @@ export default function ModifyRecipes () {
           setRecipe({...recipe, [name]: res});
         })
       } else {
-      // console.log(e.target)
       setRecipe({...recipe, [name]: value})
     }
   }
   
   const handleSave = async (state) => {
     let pass_id = -1
-    // if(Object.keys(id).length === 0) {
-    //   pass_id = -1
-    // } else {
-    //   pass_id = id.id
-    // }
     const ingredient = recipe.ingredients
     const step = recipe.steps
     try {
@@ -236,7 +227,7 @@ export default function ModifyRecipes () {
         description: `${recipe.description}`,
         image: `${recipe.image}`,
         time_required: `${recipe.time_required}`,
-        video : '',
+        skill_videos : recipeVideos,
         servings: `${recipe.servings}`,
         ingredients: ingredient,
         tags: tags,
@@ -263,8 +254,6 @@ export default function ModifyRecipes () {
   }
   
   const handleTagsChange = (e, object) => {
-    // console.log(e.target.checked)
-    // console.log(object)
     if(e.target.checked) {
       setTags([...tags, object]);
     } else {
@@ -273,12 +262,32 @@ export default function ModifyRecipes () {
           return tag.tag_id !== object.tag_id
       }))
     }
-  } 
+  }
+  
+  const handleSkillVideoChange = (object, index) => {
+    const list = [...recipeVideos];
+    list[index] = object;
+    setRecipeVideos(list)
+  }
+  
+  const handleSkillVideoAdd = (e) => {
+    e.preventDefault()
+    setRecipeVideos([...recipeVideos, { title: '', url: '', video_id: -1}]);
+  }
+  
+  const handleSkillVideoDelete = (e, index) => {
+    e.preventDefault()
+    const list = [...recipeVideos];
+    list.splice(index, 1);
+    setRecipeVideos(list);
+  }
   // console.log(steps)
   // console.log(ingredients)
   // console.log(selectedIngredients)
   // console.log(tags)
   // console.log(tagData);
+  // console.log(recipeVideos);
+  
   return (
   <div className={styles.screen_container}>
     <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
@@ -290,6 +299,8 @@ export default function ModifyRecipes () {
         <label for='dishPic'> Upload Image: </label>
         <input name='image' type="file" id="dishPic" accept=".png,.jpeg,.jpg" onChange={(e) => handleChanges(e)} />
         <img src={recipe.image} className={styles.foodPic}/>
+        <label for='video'>Duration: </label>
+        <input name='time_required' id='dish_video' type='text' value={recipe.video} onChange={(e) => handleChanges(e)}/>
         <label for='duration'>Duration: </label>
         <input name='time_required' id='duration' type='text' value={recipe.time_required} onChange={(e) => handleChanges(e)}/>
         <label for='serving'>Serving: </label>
@@ -343,22 +354,6 @@ export default function ModifyRecipes () {
           <AddIcon />
         </IconButton>
         <label>Categories: </label>
-        {/* {tags.map((tag, index) => (
-          <div key={index}>
-            <input
-              name='tags'
-              type="text"
-              onChange={(e) => handleTagsChange(e, index)}
-              value={tag.name}
-              />
-            <button onClick={(e) => handleTagsRemove(e, index)}
-            className={styles.remove_button}
-            > Remove </button>
-          </div>
-        ))}
-        <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleTagsAdd}>
-          <AddIcon />
-        </IconButton> */}
         <div className={styles.tag_container}>
           {tagData.map((tags, index) => (
             <div key={index} className={styles.tag_categories}>
@@ -377,6 +372,26 @@ export default function ModifyRecipes () {
             </div>
           ))}
         </div>
+        <label>Videos Skill: </label>
+        <div>
+            {recipeVideos.map((vid, index) => (
+            <> 
+              <span className={styles.video_skill_container}>
+                <SearchSkillAddBar 
+                  data={skillVideos} 
+                  updateVideoSkill={handleSkillVideoChange}
+                  index={index}
+                  preFilled={vid}
+                  handleDelete={handleSkillVideoDelete}
+                  ></SearchSkillAddBar>
+              </span>
+              <div className={styles.video_skill}></div>
+            </>
+          ))}
+        </div>
+        <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleSkillVideoAdd}>
+          <AddIcon />
+        </IconButton>
       </form>
       <div className={styles.button_container}>
         <Button variant="contained" endIcon={<CancelIcon />} 

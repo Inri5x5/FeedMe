@@ -10,6 +10,7 @@ import Hat from '../assets/chef-hat.svg'
 import Saved from '../assets/saved.svg'
 import Unsaved from '../assets/unsaved.svg'
 import Rating from '@mui/material/Rating';
+import VideoCard from '../components/VideoCard';
 
 export default function RecipeDetailsScreen () {
   const token = localStorage.getItem('token');
@@ -17,8 +18,10 @@ export default function RecipeDetailsScreen () {
   React.useEffect(() => { 
     let isFetch = true;
     getDetails();
+    checkIfContributor();
+    getSkillVideos();
     return () => isFetch = false;
-    }, [id])
+  }, [id])
   
   const navigate = useNavigate();
   const [starsRating, setStarsRating] = React.useState(null);
@@ -26,7 +29,10 @@ export default function RecipeDetailsScreen () {
   const [tags, setTags] = React.useState([]);
   const [ingredients, setIngredients] = React.useState([]);
   const [steps, setSteps] = React.useState([]);
+  const [skillVideos, setSkillVideos] = React.useState([]);
+  const [videoDetail, setVideoDetail] = React.useState([]);
   const [avg_rating, setAvgRate] = React.useState(0);
+  const [isContributor, setIsContributor] = React.useState('')
   
   const getDetails = async () => {
     try {
@@ -44,6 +50,7 @@ export default function RecipeDetailsScreen () {
       setIngredients(data.ingredients);
       setSteps(data.steps);
       setAvgRate(data.avg_rating);
+      setSkillVideos(data.skill_videos);
     } catch (err) {
       alert(err);
     }
@@ -83,6 +90,64 @@ export default function RecipeDetailsScreen () {
     } catch (err) {
       alert(err);
     }
+  }
+  
+  const checkIfContributor = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      data = await APICall(null, `/is_contributor`, 'GET', headers);
+      setIsContributor(data.is_contributor)
+    } catch (err) {
+      alert(err);
+    }
+  }
+  
+  const getSkillVideos = async () => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      data = await APICall(null, `/skill_videos`, 'GET', headers);
+      let temp;
+      temp = data.video_list.filter(function(video1){
+        return skillVideos.filter(function(video2){
+           return video2.title == video1.title;
+        }).length !== 0
+      });
+      setVideoDetail(temp);
+    } catch (err) {
+      alert(err);
+    }
+  }
+  
+  const renderVideoCard = () => {
+    let content = []
+    for(let i = 0; i < skillVideos.length; i++) {
+      content.push(
+        <VideoCard url={videoDetail[i]['url']} object={videoDetail[i]} isContributor={isContributor} afterLike={() => {getDetails()}}/>
+      )
+    }
+    return (
+      <div style={{width: '100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+        <div style={{
+          width: '95%',
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'space-evenly',
+          alignContent: 'space-between',
+          marginTop: '20px',
+        }}>
+          {content}
+        </div>
+      </div>
+    )
   }
   
   return (
@@ -132,6 +197,10 @@ export default function RecipeDetailsScreen () {
         return <li><strong> {list.description} </strong><br/></li>
       })}
     </ol>
+    <div>
+      <h2> Helper Video:  </h2>
+      {renderVideoCard()}
+    </div>
     <div className={styles.rateContainer}>
       <h2> Leave a Rating! </h2>
       <div style={styles.stars}>
