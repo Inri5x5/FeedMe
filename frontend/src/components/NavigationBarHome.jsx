@@ -31,6 +31,7 @@ const NavigationBarHome = (props) => {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/get_details', 'GET', headers);
+      console.log(temp_data)
       setProfileData(temp_data.user_details)
     } catch (err) {
       alert(err);

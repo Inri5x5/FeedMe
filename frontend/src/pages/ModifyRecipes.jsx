@@ -22,6 +22,7 @@ export default function ModifyRecipes () {
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
   const [checkState, setCheckState] = React.useState('');
   const is_contributor = localStorage.getItem('is_contributor');
+  const [isContributor, setIsContributor] = React.useState('')
   const token = localStorage.getItem('token');
   
   /* For SearchBar */
@@ -39,6 +40,20 @@ export default function ModifyRecipes () {
       };
       data = await APICall(null, `/skill_videos`, 'GET', headers);
       setSkillVideos(data.video_list);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const checkIfContributor = async() => {
+    let data = []; let temp = [];
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'token' : localStorage.getItem('token')
+      };
+      data = await APICall(null, `/is_contributor`, 'GET', headers);
+      setIsContributor(data.is_contributor)
     } catch (err) {
       alert(err);
     }
@@ -97,6 +112,9 @@ export default function ModifyRecipes () {
     let isFetch = true;
     if (Object.keys(id).length !== 0) {
       getDetails();
+    }
+    if(localStorage.getItem('token')) {
+      checkIfContributor()
     }
     getAllCategories();
 		getAllIngredients();
@@ -250,7 +268,13 @@ export default function ModifyRecipes () {
       if (data.error) {
         throw new Error(data.error);
       }
-      navigate('/')
+      if(isContributor) {
+        navigate('/contributorProfile')
+      }
+      else {
+        navigate('/userProfile')
+      }
+
     } catch (err) {
       alert(err);
     }
@@ -421,7 +445,13 @@ export default function ModifyRecipes () {
               color: '#F9D371'
             }
             }}
-          onClick={() => navigate('/')}
+          onClick={() => {
+          if(isContributor) {
+            navigate('/contributorProfile')
+          }
+          else {
+            navigate('/userProfile')
+          }}}
             >
           Cancel
         </Button>

@@ -206,15 +206,20 @@ export default function ContributorProfileScreen () {
     if (tabValue === 'Saved') {
       listRecipes = shownRecipes
       func = fetchSaved
+      for (let i = 0; i < listRecipes.length; i++) {
+        content.push(
+          <RecipeCard object={listRecipes[i]} isDelete={false} handleAfterLike={func}/>
+          )
+      }
     }
     if (tabValue === 'Drafted') {
       listRecipes = draftRecipes
       func = fetchMyRecipes
-    }
-    for (let i = 0; i < listRecipes.length; i++) {
-      content.push(
-        <RecipeCard object={listRecipes[i]} isDelete={false} handleAfterLike={func}/>
-        )
+      for (let i = 0; i < listRecipes.length; i++) {
+        content.push(
+          <RecipeCard object={listRecipes[i]} isDraft={false} isDelete={false} handleAfterLike={func}/>
+          )
+      }
     }
     return content
   }

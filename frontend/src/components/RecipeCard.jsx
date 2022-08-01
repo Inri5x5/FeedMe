@@ -70,7 +70,7 @@ export default function RecipeCard(props) {
       </CardActionArea>
       <CardActions className={styles.card_action}>
         <div>
-          {(props.isLikeable != false) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => handleLike()}>
+          {(props.isDraft != false) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => handleLike()}>
             <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
           </IconButton>}
           <IconButton aria-label="edit" disabled={!localStorage.getItem('token')} onClick={() => navigate(`/recipe/edit/${props.object.recipe_id}`)} >
@@ -80,10 +80,10 @@ export default function RecipeCard(props) {
             <DeleteIcon></DeleteIcon>
           </IconButton>}
         </div>
-        <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+        {(props.isDraft != false) && <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
           <span style={{paddingTop: '3px', paddingRight: '3px', fontWeight: 'bold'}}>{props.object.recipe_ratings}</span>
           <GradeIcon style={{color: 'orange'}} />
-        </div>
+        </div>}
         <div className={styles.card_time}>
           <AccessTimeIcon></AccessTimeIcon>
           <span style={{fontWeight: 'bold'}}>{props.object.recipe_time} mins</span>
