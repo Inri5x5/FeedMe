@@ -261,9 +261,9 @@ def get_recipe_details(conn, recipe_id, user_details):
         else:
             c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
         info = c.fetchone()
-    else:
-        
-    author_id = info[0]
+    # else:
+
+    # author_id = info[0]
 
         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
