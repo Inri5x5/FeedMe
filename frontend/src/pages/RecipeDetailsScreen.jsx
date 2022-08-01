@@ -11,17 +11,11 @@ import Saved from '../assets/saved.svg'
 import Unsaved from '../assets/unsaved.svg'
 import Rating from '@mui/material/Rating';
 import VideoCard from '../components/VideoCard';
+import RecipeVideo from '../components/RecipeVideo';
 
 export default function RecipeDetailsScreen () {
   const token = localStorage.getItem('token');
   const id = useParams();
-  React.useEffect(() => { 
-    let isFetch = true;
-    getDetails();
-    checkIfContributor();
-    getSkillVideos();
-    return () => isFetch = false;
-  }, [id])
   
   const navigate = useNavigate();
   const [starsRating, setStarsRating] = React.useState(null);
@@ -113,11 +107,11 @@ export default function RecipeDetailsScreen () {
         'Content-Type': 'application/json',
         'token' : localStorage.getItem('token')
       };
-      data = await APICall(null, `/skill_videos`, 'GET', headers);
+      const [recipe, data] = await Promise.all([APICall(null, `/recipe_details/view?id=${id.id}`, 'GET', headers), APICall(null, `/skill_videos`, 'GET', headers)]);
       let temp;
       temp = data.video_list.filter(function(video1){
-        return skillVideos.filter(function(video2){
-           return video2.title == video1.title;
+        return recipe.skill_videos.filter(function(video2){
+          return video2.title == video1.title;
         }).length !== 0
       });
       setVideoDetail(temp);
@@ -150,6 +144,14 @@ export default function RecipeDetailsScreen () {
     )
   }
   
+  React.useEffect(() => { 
+    let isFetch = true;
+    getDetails();
+    checkIfContributor();
+    getSkillVideos();
+    return () => isFetch = false;
+  }, [id])
+  
   return (
   <div className={styles.screen_container}>
     <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
@@ -158,7 +160,14 @@ export default function RecipeDetailsScreen () {
       <img src={Time} className={styles.duration}/> <span className={styles.duration_text}> {recipe.time_required} Mins </span> 
       <img src={Serving} className={styles.serving}/> <span className={styles.duration_text}> {recipe.servings} Serving </span> 
     </span>
-    <div className={styles.foodpic_container}> <img src={recipe.image} className={styles.foodPic} alt='foodImage'/> </div> 
+      {recipe.video === null && 
+      <div className={styles.foodpic_container}> 
+        <img src={recipe.image} className={styles.foodPic} alt='foodImage'/>
+      </div>}
+      {recipe.video !== null && 
+      <div className={styles.videofood_container}>
+        <RecipeVideo url={`https://www.youtube.com/${recipe.video}`}></RecipeVideo>
+      </div>}
     <div className={styles.description_container}>
       <article className={styles.description}>
         <p> {recipe.description} </p>
@@ -199,7 +208,7 @@ export default function RecipeDetailsScreen () {
     </ol>
     <div>
       <h2> Helper Video:  </h2>
-      {renderVideoCard()}
+      {videoDetail.length > 0 && renderVideoCard()}
     </div>
     <div className={styles.rateContainer}>
       <h2> Leave a Rating! </h2>

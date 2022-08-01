@@ -309,25 +309,29 @@ export default function ModifyRecipes () {
         <input name='description' id='desc' type='text' value={recipe.description} onChange={(e) => handleChanges(e)}/>
         <label> Ingredients: </label>
         {ingredients.map((ingredient, index) => (
-          <div key={index}>
-            <SearchBarRecipe 
-              preFilled={selectedIngredients[index]}
-              updateIngredients={handleUpdateIngredients}
-              index={index}
-              listCategories={listCategories}
-              listIngredient={listIngredient}
-            ></SearchBarRecipe>
-            <input
-              name='description'
-              type="text"
-              onChange={(e) => handleIngredientsChange(e, index)}
-              value={ingredient.description}
-            />
-            <button
-            onClick={(e) => handleIngredientsRemove(e, index)}
-            className={styles.remove_button}
-            > Remove </button>
-          </div>
+          <>
+          {listCategories.length !== 0 &&
+            <div key={index}>
+              <SearchBarRecipe 
+                preFilled={selectedIngredients[index]}
+                updateIngredients={handleUpdateIngredients}
+                index={index}
+                listCategories={listCategories}
+                listIngredient={listIngredient}
+              ></SearchBarRecipe>
+              <input
+                name='description'
+                type="text"
+                onChange={(e) => handleIngredientsChange(e, index)}
+                value={ingredient.description}
+              />
+              <button
+              onClick={(e) => handleIngredientsRemove(e, index)}
+              className={styles.remove_button}
+              > Remove </button>
+            </div>
+          }
+          </>
         ))}
         <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleIngredientsAdd}>
           <AddIcon />

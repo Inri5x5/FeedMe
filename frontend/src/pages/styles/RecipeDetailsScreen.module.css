@@ -60,6 +60,14 @@
     height: 50%;
 }
 
+.videofood_container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    width: 60%;
+    height: 60%;
+}
+
 .foodPic {
     border-radius: 8px;
     border: 2px solid black;

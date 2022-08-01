@@ -85,7 +85,6 @@ const SearchBarRecipe = (props) => {
 	const [found, setFound] = useState([]);
 	const onInput = (e) => {
 		setInput(e.target.value);
-		console.log(e.target)
 		searchIngredient(e.target.value, props.listIngredient, category);
 		if (e.target.value === "") {
 			if (category.name !== "Category") {
@@ -100,14 +99,17 @@ const SearchBarRecipe = (props) => {
 	}
   
 	const searchIngredient = (name, list_ingredients, category) => {
+		console.log(category)
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
+			if (!name) {name = ' '};
 			if (category.name === "Category"){
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase())) {
                     found.push(list_ingredients[i]);
 				}
 			} else {
-                console.log(list_ingredients[i].name.toLowerCase())
+                // console.log(list_ingredients[i].name)
+                // console.log(name);
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase()) && list_ingredients[i].c_id === category.c_id) {
 					found.push(list_ingredients[i]);
 				}
@@ -124,11 +126,7 @@ const SearchBarRecipe = (props) => {
 	}
 
 	React.useEffect(() => {
-		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
-			console.log('')
-		} else {
-			searchIngredient(input, props.listIngredient, category);
-		} 
+		searchIngredient(input, props.listIngredient, category);
 	},[dropdownState]);
 		
 	return (
