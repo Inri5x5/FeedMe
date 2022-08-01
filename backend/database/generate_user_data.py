@@ -42,12 +42,18 @@ VALUES
     (?, ?, ?)
 """
 i = 0
-for i in range(100, 110):
+for i in range(100, 111):
     if i < 105:
         cursor = cursor.execute(insert_into_personalRecipes_query, (None, 0, i))
         conn.commit()
     else:
         cursor = cursor.execute(insert_into_personalRecipes_query, (0, None, i))
+        conn.commit()
+
+i = 0
+for i in range(0, 153):
+    if i < 100 or i > 110:
+        cursor = cursor.execute(insert_into_personalRecipes_query, (None, 0, i))
         conn.commit()
 
 # insert into publicRecipes
@@ -60,7 +66,7 @@ VALUES
     (?, ?)
 """
 i = 0
-for i in range(0, 152):
+for i in range(0, 153):
     if i < 100 or i > 110:
         cursor = cursor.execute(insert_into_PublicRecipes_query, (i, 0))
         conn.commit()
