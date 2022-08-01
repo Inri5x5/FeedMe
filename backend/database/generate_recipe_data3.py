@@ -77,7 +77,7 @@ VALUES
     (60, 828, "250 g baby spinach"),
     (60, 572, "2 x 400 g tins of green lentils"),
     (60, 885, "100 g half-fat cre\u0300me frai\u0302che"),
-    (60, 531, "\u00bd a bunch of tarragon (10g)"),
+    (60, 531, "\u00bd a bunch of tarragon (10g)")
 
 """
 cursor = cursor.execute(insert_into_ingredientInRecipe_query)
@@ -422,7 +422,7 @@ VALUES
     (68, 861, "1 tablespoon coriander seeds"),
     (68, 773, "1 tablespoon ground cumin"),
     (68, 774, "1 tablespoon ground ginger"),
-    (68, 781, "1 teaspoon saffron threads"),
+    (68, 781, "1 teaspoon saffron threads")
 """
 cursor = cursor.execute(insert_into_ingredientInRecipe_query)
 conn.commit()
@@ -462,7 +462,7 @@ VALUES
     (69, 146, "3 tablespoons plain flour"),
     (69, 110, "port"),
     (69, 887, "1 litre hot organic chicken stock"),
-    (69, 913 "1 celeriac"),
+    (69, 913, "1 celeriac"),
     (69, 820, "1 kg potatoes"),
     (69, 865, "extra virgin olive oil"),
     (69, 777, "1 whole nutmeg for grating"),
@@ -553,7 +553,7 @@ conn.commit()
 ################################# RECIPE ID = 71 = Green Tea Fish #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (71, 147, "150 g brown rice"),
     (71, 243, "1 x 500 g salmon tail, skin on, scaled, bone in, from sustainable sources"),
@@ -598,7 +598,7 @@ conn.commit()
 ################################# RECIPE ID = 72 = Roast Onions #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (72, 796, "6 large white onions peeled"),
     (72, 865, "5 tablespoons extra-virgin olive oil"),
@@ -648,7 +648,7 @@ conn.commit()
 ################################# RECIPE ID = 73 = Roast Goose #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (73, 613, "1 x 4 kg whole goose (ask your butcher for the giblets, too)"),
     (73, 864, "olive oil"),
@@ -703,7 +703,7 @@ conn.commit()
 ################################# RECIPE ID = 74 = Clementine Roast Carrots #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (74, 815, "1 kg small mixed-colour carrots"),
     (74, 864, "olive oil"),
@@ -742,7 +742,7 @@ conn.commit()
 ################################# RECIPE ID = 75 = Homemade Pickles #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (75, 801, "400 g cauliflower"), 
     (75, 687, "250 ml vinegar such as white wine, red wine or cider"), 
@@ -781,7 +781,7 @@ conn.commit()
 ################################# RECIPE ID = 76 = Chorizo pear cabbage #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (76, 888, "150 g quality chorizo"),
     (76, 882, "2 teaspoons fennel seeds"),
@@ -819,7 +819,7 @@ conn.commit()
 ################################# RECIPE ID = 77 = Courgettes #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (77, 864, "olive oil"),
     (77, 522, "1 clove of garlic"),
@@ -858,7 +858,7 @@ conn.commit()
 ################################# RECIPE ID = 78 = Roast Root Veg #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (78, 820, "3 kg Maris Piper potatoes"),
     (78, 815, "16 carrots"),
@@ -897,7 +897,7 @@ conn.commit()
 ################################# RECIPE ID = 79 = Creamed Spinach #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (79, 795, "2 onions"), 
     (79, 521, "2 cloves of garlic"), 
@@ -939,7 +939,7 @@ conn.commit()
 ################################# RECIPE ID = 80 = Pot Roast Cauliflower #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (80, 796, "3 onions"),
     (80, 864, "olive oil"),
@@ -980,7 +980,7 @@ conn.commit()
 ################################# RECIPE ID = 81 = balsamic Potato #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (81, 820, "2.5 kg Maris Piper potatoes"),
     (81, 865, "extra virgin olive oil"),
@@ -1020,7 +1020,7 @@ conn.commit()
 ################################# RECIPE ID = 82 = Mint Peas #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (82, 525, "\u00bd a bunch of fresh mint (15g)"),
     (82, 562, "200 g fresh podded or frozen broad beans"),
@@ -1059,7 +1059,7 @@ conn.commit()
 ################################# RECIPE ID = 83 = raisins #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (83, 828, "300 g frozen spinach (or 800g fresh spinach)"), 
     (83, 522, "1 small clove of garlic"), 
@@ -1097,7 +1097,7 @@ conn.commit()
 ################################# RECIPE ID = 84 = raisins #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (84, 818, "16 asparagus spears"),
     (84, 562, "25 g broad beans"),
@@ -1137,7 +1137,7 @@ conn.commit()
 ################################# RECIPE ID = 85 = roast potato #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (85, 820, "500 g Jersey Royal potato"),
     (85, 522, "1 handful of wild garlic leaves"),
@@ -1176,7 +1176,7 @@ conn.commit()
 ################################# RECIPE ID = 86 = winter salad #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (86, 800, "\u00bd a red cabbage"),
     (86, 800, "\u00bd a white cabbage"),
@@ -1190,7 +1190,7 @@ VALUES
     (86, 865, "6 tablespoons extra virgin olive oil"),
     (86, 919, "1 teaspoon Dijon mustard"),
     (86, 650, "1 handful of sesame seeds"),
-    (86, 525, "\u00bd a bunch of fresh mint (15g)"),
+    (86, 525, "\u00bd a bunch of fresh mint (15g)")
 """
 cursor = cursor.execute(insert_into_ingredientInRecipe_query)
 conn.commit()
@@ -1221,7 +1221,7 @@ conn.commit()
 ################################# RECIPE ID = 87 = Raw Spring Salad #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (87, 818, "1 bunch of asparagus"),
     (87, 804, "1 bunch of radishes"),
@@ -1263,7 +1263,7 @@ conn.commit()
 ################################# RECIPE ID = 132 = Gluten-free one-cup pancakes #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (132, 591, "1 large free-range egg"),
     (132, 920, "1 heaped cup of gluten-free self-raising flour (250g)"),
@@ -1300,7 +1300,7 @@ conn.commit()
 ################################# RECIPE ID = 133 = Apple & pear overnight oats #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (133, 128, "100 g rolled oats"),
     (133, 911, "200 g Granola Dust"),
@@ -1337,7 +1337,7 @@ conn.commit()
 ################################# RECIPE ID = 134 = One-pan breakfast #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (134, 874, "3 rashers of smoked streaky bacon"),
     (134, 879, "4 sausages"),
@@ -1375,7 +1375,7 @@ conn.commit()
 ################################# RECIPE ID = 135 = Eggy bread muffins #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (135, 875, "400 g courgette"),
     (135, 843, "150 g kale"),
@@ -1414,7 +1414,7 @@ conn.commit()
 ################################# RECIPE ID = 136 = Roll-and-go omelette wrap #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (136, 591, "2 large free-range eggs"),
     (136, 864, "olive oil"),
@@ -1454,7 +1454,7 @@ conn.commit()
 ################################# RECIPE ID = 137 = Fig yogurt #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (137, 383, "8 ripe figs"),
     (137, 771, "\u00bc teaspoon cinnamon"),
@@ -1493,7 +1493,7 @@ conn.commit()
 ################################# RECIPE ID = 138 = One-cup pancakes with blueberries #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (138, 591, "1 large free-range egg"),
     (138, 146, "1 cup of self-raising flour"),
@@ -1530,7 +1530,7 @@ conn.commit()
 ################################# RECIPE ID = 139 = Cardamom clementine morning buns #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (139, 146, "500 g plain flour plus extra for dusting"),
     (139, 4, "50 g caster sugar"),
@@ -1572,7 +1572,7 @@ conn.commit()
 ################################# RECIPE ID = 140 = Roasted stone fruit #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (140, 396, "6 oranges"),
     (140, 866, "1 tablespoon balsamic vinegar"),
@@ -1613,7 +1613,7 @@ conn.commit()
 ################################# RECIPE ID = 141 = Crumpets #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (141, 174, "400 ml milk"),
     (141, 510, "1 tablespoon dried yeast"),
@@ -1650,7 +1650,7 @@ conn.commit()
 ################################# RECIPE ID = 142 = Hollandaise sauce #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (142, 148, "150 g unsalted butter"),
     (142, 591, "2 large free-range egg yolks"),
@@ -1686,7 +1686,7 @@ conn.commit()
 ################################# RECIPE ID = 143 = Simple cheese omelette #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (143, 591, "2 large free-range eggs"),
     (143, 864, "olive oil"),
@@ -1721,7 +1721,7 @@ conn.commit()
 ################################# RECIPE ID = 144 = Quick Mexican breakfast #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (144, 811, "3 ripe tomatoes"),
     (144, 809, "2 roasted red peppers from a jar"),
@@ -1763,7 +1763,7 @@ conn.commit()
 ################################# RECIPE ID = 145 = Charred avo & eggs #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (145, 809, "1 red pepper"),
     (145, 870, "4 spring onions"),
@@ -1805,7 +1805,7 @@ conn.commit()
 ################################# RECIPE ID = 146 = Mushroom Bruschettas #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (146, 499, "2 portobello mushrooms"),
     (146, 864, "olive oil"),
@@ -1845,7 +1845,7 @@ conn.commit()
 ################################# RECIPE ID = 147 = Omelette aux fines herbes #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (147, 591, "2 large free-range eggs at room temperature"),
     (147, 779, "a few sprigs of parsley"),
@@ -1880,7 +1880,7 @@ conn.commit()
 ################################# RECIPE ID = 148 = Irish potato cakes #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (148, 146, "80 g plain flour plus extra for dusting"),
     (148, 820, "250 g leftover boiled, steamed or baked potatoes"),
@@ -1922,7 +1922,7 @@ conn.commit()
 ################################# RECIPE ID = 149 = Brilliant breakfast waffles #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (149, 146, "150 g self-raising flour"),
     (149, 22, "1 teaspoon baking powder"),
@@ -1960,7 +1960,7 @@ conn.commit()
 ################################# RECIPE ID = 150 = Green eggs & ham #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (150, 148, "1 small knob of unsalted butter"),
     (150, 864, "\u00bd tablespoon olive oil"),
@@ -2001,7 +2001,7 @@ conn.commit()
 ################################# RECIPE ID = 151 = Dippy Eggs #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (151, 818, "1 bunch of asparagus"),
     (151, 591, "4 large free-range eggs"),
@@ -2037,7 +2037,7 @@ conn.commit()
 ################################# RECIPE ID = 152 = Giant veg rosti #################################
 insert_into_ingredientInRecipe_query = """
 INSERT INTO 
-    ingredientInRecipe (recipe_id, ingredient_id, description),
+    ingredientInRecipe (recipe_id, ingredient_id, description)
 VALUES
     (152, 820, "600 g potatoes"),
     (152, 815, "3 large carrots"),
