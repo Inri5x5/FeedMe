@@ -75,11 +75,9 @@ const NavigationBarHome = (props) => {
     try {
       const headers = {
         'Content-Type': 'application/json',
+        'token': token
       };
-      const requestBody = {
-        token: token,
-      };
-      const data = await APICall(requestBody, `/logout`, 'POST', headers);
+      const data = await APICall(null, `/logout`, 'POST', headers);
       if (data.error) {
         throw new Error(data.error);
       }
