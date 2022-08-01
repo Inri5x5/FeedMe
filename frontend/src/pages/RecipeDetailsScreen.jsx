@@ -162,11 +162,11 @@ export default function RecipeDetailsScreen () {
       <img src={Time} className={styles.duration}/> <span className={styles.duration_text}> {recipe.time_required} Mins </span> 
       <img src={Serving} className={styles.serving}/> <span className={styles.duration_text}> {recipe.servings} Serving </span> 
     </span>
-      {recipe.video === null && 
+      {(recipe.video === null || recipe.video === 'undefined') && 
       <div className={styles.foodpic_container}> 
         <img src={recipe.image} className={styles.foodPic} alt='foodImage'/>
       </div>}
-      {recipe.video !== null && 
+      {(recipe.video !== null && recipe.video !== 'undefined') && 
       <div className={styles.videofood_container}>
         <RecipeVideo url={`https://www.youtube.com/${recipe.video}`}></RecipeVideo>
       </div>}
