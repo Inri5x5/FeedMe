@@ -79,9 +79,11 @@ export default function RecipeDetailsScreen () {
         'Content-Type': 'application/json',
         'token': token,
       };
-      await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
+      const data = await APICall(requestBody, '/save_and_rate/save', 'POST', headers);
+      console.log(data)
       getDetails()
     } catch (err) {
+      console.log(err)
       alert(err);
     }
   }

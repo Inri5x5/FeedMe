@@ -13,7 +13,7 @@ const APICall = (requestBody, path, methodType, headersData) => {
         .then(response => {
           if (response.status === 200) {
             return response.json().then(resolve);
-          } else if (response.status === 400) {
+          } else if (response.status === 400 || response.status === 403) {
             return response.json().then(obj => {
               reject(obj.message);
             });

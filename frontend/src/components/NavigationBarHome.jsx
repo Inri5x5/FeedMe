@@ -38,7 +38,9 @@ const NavigationBarHome = (props) => {
   }
 
   React.useEffect(() => {
-    getProfile()
+    if(token){
+      getProfile()
+    }
   }, [])
 
   const checkUser = () => {

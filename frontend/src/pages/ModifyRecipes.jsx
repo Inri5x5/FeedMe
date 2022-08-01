@@ -20,6 +20,7 @@ export default function ModifyRecipes () {
   const [recipeVideos, setRecipeVideos] = React.useState([]);
   const [recipe, setRecipe] = React.useState({});
   const [selectedIngredients, setSelectedIngredients] = React.useState([{}]);
+  const [checkState, setCheckState] = React.useState('');
   const is_contributor = localStorage.getItem('is_contributor');
   const token = localStorage.getItem('token');
   
@@ -121,6 +122,7 @@ export default function ModifyRecipes () {
       setSelected(data.ingredients);
       setSteps(data.steps);
       setRecipeVideos(data.skill_videos);
+      setCheckState(data.public_state)
     } catch (err) {
       alert(err);
     }
@@ -214,9 +216,15 @@ export default function ModifyRecipes () {
   }
   
   const handleSave = async (state) => {
-    let pass_id = -1
-    const ingredient = recipe.ingredients
-    const step = recipe.steps
+    let pass_id;
+    if(Object.keys(id).length === 0 || (is_contributor === 'false' && checkState === 'public')) {
+      console.log(checkState)
+      pass_id = -1
+    } else {
+      pass_id = id.id
+    }
+    const ingredient = recipe.ingredients;
+    const step = recipe.steps;
     console.log(recipeVideos);
     try {
       const headers = {

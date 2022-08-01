@@ -242,7 +242,11 @@ def save():
 
     # Connect to db 
     conn = db_connection()
-
+    
+    if token == 'null':
+        print('heree')
+        raise AccessError("User not sign in")
+    
     # Validate token
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
