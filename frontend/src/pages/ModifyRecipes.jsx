@@ -217,6 +217,7 @@ export default function ModifyRecipes () {
     let pass_id = -1
     const ingredient = recipe.ingredients
     const step = recipe.steps
+    console.log(recipeVideos);
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -233,7 +234,7 @@ export default function ModifyRecipes () {
         ingredients: ingredient,
         tags: tags,
         steps: step,
-        video: '',
+        video: `${recipe.video}`,
         public_state: state
       }
       console.log(requestBody)
@@ -266,6 +267,7 @@ export default function ModifyRecipes () {
   }
   
   const handleSkillVideoChange = (object, index) => {
+    console.log(object);
     const list = [...recipeVideos];
     list[index] = object;
     setRecipeVideos(list)

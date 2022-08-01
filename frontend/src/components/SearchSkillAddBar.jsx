@@ -40,7 +40,7 @@ function SearchSkillAddBar(props) {
 		console.log(value);
 		setWordEntered(value.title);
 		setFilteredData([]);
-		const obj = {title: value.title, url: value.url, video_id: value.video_id}
+		const obj = {title: value.title, url: value.url, video_id: value.id}
 		props.updateVideoSkill(obj, props.index);
 	}
 	return (
