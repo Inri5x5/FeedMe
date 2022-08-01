@@ -1990,7 +1990,6 @@ insert_skillVideoInRecipe_query = """
 INSERT INTO 
     skillVideoInRecipe (recipe_id, skill_video_id)
 VALUES
-    (150, 195),
     (150, 43),
     (150, 285),
     (150, 204)
