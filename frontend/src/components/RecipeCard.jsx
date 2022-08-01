@@ -70,9 +70,9 @@ export default function RecipeCard(props) {
       </CardActionArea>
       <CardActions className={styles.card_action}>
         <div>
-          <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => handleLike()}>
+          {(props.isLikeable != false) && <IconButton aria-label="add to favorites" disabled={!localStorage.getItem('token')} onClick={() => handleLike()}>
             <FavoriteIcon style={{color: (props.object.is_liked) && 'red'}} />
-          </IconButton>
+          </IconButton>}
           <IconButton aria-label="edit" disabled={!localStorage.getItem('token')} onClick={() => navigate(`/recipe/edit/${props.object.recipe_id}`)} >
             <EditIcon></EditIcon>
           </IconButton>

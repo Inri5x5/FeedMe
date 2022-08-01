@@ -146,7 +146,7 @@ export default function UserProfileScreen2 () {
     let content = []
     for (let i = 0; i < myRecipes.length; i++) {
       content.push(
-        <RecipeCard object={myRecipes[i]} isEditable={false}  isDelete={true} handleAfterLike={fetchMyRecipes}/>
+        <RecipeCard object={myRecipes[i]} isEditable={false} isLikeable={false} isDelete={false} handleAfterLike={fetchMyRecipes}/>
       )
     }
     return content
