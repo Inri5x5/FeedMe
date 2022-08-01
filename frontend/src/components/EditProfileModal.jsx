@@ -21,8 +21,6 @@ export default function EditProfileModal(props) {
   const [errorEmail, setErrorEmail] = React.useState(false)
   const [errorEmailText, setErrorEmailText] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [errorPassword, setErrorPassword] = React.useState(false)
-  const [errorPasswordText, setErrorPasswordText] = React.useState('')
 
   const getProfile = async() => {
     try {
@@ -60,20 +58,12 @@ export default function EditProfileModal(props) {
     setErrorEmailText("")
   };
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-    setErrorPassword(false)
-    setErrorPasswordText("")
-  };
-
   const handleClose = () => {
     props.setOpen(false);
     getProfile();
     setPassword("")
     setErrorName(false)
     setErrorNameText("")
-    setErrorPassword(false)
-    setErrorPasswordText("")
     setErrorEmail(false)
     setErrorEmailText("")
   };
@@ -89,11 +79,6 @@ export default function EditProfileModal(props) {
       valid = false;
       setErrorEmail(true)
       setErrorEmailText("Please enter email")
-    }
-    if (password === '') {
-      valid = false;
-      setErrorPassword(true)
-      setErrorPasswordText("Please enter a password")
     }
     if (valid) {
       updateDetails()
@@ -111,7 +96,6 @@ export default function EditProfileModal(props) {
       const body = {
         'email': email,
         'username': username,
-        'password': password,
         'profile_pic': profilePic,
       }
       await APICall(body, '/dash/update_details', 'PUT', headers);
@@ -177,18 +161,6 @@ export default function EditProfileModal(props) {
               error={errorEmail}
               helperText={errorEmailText}
               value={email}
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Password"
-              type="text"
-              fullWidth
-              variant="standard"
-              onChange={handlePasswordChange}
-              error={errorPassword}
-              helperText={errorPasswordText}
-              value={password}
             />
           </div>
         </DialogContent>

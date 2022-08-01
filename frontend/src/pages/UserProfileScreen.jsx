@@ -234,15 +234,13 @@ export default function UserProfileScreen2 () {
       return (
         <div style={{width: '100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
           <div style={{
-            position: 'relative',
+            width: '95%',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-evenly',
             flexWrap: 'wrap',
-            alignContent: 'flex-start',
+            justifyContent: 'space-evenly',
+            alignContent: 'space-between',
             marginTop: '20px',
-            marginLeft: '20px',
-            width: '90%',
           }}>
             {content}
           </div>
