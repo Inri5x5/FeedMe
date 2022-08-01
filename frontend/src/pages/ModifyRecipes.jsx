@@ -58,6 +58,7 @@ export default function ModifyRecipes () {
 			alert(err);
 		}
 	}
+	
 	const getAllIngredients = async() => {
 		let data = []; let temp = [];
 		try {
@@ -299,8 +300,8 @@ export default function ModifyRecipes () {
         <label for='dishPic'> Upload Image: </label>
         <input name='image' type="file" id="dishPic" accept=".png,.jpeg,.jpg" onChange={(e) => handleChanges(e)} />
         <img src={recipe.image} className={styles.foodPic}/>
-        <label for='video'>Duration: </label>
-        <input name='time_required' id='dish_video' type='text' value={recipe.video} onChange={(e) => handleChanges(e)}/>
+        <label for='video'>Video: </label>
+        <input name='video' id='dish_video' type='text' value={recipe.video} onChange={(e) => handleChanges(e)}/>
         <label for='duration'>Duration: </label>
         <input name='time_required' id='duration' type='text' value={recipe.time_required} onChange={(e) => handleChanges(e)}/>
         <label for='serving'>Serving: </label>
