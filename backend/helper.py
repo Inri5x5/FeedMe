@@ -253,18 +253,25 @@ def get_recipe_details(conn, recipe_id, user_details):
     # Get author and public state
     if (user_details["is_contributor"]):
         c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
-    else:
-        c.execute("SELECT ruser_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
 
     info = c.fetchone()
-    if info is not None:
-        author_id = info[0]
+    if (info is None):
+        if (user_details["is_contributor"]):
+            c.execute("SELECT contributor_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
+        else:
+            c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
+        info = c.fetchone()
+    else:
+        
+    author_id = info[0]
+
         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
         author_name = c.fetchone()[0]
         ret.update({'author' : author_name, 'public_state' : 'public'})
     else:
         c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
-        author_id = c.fetchone()[0]
+        author_id = info[0]
+        # author_id = c.fetchone()[0]
         if (user_details["is_contributor"] == False):
             c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
             author_name = c.fetchone()[0]
