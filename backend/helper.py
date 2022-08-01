@@ -261,9 +261,12 @@ def get_recipe_details(conn, recipe_id, user_details):
     else:
         c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
         author_id = c.fetchone()[0]
-        c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
-        print(author_id)
-        author_name = c.fetchone()[0]
+        if (user_details["is_contributor"] == False):
+            c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
+            author_name = c.fetchone()[0]
+        else:
+            c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
+            author_name = c.fetchone()[0]
         ret.update({'author' : author_name, 'public_state' : 'private'})
 
     # Get ingredients
