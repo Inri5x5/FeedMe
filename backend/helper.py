@@ -251,7 +251,11 @@ def get_recipe_details(conn, recipe_id, user_details):
     ret.update({'tags' : tags})
 
     # Get author and public state
-    c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+    if (user_details["is_contributor"]):
+        c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+    else:
+        c.execute("SELECT ruser_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+
     info = c.fetchone()
     if info is not None:
         author_id = info[0]
