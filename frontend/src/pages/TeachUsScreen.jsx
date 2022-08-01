@@ -58,7 +58,7 @@ export default function TeachUsScreen () {
 
   React.useEffect(() => {
     getSkillVideos()
-    checkIfContributor()
+    if (localStorage.getItem('token')) checkIfContributor()
   },[])
 
   const [searchedTitle, setSearchedTitle] = React.useState("")
