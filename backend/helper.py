@@ -251,34 +251,48 @@ def get_recipe_details(conn, recipe_id, user_details):
     ret.update({'tags' : tags})
 
     # Get author and public state
-    if (user_details["is_contributor"]):
-        c.execute("SELECT contributor_id FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
-
+    c.execute("SELECT * FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
     info = c.fetchone()
-    if (info is None):
-        if (user_details["is_contributor"]):
-            c.execute("SELECT contributor_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
-        else:
-            c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
-        info = c.fetchone()
-    # else:
+    ruser_id = info[0]
+    contributor_id = info[1]
+    if ruser_id is None: # contributor wrote recipe
+        c.execute("SELECT username FROM Contributors WHERE id = ?", [contributor_id])
+    else: # ruser wrote recipe
+        c.execute("SELECT username FROM Rusers WHERE id = ?", [ruser_id])
+
+    # if (info is None): # the recipe is either a contributor draft or user draft
+    #     if (user_details["is_contributor"]): # contributor draft
+    #         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
+    #     else:
+    #         c.execute("SELECT username FROM Rusers WHERE id = ?", [author_id])
+    # else: # public recipe, which must've been written by a contributor
+    #     c.execute("SELECT username FROM Contributors WHERE id = ?", [info[]])
+
+    author_name = c.fetchone()[0]
+
+    c.execute("SELECT * FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+    is_public = c.fetchone()
+    if is_public is None:
+        public_state = 'private'
+    else:
+        public_state = 'public'
 
     # author_id = info[0]
 
-        c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
-        author_name = c.fetchone()[0]
-        ret.update({'author' : author_name, 'public_state' : 'public'})
-    else:
-        c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
-        author_id = info[0]
-        # author_id = c.fetchone()[0]
-        if (user_details["is_contributor"] == False):
-            c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
-            author_name = c.fetchone()[0]
-        else:
-            c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
-            author_name = c.fetchone()[0]
-        ret.update({'author' : author_name, 'public_state' : 'private'})
+    #   c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
+    #    author_name = c.fetchone()[0]
+    ret.update({'author' : author_name, 'public_state' : public_state})
+    # else:
+    #     c.execute("SELECT ruser_id FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
+    #     author_id = info[0]
+    #     # author_id = c.fetchone()[0]
+    #     if (user_details["is_contributor"] == False):
+    #         c.execute("SELECT username FROM RUsers WHERE id = ?", [author_id])
+    #         author_name = c.fetchone()[0]
+    #     else:
+    #         c.execute("SELECT username FROM Contributors WHERE id = ?", [author_id])
+    #         author_name = c.fetchone()[0]
+    #     ret.update({'author' : author_name, 'public_state' : 'private'})
 
     # Get ingredients
     ingredients = []

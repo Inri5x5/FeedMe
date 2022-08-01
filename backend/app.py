@@ -399,11 +399,11 @@ def dash_my_recipes():
     if not validate_token(conn, token):
         raise AccessError("Invalid token")
     
-    # Gey user_id
+    # Get user_id
     user = decode_token(conn, token)
     user_id = user["user_id"]
 
-    # Get all Personal Recipes. For contributor this includes their drafts
+    # Get all Personal Recipes. For contributor this includes their drafts and public recipes. For ruser it is just drafts.
     recipes = []
     if user["is_contributor"]:  # Contributor
         c.execute("SELECT recipe_id FROM personalRecipes WHERE contributor_id = ?", [user_id])
