@@ -179,7 +179,7 @@ VALUES
     (160, 9, "How to Select Veal", "watch?v=cq4v-pwy91w"),
     (161, 9, "How to Use a Flavour Injector", "watch?v=dRQuW4eizM0"),
     (162, 9, "How to Make Oven Toasted Almonds", "watch?v=eWMdUSudgrA"),
-    (163, 9, "How to Lice Watermelons", "watch?v=gCsgTNillW4"),
+    (163, 9, "How to Slice Watermelons", "watch?v=gCsgTNillW4"),
     (164, 9, "How to Slice Green Cabbage", "watch?v=iTXx6NLKlTY"),
     (165, 9, "How to Fan Strawberries", "watch?v=mma4wgX22wg"),
     (166, 9, "How to Clean Brussel Sprouts", "watch?v=q3dvqyHSAEA"),
