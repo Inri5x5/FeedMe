@@ -149,7 +149,7 @@ export default function RecipeDetailsScreen () {
   React.useEffect(() => { 
     let isFetch = true;
     getDetails();
-    checkIfContributor();
+    if (localStorage.getItem('token')) checkIfContributor();
     getSkillVideos();
     return () => isFetch = false;
   }, [id])
