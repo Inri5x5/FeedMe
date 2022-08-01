@@ -1278,491 +1278,511 @@ conn.commit()
 
 
 
-# # Beef tacos ID=90
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (90, 796, "1 onion"),
-#     (90, 809, "1 red pepper and 1 green pepper"),
-#     (90, 864, "olive oil"),
-#     (90, 522, "2 cloves of garlic"),
-#     (90, 890, "1 pinch of paprika"),
-#     (90, 773, "1\u00bd teaspoons cumin"),
-#     (90, 880, "500 g quality minced beef"),
-#     (90, 898, "250 ml organic beef stock"),
-#     (90, 934, "12 corn taco shells"),
-#     (90, 811, "2 ripe tomatoes"),
-#     (90, 870, "1 spring onion"),
-#     (90, 517, "3 sprigs of fresh coriander"),
-#     (90, 442, "1 lime"),
-#     (90, 367, "2 ripe avocados"),
-#     (90, 885, "2 tablespoons cr\u00e8me fra\u00eeche")
+# Beef tacos ID=90
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (90, 796, "1 onion"),
+    (90, 809, "1 red pepper and 1 green pepper"),
+    (90, 864, "olive oil"),
+    (90, 522, "2 cloves of garlic"),
+    (90, 890, "1 pinch of paprika"),
+    (90, 773, "1\u00bd teaspoons cumin"),
+    (90, 880, "500 g quality minced beef"),
+    (90, 898, "250 ml organic beef stock"),
+    (90, 934, "12 corn taco shells"),
+    (90, 811, "2 ripe tomatoes"),
+    (90, 870, "1 spring onion"),
+    (90, 517, "3 sprigs of fresh coriander"),
+    (90, 442, "1 lime"),
+    (90, 367, "2 ripe avocados"),
+    (90, 885, "2 tablespoons cr\u00e8me fra\u00eeche")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (90, 9),
-#     (90, 13),
-#     (90, 15),
-#     (90, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (90, 9),
+    (90, 7),
+    (90, 13),
+    (90, 15),
+    (90, 17),
+    (90, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (90, ),
-#     (90, ),
-#     (90, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
-
-
-# # Light & fluffy rice ID=91
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (91, 131, "350 g basmati rice")
-
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
-
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (91, 9),
-#     (91, 13),
-#     (91, 15),
-#     (91, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
-
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (91, ),
-#     (91, ),
-#     (91, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (90, 91),
+    (90, 300),
+    (90, 336),
+    (90, 339)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
+# Light & fluffy rice ID=91
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (91, 131, "350 g basmati rice")
 
-# # Lemon rice ID=92
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (92, 131, "455 g basmati rice"),
-#     (92, 17, "5 tablespoons vegetable oil"),
-#     (92, 903, "2 tablespoons mustard seeds"),
-#     (92, 565, "2 teaspoons urad dhal (small dried split peas)"),
-#     (92, 534, "1 handful curry leaves"),
-#     (92, 441, "2 lemons rind and juice of"),
-#     (92, 517, "1 bunch fresh coriander chopped"),
-#     (92, 3, "sea salt"),
-#     (92, 780, "freshly ground black pepper)"
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (91, 8),
+    (91, 11),
+    (91, 12),
+    (91, 13),
+    (91, 14),
+    (91, 15),
+    (91, 24)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (92, 9),
-#     (92, 13),
-#     (92, 15),
-#     (92, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
-
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (92, ),
-#     (92, ),
-#     (92, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (91, 126)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # My Singapore-style fried rice ID=93
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (93, 131, "150 g brown or basmati rice"),
-#     (93, 818, "320 g crunchy veg such as asparagus, baby corn, broccoli, leek, Chinese, red or white cabbage, pak choi, carrot"),
-#     (93, 522, "1 clove of garlic"),
-#     (93, 774, "2 cm piece of ginger"),
-#     (93, 591, "1 large free-range egg"),
-#     (93, 864, "olive oil"),
-#     (93, 874, "1 rasher of smoked streaky bacon"),
-#     (93, 737, "4 fresh or frozen raw peeled prawns"),
-#     (93, 665, "1 tablespoon low-salt soy sauce"),
-#     (93, 936, "1 teaspoon mixed seeds"),
-#     (93, 937, "1 teaspoon chilli jam")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+# Lemon rice ID=92
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (92, 131, "455 g basmati rice"),
+    (92, 17, "5 tablespoons vegetable oil"),
+    (92, 903, "2 tablespoons mustard seeds"),
+    (92, 565, "2 teaspoons urad dhal (small dried split peas)"),
+    (92, 534, "1 handful curry leaves"),
+    (92, 441, "2 lemons rind and juice of"),
+    (92, 517, "1 bunch fresh coriander chopped"),
+    (92, 3, "sea salt"),
+    (92, 780, "freshly ground black pepper")
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (93, 9),
-#     (93, 13),
-#     (93, 15),
-#     (93, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (93, ),
-#     (93, ),
-#     (93, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (92, 2),
+    (92, 8),
+    (91, 11),
+    (91, 12),
+    (91, 13),
+    (91, 14),
+    (92, 24)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-
-# # Singapore-Style Chilli Tofu ID=94
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (94, 653, "40 g cashew nuts"),
-#     (94, 17, "neutral oil for frying"),
-#     (94, 721, "200 g firm tofu dried with kitchen paper and cut into bite-sized cubes"),
-#     (94, 796, "1 onion finely chopped"),
-#     (94, 774, "1 tablespoon grated ginger (approx. 3cm)"),
-#     (94, 522, "3 cloves of garlic crushed"),
-#     (94, 869, "2 red chillies finely chopped (use fewer chillies or deseed if you prefer a milder heat)"),
-#     (94, 811, "1 medium tomato diced"),
-#     (94, 887, "200 ml hot veg or chicken stock, or boiling water"),
-#     (94, 798, "\u00bd a medium head of broccoli or 150g tenderstem broccoli, cut into small florets"),
-#     (94, 591, "1 small egg lightly beaten"),
-#     (94, 16, "4 tablespoons tomato ketchup"),
-#     (94, 938, "2 tablespoons sweet chilli sauce"),
-#     (94, 665, "1 tablespoon light soy sauce"),
-#     (94, 129, "rice")
-
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
-
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (94, 9),
-#     (94, 13),
-#     (94, 15),
-#     (94, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
-
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (94, ),
-#     (94, ),
-#     (94, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (92, 192)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # Katsu-style tofu rice bowls ID=95
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (95, 721, "450 g firm tofu"),
-#     (95, , "\u00bd teaspoon ground turmeric"),
-#     (95, , "2 tablespoons white miso"),
-#     (95, , "rice vinegar"),
-#     (95, , "mirin"),
-#     (95, 147, "300 g short grain brown rice"),
-#     (95, , "60 g breadcrumbs"),
-#     (95, , "40 g sesame seeds"),
-#     (95, 864, "olive oil"),
-#     (95, , "\u00bd teaspoon curry powder"),
-#     (95, , "2 tablespoons mango chutney"),
-#     (95, , "\u00bd a pineapple"),
-#     (95, 869, "2 fresh red chillies"),
-#     (95, 870, "4 spring onions"),
-#     (95, , "400 g mixed crunchy veg such as carrots, sugar snaps, cucumber, cabbage"),
-#     (95, 517, "\u00bd a bunch of fresh coriander (15g)"),
-#     (95, , "hot chilli sauce to serve")
+# My Singapore-style fried rice ID=93
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (93, 131, "150 g brown or basmati rice"),
+    (93, 818, "320 g crunchy veg such as asparagus, baby corn, broccoli, leek, Chinese, red or white cabbage, pak choi, carrot"),
+    (93, 522, "1 clove of garlic"),
+    (93, 774, "2 cm piece of ginger"),
+    (93, 591, "1 large free-range egg"),
+    (93, 864, "olive oil"),
+    (93, 874, "1 rasher of smoked streaky bacon"),
+    (93, 737, "4 fresh or frozen raw peeled prawns"),
+    (93, 665, "1 tablespoon low-salt soy sauce"),
+    (93, 936, "1 teaspoon mixed seeds"),
+    (93, 937, "1 teaspoon chilli jam")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (95, 9),
-#     (95, 13),
-#     (95, 15),
-#     (95, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (93, 9),
+    (93, 14),
+    (93, 17),
+    (93, 18),
+    (93, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (95, ),
-#     (95, ),
-#     (95, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (93, 43),
+    (93, 44),
+    (93, 174),
+    (93, 116),
+    (93, 222)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # Stephen Mangan's Sri Lankan fish curry ID=96
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (96, , "35 g goraka or 2 tablespoons tamarind paste"),
-#     (96, 522, "2 cloves of garlic"),
-#     (96, 774, "2 cm piece of ginger"),
-#     (96, , "\u00bd a pandan leaf"),
-#     (96, , "1 large pinch of ground cinnamon"),
-#     (96, , "\u00bd a teaspoon ground black pepper"),
-#     (96, 534, "30 fresh curry leaves"),
-#     (96, , "300 g yellowfin tuna from sustainable sources"),
-#     (96, , "2 banana leaves"),
-#     (96, , "dried red chilli flakes optional"),
-#     (96, 811, "2 ripe tomatoes"),
-#     (96, 786, "1 fresh green chilli"),
-#     (96, , "\u00bd a fresh coconut"),
-#     (96, 442, "2 limes"),
-#     (96, 796, "\u00bd an onion"),
-#     (96, , "1 small knob of unsalted butter"),
-#     (96, , "2 pandan leaves"),
-#     (96, , "1 small pinch of ground turmeric"),
-#     (96, 131, "1 builder\u2019s mug basmati rice (150g)")
+# Singapore-Style Chilli Tofu ID=94
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (94, 653, "40 g cashew nuts"),
+    (94, 17, "neutral oil for frying"),
+    (94, 721, "200 g firm tofu dried with kitchen paper and cut into bite-sized cubes"),
+    (94, 796, "1 onion finely chopped"),
+    (94, 774, "1 tablespoon grated ginger (approx. 3cm)"),
+    (94, 522, "3 cloves of garlic crushed"),
+    (94, 869, "2 red chillies finely chopped (use fewer chillies or deseed if you prefer a milder heat)"),
+    (94, 811, "1 medium tomato diced"),
+    (94, 887, "200 ml hot veg or chicken stock, or boiling water"),
+    (94, 798, "\u00bd a medium head of broccoli or 150g tenderstem broccoli, cut into small florets"),
+    (94, 591, "1 small egg lightly beaten"),
+    (94, 16, "4 tablespoons tomato ketchup"),
+    (94, 938, "2 tablespoons sweet chilli sauce"),
+    (94, 665, "1 tablespoon light soy sauce"),
+    (94, 129, "rice")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (96, 9),
-#     (96, 13),
-#     (96, 15),
-#     (96, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (94, 9),
+    (94, 17),
+    (94, 18),
+    (94, 21)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (96, ),
-#     (96, ),
-#     (96, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (94, 180),
+    (94, 130)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # Jodie Whittaker's massaman curry ID=97
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (97, , "1 handful of unsalted peanuts (30g)"),
-#     (97, , "500 g beef chuck"),
-#     (97, , "1 x 400 ml tin of reduced-fat coconut milk"),
-#     (97, 796, "1 white onion"),
-#     (97, , "1 white potato (250g)"),
-#     (97, , "1 sweet potato (250g)"),
-#     (97, , "1 tablespoon fish sauce plus extra to serve"),
-#     (97, , "2 teaspoons palm sugar"),
-#     (97, 935, "450 g jasmine rice"),
-#     (97, 17, "vegetable oil"),
-#     (97, 869, "6 sun-dried chillies and 1 fresh bird's-eye chilli"),
-#     (97, 861, "1 tablespoon coriander seeds"),
-#     (97, , "5 cloves"),
-#     (97, , "1 tablespoon fennel seeds"),
-#     (97, , "1 tablespoon white peppercorns"),
-#     (97, , "100 ml coconut cream"),
-#     (97, 442, "3 limes"),
-#     (97, , "5 cm piece of galangal"),
-#     (97, 211, "4 sticks of lemongrass"),
-#     (97, 522, "21 cloves of garlic"),
-#     (97, 517, "5 pieces of coriander root or \u00bd a bunch of fresh coriander stalks (15g)"),
-#     (97, , "10 small shallots"),
-#     (97, , "\u00bd tablespoon shrimp paste"),
-#     (97, , "200 g Thai string beans (yard-long beans)"),
-#     (97, , "300 g bok choi"),
-#     (97, , "2 carrots"),
-#     (97, , "1 cucumber"),
-#     (97, , "200 g beansprouts"),
-#     (97, , "\u00bd a bunch of fresh Thai basil (15g)"),
-#     (97, , "\u00bd a bunch of fresh mint (15g)"),
-#     (97, , "2 cm piece of galangal"),
-#     (97, , "2 tablespoon fish sauce"),
-#     (97, , "2 tablespoons rice wine vinegar"),
-#     (97, , "1 teaspoon palm sugar")
+# Katsu-style tofu rice bowls ID=95
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (95, 721, "450 g firm tofu"),
+    (95, 782, "\u00bd teaspoon ground turmeric"),
+    (95, 10, "2 tablespoons white miso"),
+    (95, 939, "rice vinegar"),
+    (95, 940, "mirin"),
+    (95, 147, "300 g short grain brown rice"),
+    (95, 29, "60 g breadcrumbs"),
+    (95, 650, "40 g sesame seeds"),
+    (95, 864, "olive oil"),
+    (95, 941, "\u00bd teaspoon curry powder"),
+    (95, 392, "2 tablespoons mango chutney"),
+    (95, 408, "\u00bd a pineapple"),
+    (95, 869, "2 fresh red chillies"),
+    (95, 870, "4 spring onions"),
+    (95, 815, "400 g mixed crunchy veg such as carrots, sugar snaps, cucumber, cabbage"),
+    (95, 517, "\u00bd a bunch of fresh coriander (15g)"),
+    (95, 916, "hot chilli sauce to serve")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (97, 9),
-#     (97, 13),
-#     (97, 15),
-#     (97, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (95, 3),
+    (95, 9),
+    (95, 11),
+    (95, 12),
+    (95, 14),
+    (95, 17),
+    (95, 18),
+    (95, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (97, ),
-#     (97, ),
-#     (97, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (95, 77),
+    (95, 79),
+    (95, 86)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # Tofu fried rice ID=98
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (98, 870, "6 spring onions"),
-#     (98, 131, "1 x 250 g sachet of cooked brown basmati rice"),
-#     (98, 937, "2 heaped teaspoons chilli jam"),
-#     (98, 591, "2 large free-range eggs"),
-#     (98, 721, "150 g firm silken tofu")
+# Stephen Mangan's Sri Lankan fish curry ID=96
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (96, 420, "35 g goraka or 2 tablespoons tamarind paste"),
+    (96, 522, "2 cloves of garlic"),
+    (96, 774, "2 cm piece of ginger"),
+    (96, 942, "3 pandan leaves"),
+    (96, 771, "1 large pinch of ground cinnamon"),
+    (96, 780, "\u00bd a teaspoon ground black pepper"),
+    (96, 534, "30 fresh curry leaves"),
+    (96, 316, "300 g yellowfin tuna from sustainable sources"),
+    (96, 943, "2 banana leaves"),
+    (96, 863, "dried red chilli flakes optional"),
+    (96, 811, "2 ripe tomatoes"),
+    (96, 786, "1 fresh green chilli"),
+    (96, 374, "\u00bd a fresh coconut"),
+    (96, 442, "2 limes"),
+    (96, 796, "\u00bd an onion"),
+    (96, 148, "1 small knob of unsalted butter"),
+    (96, 782, "1 small pinch of ground turmeric"),
+    (96, 131, "1 builder\u2019s mug basmati rice (150g)")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (98, 9),
-#     (98, 13),
-#     (98, 15),
-#     (98, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (96, 9),
+    (96, 13),
+    (96, 17),
+    (96, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (98, ),
-#     (98, ),
-#     (98, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (96, 292),
+    (96, 71),
+    (96, 84),
+    (96, 300),
+    (96, 339)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
-# # Mexican-inspired bowl ID=99
-# insert_into_ingredientInRecipe_query = """
-# INSERT INTO 
-#     ingredientInRecipe (recipe_id, ingredient_id, description)
-# VALUES
-#     (99, 147, "320 g brown rice"),
-#     (99, , "1 corn on the cob"),
-#     (99, , "1 red onion"),
-#     (99, 522, "2 cloves of garlic"),
-#     (99, 786, "1 fresh jalape\u00f1o or green chilli"),
-#     (99, 809, "1 small red pepper and 1 small yellow pepper"),
-#     (99, 517, "1 bunch of fresh coriander (30g)"),
-#     (99, 864, "olive oil"),
-#     (99, 773, "1 teaspoon ground cumin"),
-#     (99, 868, "1 teaspoon ground coriander"),
-#     (99, , "1 stick of cinnamon"),
-#     (99, 811, "1 x 400 g tin of quality plum tomatoes"),
-#     (99, 367, "1 ripe avocado"),
-#     (99, 442, "2 limes"),
-#     (99, 865, "extra virgin olive oil"),
-#     (99, , "1 x 400 g tin of black beans"),
-#     (99, 890, "\u00bd teaspoon smoked paprika"),
-#     (99, , "natural yoghurt"),
-#     (99, , "hot chilli sauce"),
-#     (99, , "6 wholemeal tortillas")
+# Jodie Whittaker's massaman curry ID=97
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (97, 643, "1 handful of unsalted peanuts (30g)"),
+    (97, 592, "500 g beef chuck"),
+    (97, 77, "1 x 400 ml tin of reduced-fat coconut milk"),
+    (97, 796, "1 white onion"),
+    (97, 820, "1 white potato (250g)"),
+    (97, 817, "1 sweet potato (250g)"),
+    (97, 944, "3 tablespoon fish sauce plus extra to serve"),
+    (97, 4, "3 teaspoons palm sugar"),
+    (97, 935, "450 g jasmine rice"),
+    (97, 17, "vegetable oil"),
+    (97, 869, "6 sun-dried chillies and 1 fresh bird's-eye chilli"),
+    (97, 861, "1 tablespoon coriander seeds"),
+    (97, 772, "5 cloves"),
+    (97, 882, "1 tablespoon fennel seeds"),
+    (97, 788, "1 tablespoon white peppercorns"),
+    (97, 928, "100 ml coconut cream"),
+    (97, 442, "3 limes"),
+    (97, 211, "4 sticks of lemongrass"),
+    (97, 522, "21 cloves of garlic"),
+    (97, 517, "5 pieces of coriander root or \u00bd a bunch of fresh coriander stalks (15g)"),
+    (97, 797, "10 small shallots"),
+    (97, 912, "\u00bd tablespoon shrimp paste"),
+    (97, 945, "200 g Thai string beans (yard-long beans)"),
+    (97, 946, "300 g bok choi"),
+    (97, 815, "2 carrots"),
+    (97, 813, "1 cucumber"),
+    (97, 947, "200 g beansprouts"),
+    (97, 513, "\u00bd a bunch of fresh Thai basil (15g)"),
+    (97, 525, "\u00bd a bunch of fresh mint (15g)"),
+    (97, 939, "2 tablespoons rice wine vinegar")
 
-# """
-# cursor = cursor.execute(insert_into_ingredientInRecipe_query)
-# conn.commit()
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
 
-# insert_into_tagInRecipe_query = """
-# INSERT INTO 
-#     tagInRecipe (recipe_id, tag_id)
-# VALUES
-#     (99, 9),
-#     (99, 13),
-#     (99, 15),
-#     (99, 21)
-# """
-# cursor = cursor.execute(insert_into_tagInRecipe_query)
-# conn.commit()
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (97, 9),
+    (97, 14),
+    (97, 17),
+    (97, 18),
+    (97, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
 
-# insert_skillVideoInRecipe_query = """
-# INSERT INTO 
-#     skillVideoInRecipe (recipe_id, skill_video_id)
-# VALUES
-#     (99, ),
-#     (99, ),
-#     (99, )
-# """
-# cursor.execute(insert_skillVideoInRecipe_query)
-# conn.commit()
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (97, 74),
+    (97, 339),
+    (97, 10),
+    (97, 128),
+    (97, 260),
+    (97, 272)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+
+# Tofu fried rice ID=98
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (98, 870, "6 spring onions"),
+    (98, 131, "1 x 250 g sachet of cooked brown basmati rice"),
+    (98, 937, "2 heaped teaspoons chilli jam"),
+    (98, 591, "2 large free-range eggs"),
+    (98, 721, "150 g firm silken tofu")
+
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (98, 0),
+    (98, 9),
+    (98, 11),
+    (98, 13),
+    (98, 14),
+    (98, 15),
+    (98, 17),
+    (98, 18),
+    (98, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (98, 43),
+    (98, 174)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
+
+
+# Mexican-inspired bowl ID=99
+insert_into_ingredientInRecipe_query = """
+INSERT INTO 
+    ingredientInRecipe (recipe_id, ingredient_id, description)
+VALUES
+    (99, 147, "320 g brown rice"),
+    (99, 585, "1 corn on the cob"),
+    (99, 830, "1 red onion"),
+    (99, 522, "2 cloves of garlic"),
+    (99, 786, "1 fresh jalape\u00f1o or green chilli"),
+    (99, 809, "1 small red pepper and 1 small yellow pepper"),
+    (99, 517, "1 bunch of fresh coriander (30g)"),
+    (99, 864, "olive oil"),
+    (99, 773, "1 teaspoon ground cumin"),
+    (99, 868, "1 teaspoon ground coriander"),
+    (99, 771, "1 stick of cinnamon"),
+    (99, 811, "1 x 400 g tin of quality plum tomatoes"),
+    (99, 367, "1 ripe avocado"),
+    (99, 442, "2 limes"),
+    (99, 865, "extra virgin olive oil"),
+    (99, 948, "1 x 400 g tin of black beans"),
+    (99, 890, "\u00bd teaspoon smoked paprika"),
+    (99, 180, "natural yoghurt"),
+    (99, 916, "hot chilli sauce"),
+    (99, 40, "6 wholemeal tortillas")
+
+"""
+cursor = cursor.execute(insert_into_ingredientInRecipe_query)
+conn.commit()
+
+insert_into_tagInRecipe_query = """
+INSERT INTO 
+    tagInRecipe (recipe_id, tag_id)
+VALUES
+    (99, 7),
+    (99, 9),
+    (99, 11),
+    (99, 15),
+    (99, 17),
+    (99, 20)
+"""
+cursor = cursor.execute(insert_into_tagInRecipe_query)
+conn.commit()
+
+insert_skillVideoInRecipe_query = """
+INSERT INTO 
+    skillVideoInRecipe (recipe_id, skill_video_id)
+VALUES
+    (99, 332),
+    (99, 11),
+    (99, 300),
+    (99, 336),
+    (99, 221)
+"""
+cursor.execute(insert_skillVideoInRecipe_query)
+conn.commit()
 
 
 

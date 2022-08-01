@@ -935,5 +935,17 @@
  {"ingredient_id": 935, "ingredient_category_id": 4, "name": "Jasmine Rice"},
  {"ingredient_id": 936, "ingredient_category_id": 15, "name": "Mixed Seeds"},
  {"ingredient_id": 937, "ingredient_category_id": 1, "name": "Chilli Jam"},
- {"ingredient_id": 938, "ingredient_category_id": 1, "name": "Sweet Chilli Sauce"}
+ {"ingredient_id": 938, "ingredient_category_id": 1, "name": "Sweet Chilli Sauce"},
+ {"ingredient_id": 939, "ingredient_category_id": 16, "name": "Rice Vinegar"},
+ {"ingredient_id": 940, "ingredient_category_id": 3, "name": "Mirin"},
+ {"ingredient_id": 941, "ingredient_category_id": 18, "name": "Curry Powder"},
+ {"ingredient_id": 942, "ingredient_category_id": 11, "name": "Pandan Leaf"},
+ {"ingredient_id": 943, "ingredient_category_id": 16, "name": "Banana Leaf"},
+ {"ingredient_id": 944, "ingredient_category_id": 1, "name": "Fish Sauce"},
+ {"ingredient_id": 945, "ingredient_category_id": 12, "name": "String Beans"},
+ {"ingredient_id": 946, "ingredient_category_id": 19, "name": "Bok Choy"},
+ {"ingredient_id": 947, "ingredient_category_id": 12, "name": "Bean Sprouts"},
+ {"ingredient_id": 948, "ingredient_category_id": 12, "name": "Black Bean"}
+
+
 ]

@@ -34,27 +34,21 @@ conn.commit()
 # insert into personalRecipes
 delete_query = """DELETE FROM personalRecipes WHERE 1"""
 cursor.execute(delete_query)
-# insert_into_personalRecipes_query = """
-# INSERT INTO 
-#     personalRecipes (ruser_id, contributor_id, recipe_id)
-# VALUES
 
-# """
-# """
-# INSERT INTO 
-#     PersonalRecipes (recipe_id, contributor_id)
-# VALUES
-#     (?, 0)
-# """
-# i = 0
-# for i in [0, 153]:
-#     if i < 90 or i > 110:
-#         cursor = cursor.execute(insert_into_PublicRecipes_query, (i))
-#         conn.commit()
-
-
-# cursor = cursor.execute(insert_into_personalRecipes_query)
-# conn.commit()
+insert_into_personalRecipes_query = """
+INSERT INTO 
+    personalRecipes (ruser_id, contributor_id, recipe_id)
+VALUES
+    (?, ?, ?)
+"""
+i = 0
+for i in range(100, 110):
+    if i < 105:
+        cursor = cursor.execute(insert_into_personalRecipes_query, (None, 0, i))
+        conn.commit()
+    else:
+        cursor = cursor.execute(insert_into_personalRecipes_query, (0, None, i))
+        conn.commit()
 
 # insert into publicRecipes
 delete_query = """DELETE FROM PublicRecipes WHERE 1"""
@@ -67,25 +61,9 @@ VALUES
 """
 i = 0
 for i in range(0, 152):
-    if i < 90 or i > 110:
+    if i < 100 or i > 110:
         cursor = cursor.execute(insert_into_PublicRecipes_query, (i, 0))
         conn.commit()
-
-
-# insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)"""
-# for recipe in recipe_data:
-#     cursor.execute('SELECT max(id) from recipes')
-#     new_id = cursor.fetchone()
-#     #print("THE ID IS HERE!!! " + new_id[0])
-#     if new_id[0] is None:
-#         new_id = 0
-#     else:
-#         new_id = new_id[0] + 1
-#     cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], recipe['video'], recipe['time'], recipe['servings']))
-#     conn.commit()
-
-# cursor = cursor.execute(insert_into_PublicRecipes_query)
-# conn.commit()
 
 # insert into recipeRatings
 delete_query = """DELETE FROM recipeRatings WHERE 1"""

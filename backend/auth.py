@@ -17,7 +17,7 @@ def register_helper(email, password, username):
     ruser_id = get_new_user_id(conn)
     add_new_user(conn, ruser_id, email, password, username)
 
-    token = generate_token(email)
+    token = generate_token(email, False)
     add_token(conn, token, ruser_id, False)
 
     return token
