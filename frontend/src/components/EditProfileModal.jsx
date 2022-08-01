@@ -74,11 +74,23 @@ export default function EditProfileModal(props) {
       valid = false;
       setErrorName(true)
       setErrorNameText("Please enter a username")
+    } else if (username.length < 5) {
+      valid = false;
+      setErrorName(true)
+      setErrorNameText("Username should be 5 or more characters long")
     }
+
     if (email === '') {
       valid = false;
       setErrorEmail(true)
       setErrorEmailText("Please enter email")
+    } else {
+      const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if(!email.match(mailformat)) {
+        valid = false;
+        setErrorEmail(true)
+        setErrorEmailText("Please enter a valid email")
+      }
     }
     if (valid) {
       updateDetails()
