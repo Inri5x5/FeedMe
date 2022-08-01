@@ -93,16 +93,18 @@ export default function ContributorProfileScreen () {
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
-        data.push({
-          "recipe_id" : temp_data.recipes[i].recipe_id,
-          "recipe_name": temp_data.recipes[i].title,
-          "recipe_desc": temp_data.recipes[i].description,
-          "recipe_time": temp_data.recipes[i].time_required,
-          "is_liked": temp_data.recipes[i].saved,
-          "recipe_ratings": temp_data.recipes[i].avg_rating,
-          "recipe_tags": temp_data.recipes[i].tags,
-          "recipe_image": temp_data.recipes[i].image
-        })
+        if (temp_data.recipes[i].public_state == 'private') {
+          data.push({
+            "recipe_id" : temp_data.recipes[i].recipe_id,
+            "recipe_name": temp_data.recipes[i].title,
+            "recipe_desc": temp_data.recipes[i].description,
+            "recipe_time": temp_data.recipes[i].time_required,
+            "is_liked": temp_data.recipes[i].saved,
+            "recipe_ratings": temp_data.recipes[i].avg_rating,
+            "recipe_tags": temp_data.recipes[i].tags,
+            "recipe_image": temp_data.recipes[i].image
+          })
+        }
       }
       setDraftRecipes(data)
     } catch (err) {
@@ -158,19 +160,22 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
+      console.log(temp_data)
       
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
-        data.push({
-          "recipe_id" : temp_data.recipes[i].recipe_id,
-          "recipe_name": temp_data.recipes[i].title,
-          "recipe_desc": temp_data.recipes[i].description,
-          "recipe_time": temp_data.recipes[i].time_required,
-          "is_liked": temp_data.recipes[i].saved,
-          "recipe_ratings": temp_data.recipes[i].avg_rating,
-          "recipe_tags": temp_data.recipes[i].tags,
-          "recipe_image": temp_data.recipes[i].image
-        })
+        if (temp_data.recipes[i].public_state == 'public') {
+          data.push({
+            "recipe_id" : temp_data.recipes[i].recipe_id,
+            "recipe_name": temp_data.recipes[i].title,
+            "recipe_desc": temp_data.recipes[i].description,
+            "recipe_time": temp_data.recipes[i].time_required,
+            "is_liked": temp_data.recipes[i].saved,
+            "recipe_ratings": temp_data.recipes[i].avg_rating,
+            "recipe_tags": temp_data.recipes[i].tags,
+            "recipe_image": temp_data.recipes[i].image
+          })
+        }
       }
       setPublishedRecipes(data)
     } catch (err) {
