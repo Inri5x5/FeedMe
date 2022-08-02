@@ -60,7 +60,6 @@ export default function EditProfileModal(props) {
 
   const handleClose = () => {
     props.setOpen(false);
-    getProfile();
     setPassword("")
     setErrorName(false)
     setErrorNameText("")
@@ -94,11 +93,9 @@ export default function EditProfileModal(props) {
     }
     if (valid) {
       updateDetails()
-      handleClose()
-      props.handleAfterUpdate()
     }
   }
-
+  
   const updateDetails = async() => {
     try {
       const headers = {
@@ -111,6 +108,8 @@ export default function EditProfileModal(props) {
         'profile_pic': profilePic,
       }
       await APICall(body, '/dash/update_details', 'PUT', headers);
+      handleClose()
+      props.handleAfterUpdate()
     } catch (err) {
       alert(err);
     }

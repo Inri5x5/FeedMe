@@ -37,7 +37,10 @@ const ContributorDashboard = (props) => {
       },
     },
   });
-  const [profileData, setProfileData] = React.useState('')
+  
+  const [profilePic, setProfilePic] = React.useState('')
+  const [profileName, setProfileName] = React.useState('')
+  const [profileEmail, setProfileEmail] = React.useState('')
 
   const getProfile = async() => {
     try {
@@ -46,7 +49,9 @@ const ContributorDashboard = (props) => {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/get_details', 'GET', headers);
-      setProfileData(temp_data.user_details)
+      setProfilePic(temp_data.user_details.profile_picture)
+      setProfileName(temp_data.user_details.username)
+      setProfileEmail(temp_data.user_details.email)
     } catch (err) {
       alert(err);
     }
@@ -74,7 +79,7 @@ const ContributorDashboard = (props) => {
             <div style={{position:'relative'}}> 
               <Avatar
               alt="profile picture"
-              src={profileData.profile_picture}
+              src={profilePic}
               sx={{ width: 250, height: 250 }}
               />
               <div className={styles.chefHat}>
@@ -89,10 +94,10 @@ const ContributorDashboard = (props) => {
               <MostNoRecipe></MostNoRecipe>
             </div>
             <div className={styles.name}> 
-              {profileData.username}
+              {profileName}
             </div>
             <div>
-              {profileData.email}
+              {profileEmail}
             </div>
           </div>
           <div className={styles.tabsContainer}>

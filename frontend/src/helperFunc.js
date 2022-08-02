@@ -13,12 +13,16 @@ const APICall = (requestBody, path, methodType, headersData) => {
         .then(response => {
           if (response.status === 200) {
             return response.json().then(resolve);
-          } else if (response.status === 400 || response.status === 403) {
+          } else if (response.status === 400) {
+            return response.json().then(obj => {
+              reject(obj.message);
+            });
+          } else if (response.status === 403) {
             return response.json().then(obj => {
               reject(obj.message);
             });
           } else {
-            throw new Error(`${response.status} Error with API call`);
+            throw new SyntaxError(`Error with API call`);
           }
         });
     })

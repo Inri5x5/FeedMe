@@ -5,16 +5,18 @@ import UserDashboard from '../components/UserDashboard';
 import RecipeCard from '../components/RecipeCard';
 import VideoCard from '../components/VideoCard';
 import Pagination from '@mui/material/Pagination';
+import Loading from '../components/Loading';
 
 import { APICall } from '../helperFunc';
 
 export default function UserProfileScreen2 () {
   const navigate = useNavigate();
 
-  const [tabValue, setTabValue] = React.useState("Saved")
+  const [tabValue, setTabValue] = React.useState("")
   const [shownRecipes, setShownRecipes] = React.useState([])
   const [ratedRecipes, setRatedRecipes] = React.useState([])
   const [myRecipes, setMyRecipes] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
 
   const [publishedVideos, setPublishedVideos] = React.useState([])
   const [currentPage, setCurrentPage] = React.useState(-1)
@@ -25,11 +27,14 @@ export default function UserProfileScreen2 () {
 
 
   React.useEffect(() => {
-    if (!localStorage.getItem('token')){
-      alert("Please Log in Beforehand")
-      navigate("/")
+    if (!loading) {
+      if (!localStorage.getItem('token')){
+        alert("Please Log in Beforehand")
+        navigate("/")
+      }
+      setTabValue("Saved")
     }
-  }, [])
+  }, [loading])
 
   const fetchSaved = async() => {
     try {
@@ -252,7 +257,9 @@ export default function UserProfileScreen2 () {
   
   return (
     <>
-      <div style={{ 
+      {(loading) && <Loading close={() => {setLoading(false)}}></Loading>}
+
+      {(!loading) && <div style={{ 
         display:'flex',
         flexDirection:'column',
         height: '100%',
@@ -288,7 +295,7 @@ export default function UserProfileScreen2 () {
           {renderMyRecipes()}
         </div>}
         {(tabValue === 'Video') && renderVideoCard()}
-      </div>
+      </div>}
     </>
   )
 }

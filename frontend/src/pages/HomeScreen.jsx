@@ -5,9 +5,11 @@ import NavigationBarHome from '../components/NavigationBarHome';
 import FilterContainer from '../components/FilterContainer';
 import RecipeCard from '../components/RecipeCard';
 import { APICall } from '../helperFunc';
+import Loading from '../components/Loading';
 
 
 const HomeScreen = () => {
+  const [loading, setLoading] = React.useState(true)
   const [selectedIngredients, setSelectedIngredients] = React.useState([]);
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [foundRecipes, setFoundRecipes] = React.useState([]);
@@ -81,17 +83,19 @@ const HomeScreen = () => {
   }
 
   React.useEffect(() => {
-    let tempTags = []
-    let tempIngre = []
-    if (localStorage.getItem('fm-ingredients')) {
-      tempIngre = JSON.parse(localStorage.getItem('fm-ingredients'))
-      setSelectedIngredients(tempIngre)
+    if (loading != true) {
+      let tempTags = []
+      let tempIngre = []
+      if (localStorage.getItem('fm-ingredients')) {
+        tempIngre = JSON.parse(localStorage.getItem('fm-ingredients'))
+        setSelectedIngredients(tempIngre)
+      }
+      if (localStorage.getItem('fm-tags')) {
+        tempTags = JSON.parse(localStorage.getItem('fm-tags'))
+        setSelectedTags(tempTags)
+      }
     }
-    if (localStorage.getItem('fm-tags')) {
-      tempTags = JSON.parse(localStorage.getItem('fm-tags'))
-      setSelectedTags(tempTags)
-    }
-  },[])
+  },[loading])
   
   React.useEffect(() => {
     if(selectedIngredients.length > 0) {
@@ -126,7 +130,8 @@ const HomeScreen = () => {
 
   return (
     <>
-      <div style={{display: 'flex', flexDirection: 'column', height: '100%',}} > 
+      {(loading) && <Loading close={() => {setLoading(false)}} isHome={true}></Loading>}
+      {(!loading) && <div style={{display: 'flex', flexDirection: 'column', height: '100%',}} > 
         <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
         <SearchBar
           selectedIngredients={selectedIngredients}
@@ -175,7 +180,7 @@ const HomeScreen = () => {
         }}>
           No Recipes Found
         </div>}
-      </div>
+      </div>}
     </>
   )
 }

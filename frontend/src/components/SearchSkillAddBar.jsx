@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 function SearchSkillAddBar(props) {
 	React.useEffect(() => { 
 		let isFetch = true;
-		// console.log(props.preFilled)
 		if(props.preFilled !== {} && props.preFilled !== undefined ) {
 				setWordEntered(props.preFilled.title)
 		}
@@ -37,7 +36,6 @@ function SearchSkillAddBar(props) {
 	};
 
 	const handleChange = (value) => {
-		console.log(value);
 		setWordEntered(value.title);
 		setFilteredData([]);
 		const obj = {title: value.title, url: value.url, video_id: value.id}

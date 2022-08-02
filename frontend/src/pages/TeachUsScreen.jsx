@@ -4,6 +4,7 @@ import Pagination from '@mui/material/Pagination';
 import NavigationBarHome from '../components/NavigationBarHome';
 import VideoCard from '../components/VideoCard';
 import VideoSearchBar from '../components/VideoSearchBar';
+import Loading from '../components/Loading';
 
 export default function TeachUsScreen () {
 
@@ -12,6 +13,7 @@ export default function TeachUsScreen () {
   const [foundVideos, setFoundVideos] = React.useState([])
   const [currentPage, setCurrentPage] = React.useState(-1)
   const [maxPage, setMaxPage] = React.useState(-1)
+  const [loading, setLoading] = React.useState(true)
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -57,9 +59,11 @@ export default function TeachUsScreen () {
   }
 
   React.useEffect(() => {
-    getSkillVideos()
-    if (localStorage.getItem('token')) checkIfContributor()
-  },[])
+    if(loading != true) {
+      getSkillVideos()
+      if (localStorage.getItem('token')) checkIfContributor()
+    }
+  },[loading])
 
   const [searchedTitle, setSearchedTitle] = React.useState("")
   const filterVideo = () => {
@@ -117,12 +121,15 @@ export default function TeachUsScreen () {
 
 
   return (
-  <div>
-    <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
-    <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
-      <VideoSearchBar wordEntered={searchedTitle} setWordEntered={setSearchedTitle}></VideoSearchBar>
-      {renderVideoCard()}
-    </div>
-  </div>
+    <>
+      {(loading && <Loading close={() => {setLoading(false)}}></Loading>)}
+      {(!loading) && <div>
+        <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
+        <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+          <VideoSearchBar wordEntered={searchedTitle} setWordEntered={setSearchedTitle}></VideoSearchBar>
+          {/* {renderVideoCard()} */}
+        </div>
+      </div>}
+    </>
   )
 }

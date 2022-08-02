@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 const SearchBarRecipe = (props) => {
     React.useEffect(() => { 
         let isFetch = true;
-        // console.log(props.preFilled)
+
         if(props.preFilled !== {} && props.preFilled !== undefined ) {
             setInput(props.preFilled.name)
         }
@@ -99,7 +99,7 @@ const SearchBarRecipe = (props) => {
 	}
   
 	const searchIngredient = (name, list_ingredients, category) => {
-		console.log(category)
+
 		let found = [];
 		for (let i = 0; i < list_ingredients.length; i++) {
 			if (!name) {name = ' '};
@@ -108,8 +108,6 @@ const SearchBarRecipe = (props) => {
                     found.push(list_ingredients[i]);
 				}
 			} else {
-                // console.log(list_ingredients[i].name)
-                // console.log(name);
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase()) && list_ingredients[i].c_id === category.c_id) {
 					found.push(list_ingredients[i]);
 				}
