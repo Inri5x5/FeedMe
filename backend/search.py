@@ -13,10 +13,10 @@ def search_for_recipes(token, ingredients_req):
 
     # Find recipes that have the ingredients requested
     cur.execute('''
-        SELECT r.id, GROUP_CONCAT(ir.ingredient_id)
-        FROM    Recipes r
-                JOIN ingredientInRecipe ir on ir.recipe_id = r.id
-        GROUP BY r.id
+        SELECT r.recipe_id, GROUP_CONCAT(ir.ingredient_id)
+        FROM    PublicRecipes r
+                JOIN ingredientInRecipe ir on ir.recipe_id = r.recipe_id
+        GROUP BY r.recipe_id
     ''')
     info = cur.fetchall()
     cur.close()
