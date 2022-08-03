@@ -253,8 +253,15 @@ def get_recipe_details(conn, recipe_id, user_details):
     # Get author and public state
     c.execute("SELECT * FROM PersonalRecipes WHERE recipe_id = ?", [recipe_id])
     info = c.fetchone()
-    ruser_id = info[0]
-    contributor_id = info[1]
+    if info is not None:
+        ruser_id = info[0]
+        contributor_id = info[1]
+    else:
+        c.execute("SELECT * FROM PublicRecipes WHERE recipe_id = ?", [recipe_id])
+        info = c.fetchone()
+        ruser_id = None
+        contributor_id = info[1]
+
     if ruser_id is None: # contributor wrote recipe
         c.execute("SELECT username FROM Contributors WHERE id = ?", [contributor_id])
     else: # ruser wrote recipe
@@ -502,7 +509,8 @@ def update_recipe_details(conn, user_details, recipe_id, req):
         # DO NOT Delete from personalRecipes since a contributor's public recipes is also their personal recipe
         # c.execute("DELETE FROM personalRecipes WHERE recipe_id = ?", [recipe_id])
         c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
-
+        c.execute("DELETE FROM PersonalRecipes WHERE recipe_id = ? and contributor_id = ?", [recipe_id, user_details["user_id"]])
+    
     conn.commit()
     c.close()
     
