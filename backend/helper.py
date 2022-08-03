@@ -396,7 +396,7 @@ def has_rated(conn, recipe_id, user_details):
 
 def insert_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
-
+    print(recipe_id)
     # Update data in "Recipe"
     if not req['video']:
         video = None
@@ -423,15 +423,21 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     # Update data in "Steps" **(Pending confirmation)
     steps = req['steps']
     for s_dict in steps:
+        #print(s_dict['step_id'])
+        #print(s_dict['description'])
         c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
 
     # if contributor has public_state = public it should go into "Public Recipes"
     # if contributor has public_state = private it should go into "Personal Recipes"
+    print("public state is")
+    print(req['public_state'])
     if user_details["is_contributor"]:
         if str(req['public_state']) == "public":
+            print("i am not shy")
             c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
             c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
         else:
+            print("i am shy")
             c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
         conn.commit()
     # If update request is made my ruser, it should go into personal recipes with new recipe id - ** should there be a author field here?
@@ -445,7 +451,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
 
 def update_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
-
+    print("i am here")
     # Update data in "Recipe"
     if not req['video']:
         video = None

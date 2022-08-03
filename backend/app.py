@@ -370,6 +370,7 @@ def recipe_details_update():
     #print(req)
     # Get recipe id
     recipe_id = req['recipe_id']
+    print(recipe_id)
     # If recipe id == -1, assign new recipe id # chekcing is author_id matches user_id
     # check public state = if public state publish to public if not go to personal
     # if positive num, update recipe that could be public or private
