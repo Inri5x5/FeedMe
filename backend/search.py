@@ -101,6 +101,7 @@ def no_recipes():
     # Create a view of ingredients (ingredient_id, name, search_id) that 
     # are in searches but not in recipes
     cur.execute('DROP VIEW IF EXISTS searches_minus_recipes')
+    conn.commit()
     cur.execute('''
         CREATE VIEW searches_minus_recipes AS
         SELECT 

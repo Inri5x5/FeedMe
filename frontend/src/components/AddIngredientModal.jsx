@@ -47,7 +47,6 @@ const AddIngredientModal = (props) => {
         "category_id": categoryId
       }
       data = await APICall(requestBody, '/ingredients/new', 'PUT', headers);
-      console.log(data)
     } catch (err) {
       alert(err);
     }

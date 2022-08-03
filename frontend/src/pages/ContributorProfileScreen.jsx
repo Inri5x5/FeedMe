@@ -16,10 +16,12 @@ import AddIngredientModal from '../components/AddIngredientModal';
 import AddVideoModal from '../components/AddVideoModal';
 import VideoCard from '../components/VideoCard';
 import Pagination from '@mui/material/Pagination';
+import Loading from '../components/Loading';
 
 export default function ContributorProfileScreen () {
   const navigate = useNavigate();
-  const [tabValue, setTabValue] = React.useState("Published")
+  const [loading, setLoading] = React.useState(true)
+  const [tabValue, setTabValue] = React.useState("")
   const [publishedRecipes, setPublishedRecipes] = React.useState([])
   const [shownRecipes, setShownRecipes] = React.useState([])
   const [draftRecipes, setDraftRecipes] = React.useState([])
@@ -51,12 +53,15 @@ export default function ContributorProfileScreen () {
 
   
   React.useEffect(() => {
-    if (!localStorage.getItem('token')){
-      alert("Please Log in Beforehand")
-      navigate("/")
+    if(!loading){
+      if (!localStorage.getItem('token')){
+        alert("Please Log in Beforehand")
+        navigate("/")
+      }
+      setTabValue('Published')
+      fetchStatistics()
     }
-    fetchStatistics()
-  }, [])
+  }, [loading])
   
   const fetchSaved = async() => {
     try {
@@ -160,7 +165,6 @@ export default function ContributorProfileScreen () {
         'token' : localStorage.getItem('token')
       };
       const temp_data = await APICall(null, '/dash/my_recipes', 'GET', headers);
-      console.log(temp_data)
       
       let data = []
       for(let i = 0; i < temp_data.recipes.length; i++) {
@@ -197,6 +201,7 @@ export default function ContributorProfileScreen () {
     } else if (tabValue === 'Video') {
       fetchPublishedVideos()
     }
+  
   }, [tabValue])
   
   const renderRecipesCard = () => {
@@ -375,67 +380,68 @@ export default function ContributorProfileScreen () {
 
   return (
     <>
-      <div style={{ 
-        display:'flex',
-        flexDirection:'column',
-        height: '100%',
-        alignItems:"center"
-      }}>
-        <NavigationBarHome style={{ alignSelf: 'start' }} isLogin={true} ></NavigationBarHome>
-
-        <ContributorDashboard tabValue={tabValue} setTabValue={setTabValue}></ContributorDashboard>
-
-        {(tabValue == 'Published') && <div style={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems:'center',
-          marginTop: '20px',
-          marginLeft: '20px',
-          width: '90%'
+      {(loading) && <Loading close={() => {setLoading(false)}}></Loading>}
+      {(!loading) && <>
+        <div style={{ 
+          display:'flex',
+          flexDirection:'column',
+          height: '100%',
+          alignItems:"center"
         }}>
-          {renderContributorRecipesCard()}
-        </div>}
-        {(tabValue == 'Saved' || tabValue == 'Drafted') && <div style={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          flexWrap: 'wrap',
-          alignContent: 'flex-start',
-          marginTop: '20px',
-          marginLeft: '20px',
-          width: '90%'
-        }}>
-          {renderRecipesCard()}
-        </div>}
-        {(tabValue === "Rated") && renderRatedRecipes()}
-        {(tabValue == 'Video') && renderVideoCard()}
-    
-      </div>
+          <NavigationBarHome style={{ alignSelf: 'start' }} isLogin={true} ></NavigationBarHome>
 
+          <ContributorDashboard tabValue={tabValue} setTabValue={setTabValue}></ContributorDashboard>
 
-      <Box style={style} sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1 }}>
-        <SpeedDial
-          ariaLabel="SpeedDial basic example"
-          sx={{ position: 'absolute', bottom: 16, right: 16, '& .MuiFab-primary': { width: 80, height: 80 } }}
-          icon={<SpeedDialIcon />}
-          >
-          {actions.map((action) => (
-            <SpeedDialAction
-            sx={{ width: 68, height: 68, '& .MuiSpeedDialAction-staticTooltipLabel': { width: 180, height: 40, backgroundColor: "red", fontSize: '0.9em' } }}
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={action.onClick}
-            />
-            ))}
-        </SpeedDial>
-      </Box>
-      
-      <AddIngredientModal open={openAddIngredientModal} handleOpen={handleOpenIngredient} handleClose={handleCloseIngredient}></AddIngredientModal>
-      <AddVideoModal open={openVideoModal} handleOpen={handleOpenVideo} handleClose={handleCloseVideo} handleAfterAdd={(tabValue === 'Video') ? fetchPublishedVideos : null}></AddVideoModal>
+          {(tabValue == 'Published') && <div style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems:'center',
+            marginTop: '20px',
+            marginLeft: '20px',
+            width: '90%'
+          }}>
+            {renderContributorRecipesCard()}
+          </div>}
+          {(tabValue == 'Saved' || tabValue == 'Drafted') && <div style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            flexWrap: 'wrap',
+            alignContent: 'flex-start',
+            marginTop: '20px',
+            marginLeft: '20px',
+            width: '90%'
+          }}>
+            {renderRecipesCard()}
+          </div>}
+          {(tabValue === "Rated") && renderRatedRecipes()}
+          {(tabValue == 'Video') && renderVideoCard()}
+        </div>
+
+        <Box style={style} sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1 }}>
+          <SpeedDial
+            ariaLabel="SpeedDial basic example"
+            sx={{ position: 'absolute', bottom: 16, right: 16, '& .MuiFab-primary': { width: 80, height: 80 } }}
+            icon={<SpeedDialIcon />}
+            >
+            {actions.map((action) => (
+              <SpeedDialAction
+              sx={{ width: 68, height: 68, '& .MuiSpeedDialAction-staticTooltipLabel': { width: 180, height: 40, backgroundColor: "red", fontSize: '0.9em' } }}
+              key={action.name}
+              icon={action.icon}
+              tooltipTitle={action.name}
+              onClick={action.onClick}
+              />
+              ))}
+          </SpeedDial>
+        </Box>
+        
+        <AddIngredientModal open={openAddIngredientModal} handleOpen={handleOpenIngredient} handleClose={handleCloseIngredient}></AddIngredientModal>
+        <AddVideoModal open={openVideoModal} handleOpen={handleOpenVideo} handleClose={handleCloseVideo} handleAfterAdd={fetchPublishedVideos }></AddVideoModal>
+      </>}
     </>
   )
 }

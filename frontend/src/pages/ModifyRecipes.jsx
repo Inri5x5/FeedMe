@@ -10,6 +10,7 @@ import SendIcon from '@mui/icons-material/Send';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchBarRecipe from '../components/SearchBarRecipe';
 import SearchSkillAddBar from '../components/SearchSkillAddBar';
+import Loading from '../components/Loading';
 
 export default function ModifyRecipes () {
   const id = useParams();
@@ -24,6 +25,7 @@ export default function ModifyRecipes () {
   const is_contributor = localStorage.getItem('is_contributor');
   const [isContributor, setIsContributor] = React.useState('')
   const token = localStorage.getItem('token');
+  const [loading, setLoading] = React.useState(true)
   
   /* For SearchBar */
 	const [listIngredient, setListIngredient] = React.useState([]);
@@ -109,19 +111,21 @@ export default function ModifyRecipes () {
   }
   
   React.useEffect(() => { 
-    let isFetch = true;
-    if (Object.keys(id).length !== 0) {
-      getDetails();
+    if(!loading) {
+      let isFetch = true;
+      if (Object.keys(id).length !== 0) {
+        getDetails();
+      }
+      if(localStorage.getItem('token')) {
+        checkIfContributor()
+      }
+      getAllCategories();
+      getAllIngredients();
+      getAllTags();
+      getSkillVideos();
+      return () => isFetch = false;
     }
-    if(localStorage.getItem('token')) {
-      checkIfContributor()
-    }
-    getAllCategories();
-		getAllIngredients();
-		getAllTags();
-		getSkillVideos();
-    return () => isFetch = false;
-  }, [id])
+  }, [id, loading])
   
   const getDetails = async () => {
     try {
@@ -133,7 +137,6 @@ export default function ModifyRecipes () {
       if (data.error) {
         throw new Error(data.error);
       }
-      console.log(data);
       setRecipe(data);
       setTags(data.tags);
       setIngredients(data.ingredients);
@@ -221,9 +224,7 @@ export default function ModifyRecipes () {
   const handleChanges = (e) => {
     const {name, value} = e.target
     if (name === 'image') {
-      console.log(e.target)
       const file = e.target.files[0];
-      console.log(file)
       fileToDataUrl(file)
       .then((res) => {
           setRecipe({...recipe, [name]: res});
@@ -236,14 +237,12 @@ export default function ModifyRecipes () {
   const handleSave = async (state) => {
     let pass_id;
     if(Object.keys(id).length === 0 || (is_contributor === 'false' && checkState === 'public')) {
-      console.log(checkState)
       pass_id = -1
     } else {
       pass_id = id.id
     }
     const ingredient = recipe.ingredients;
     const step = recipe.steps;
-    console.log(recipeVideos);
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -263,7 +262,6 @@ export default function ModifyRecipes () {
         video: `${recipe.video}`,
         public_state: state
       }
-      console.log(requestBody)
       const data = await APICall(requestBody, `/recipe_details/update`, 'PUT', headers);
       if (data.error) {
         throw new Error(data.error);
@@ -299,7 +297,6 @@ export default function ModifyRecipes () {
   }
   
   const handleSkillVideoChange = (object, index) => {
-    console.log(object);
     const list = [...recipeVideos];
     list[index] = object;
     setRecipeVideos(list)
@@ -316,180 +313,178 @@ export default function ModifyRecipes () {
     list.splice(index, 1);
     setRecipeVideos(list);
   }
-  // console.log(steps)
-  // console.log(ingredients)
-  // console.log(selectedIngredients)
-  // console.log(tags)
-  // console.log(tagData);
-  // console.log(recipeVideos);
+
   
   return (
-  <div className={styles.screen_container}>
-    <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
-    <div className={styles.form_container}>
-      <h2 className={styles.title}> Modify Recipe </h2>
-      <form className={styles.form_control}>
-        <label for='dishName' >Dish Name: </label>
-        <input name='title' id='dishName' type='text' value={recipe.title} onChange={(e) => handleChanges(e)}/>
-        <label for='dishPic'> Upload Image: </label>
-        <input name='image' type="file" id="dishPic" accept=".png,.jpeg,.jpg" onChange={(e) => handleChanges(e)} />
-        <img src={recipe.image} className={styles.foodPic}/>
-        <label for='video'>Video: </label>
-        <input name='video' id='dish_video' type='text' value={recipe.video} onChange={(e) => handleChanges(e)}/>
-        <label for='duration'>Duration: </label>
-        <input name='time_required' id='duration' type='text' value={recipe.time_required} onChange={(e) => handleChanges(e)}/>
-        <label for='serving'>Serving: </label>
-        <input name='servings' id='serving' type='text' value={recipe.servings} onChange={(e) => handleChanges(e)}/>
-        <label for='desc' >Descriptions: </label>
-        <input name='description' id='desc' type='text' value={recipe.description} onChange={(e) => handleChanges(e)}/>
-        <label> Ingredients: </label>
-        {ingredients.map((ingredient, index) => (
-          <>
-          {listCategories.length !== 0 &&
-            <div key={index}>
-              <SearchBarRecipe 
-                preFilled={selectedIngredients[index]}
-                updateIngredients={handleUpdateIngredients}
-                index={index}
-                listCategories={listCategories}
-                listIngredient={listIngredient}
-              ></SearchBarRecipe>
-              <input
-                name='description'
-                type="text"
-                onChange={(e) => handleIngredientsChange(e, index)}
-                value={ingredient.description}
-              />
-              <button
-              onClick={(e) => handleIngredientsRemove(e, index)}
-              className={styles.remove_button}
-              > Remove </button>
-            </div>
-          }
-          </>
-        ))}
-        <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleIngredientsAdd}>
-          <AddIcon />
-        </IconButton>
-        <label>Instructions: </label>
-        {steps.map((step, index) => (
-          <div key={index}>
-            <textarea
-              name='description'
-              type="text"
-              onChange={(e) => 
-                handleStepsChange(e, index)}
-              value={step.description}
-              wrap= "soft"
-              rows= "3"
-              cols="104"
-              />
-            <button onClick={(e) => handleStepsRemove(e, index)}
-            className={styles.remove_button}
-            > Remove </button>
-          </div>
-        ))}
-        <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleStepsAdd}>
-          <AddIcon />
-        </IconButton>
-        <label>Categories: </label>
-        <div className={styles.tag_container}>
-          {tagData.map((tags, index) => (
-            <div key={index} className={styles.tag_categories}>
-              <label> {tags.name} </label>
-              {tags.tags.map((tag, index) => (
-                <div> 
-                  <input type='checkbox' 
-                    name={tag.tag_id} 
-                    value={tag.name} 
-                    defaultChecked={checkTags(tag)}
-                    onChange={(e) => handleTagsChange(e, tag)}
-                    />
-                  <label for={tag.tag_id}> {tag.name} </label> 
+    <>
+      {(loading) && <Loading close={() => {setLoading(false)}}></Loading>}
+      {(!loading) &&<div className={styles.screen_container}>
+        <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
+        <div className={styles.form_container}>
+          <h2 className={styles.title}> Modify Recipe </h2>
+          <form className={styles.form_control}>
+            <label for='dishName' >Dish Name: </label>
+            <input name='title' id='dishName' type='text' value={recipe.title} onChange={(e) => handleChanges(e)}/>
+            <label for='dishPic'> Upload Image: </label>
+            <input name='image' type="file" id="dishPic" accept=".png,.jpeg,.jpg" onChange={(e) => handleChanges(e)} />
+            <img src={recipe.image} className={styles.foodPic}/>
+            <label for='video'>Video: </label>
+            <input name='video' id='dish_video' type='text' value={recipe.video} onChange={(e) => handleChanges(e)}/>
+            <label for='duration'>Duration: </label>
+            <input name='time_required' id='duration' type='text' value={recipe.time_required} onChange={(e) => handleChanges(e)}/>
+            <label for='serving'>Serving: </label>
+            <input name='servings' id='serving' type='text' value={recipe.servings} onChange={(e) => handleChanges(e)}/>
+            <label for='desc' >Descriptions: </label>
+            <input name='description' id='desc' type='text' value={recipe.description} onChange={(e) => handleChanges(e)}/>
+            <label> Ingredients: </label>
+            {ingredients.map((ingredient, index) => (
+              <>
+              {listCategories.length !== 0 &&
+                <div key={index}>
+                  <SearchBarRecipe 
+                    preFilled={selectedIngredients[index]}
+                    updateIngredients={handleUpdateIngredients}
+                    index={index}
+                    listCategories={listCategories}
+                    listIngredient={listIngredient}
+                  ></SearchBarRecipe>
+                  <input
+                    name='description'
+                    type="text"
+                    onChange={(e) => handleIngredientsChange(e, index)}
+                    value={ingredient.description}
+                  />
+                  <button
+                  onClick={(e) => handleIngredientsRemove(e, index)}
+                  className={styles.remove_button}
+                  > Remove </button>
+                </div>
+              }
+              </>
+            ))}
+            <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleIngredientsAdd}>
+              <AddIcon />
+            </IconButton>
+            <label>Instructions: </label>
+            {steps.map((step, index) => (
+              <div key={index}>
+                <textarea
+                  name='description'
+                  type="text"
+                  onChange={(e) => 
+                    handleStepsChange(e, index)}
+                  value={step.description}
+                  wrap= "soft"
+                  rows= "3"
+                  cols="104"
+                  />
+                <button onClick={(e) => handleStepsRemove(e, index)}
+                className={styles.remove_button}
+                > Remove </button>
+              </div>
+            ))}
+            <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleStepsAdd}>
+              <AddIcon />
+            </IconButton>
+            <label>Categories: </label>
+            <div className={styles.tag_container}>
+              {tagData.map((tags, index) => (
+                <div key={index} className={styles.tag_categories}>
+                  <label> {tags.name} </label>
+                  {tags.tags.map((tag, index) => (
+                    <div> 
+                      <input type='checkbox' 
+                        name={tag.tag_id} 
+                        value={tag.name} 
+                        defaultChecked={checkTags(tag)}
+                        onChange={(e) => handleTagsChange(e, tag)}
+                        />
+                      <label for={tag.tag_id}> {tag.name} </label> 
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
-          ))}
-        </div>
-        <label>Videos Skill: </label>
-        <div>
-            {recipeVideos.map((vid, index) => (
-            <> 
-              <span className={styles.video_skill_container}>
-                <SearchSkillAddBar 
-                  data={skillVideos} 
-                  updateVideoSkill={handleSkillVideoChange}
-                  index={index}
-                  preFilled={vid}
-                  handleDelete={handleSkillVideoDelete}
-                  ></SearchSkillAddBar>
-              </span>
-              <div className={styles.video_skill}></div>
-            </>
-          ))}
-        </div>
-        <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleSkillVideoAdd}>
-          <AddIcon />
-        </IconButton>
-      </form>
-      <div className={styles.button_container}>
-        <Button variant="contained" endIcon={<CancelIcon />} 
-          sx={{ 
-            ml: '60%', 
-            mb: '2%', 
-            backgroundColor: '#F9D371', 
-            color: '#F47340',
-            fontFamily: "'Righteous', serif",
-            '&:hover' : {
-              backgroundColor: '#F47340',
-              color: '#F9D371'
-            }
-            }}
-          onClick={() => {
-          if(isContributor) {
-            navigate('/contributorProfile')
-          }
-          else {
-            navigate('/userProfile')
-          }}}
-            >
-          Cancel
-        </Button>
-        <Button variant="contained" endIcon={<SendIcon />} 
-          sx={{ 
-            ml: '5%', 
-            mb: '2%', 
-            backgroundColor: '#F9D371', 
-            color: '#F47340',
-            fontFamily: "'Righteous', serif",
-            '&:hover' : {
-              backgroundColor: '#F47340',
-              color: '#F9D371'
-            }
-            }}
-          onClick={() => handleSave('private')}
-          >
-          Save
-        </Button>
-        {is_contributor === 'true' && 
-          <Button variant="contained" endIcon={<SendIcon />} 
-            sx={{ 
-              ml: '5%', 
-              mb: '2%', 
-              backgroundColor: '#F9D371', 
-              color: '#F47340',
-              fontFamily: "'Righteous', serif",
-              '&:hover' : {
-                backgroundColor: '#F47340',
-                color: '#F9D371'
+            <label>Videos Skill: </label>
+            <div>
+                {recipeVideos.map((vid, index) => (
+                <> 
+                  <span className={styles.video_skill_container}>
+                    <SearchSkillAddBar 
+                      data={skillVideos} 
+                      updateVideoSkill={handleSkillVideoChange}
+                      index={index}
+                      preFilled={vid}
+                      handleDelete={handleSkillVideoDelete}
+                      ></SearchSkillAddBar>
+                  </span>
+                  <div className={styles.video_skill}></div>
+                </>
+              ))}
+            </div>
+            <IconButton aria-label="add" sx={{ ml: '40%' , mr: '55%' }} onClick={handleSkillVideoAdd}>
+              <AddIcon />
+            </IconButton>
+          </form>
+          <div className={styles.button_container}>
+            <Button variant="contained" endIcon={<CancelIcon />} 
+              sx={{ 
+                ml: '60%', 
+                mb: '2%', 
+                backgroundColor: '#F9D371', 
+                color: '#F47340',
+                fontFamily: "'Righteous', serif",
+                '&:hover' : {
+                  backgroundColor: '#F47340',
+                  color: '#F9D371'
+                }
+                }}
+              onClick={() => {
+              if(isContributor) {
+                navigate('/contributorProfile')
               }
-              }}
-              onClick={() => handleSave('public')}>
-            Publish
-          </Button>
-        }
-      </div>
-    </div>
-  </div>
+              else {
+                navigate('/userProfile')
+              }}}
+                >
+              Cancel
+            </Button>
+            <Button variant="contained" endIcon={<SendIcon />} 
+              sx={{ 
+                ml: '5%', 
+                mb: '2%', 
+                backgroundColor: '#F9D371', 
+                color: '#F47340',
+                fontFamily: "'Righteous', serif",
+                '&:hover' : {
+                  backgroundColor: '#F47340',
+                  color: '#F9D371'
+                }
+                }}
+              onClick={() => handleSave('private')}
+              >
+              Save
+            </Button>
+            {is_contributor === 'true' && 
+              <Button variant="contained" endIcon={<SendIcon />} 
+                sx={{ 
+                  ml: '5%', 
+                  mb: '2%', 
+                  backgroundColor: '#F9D371', 
+                  color: '#F47340',
+                  fontFamily: "'Righteous', serif",
+                  '&:hover' : {
+                    backgroundColor: '#F47340',
+                    color: '#F9D371'
+                  }
+                  }}
+                  onClick={() => handleSave('public')}>
+                Publish
+              </Button>
+            }
+          </div>
+        </div>
+      </div>}
+    </>
   )
 }
