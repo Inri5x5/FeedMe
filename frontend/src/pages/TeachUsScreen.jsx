@@ -127,7 +127,7 @@ export default function TeachUsScreen () {
         <NavigationBarHome style={{ alignSelf: 'start' }} ></NavigationBarHome>
         <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
           <VideoSearchBar wordEntered={searchedTitle} setWordEntered={setSearchedTitle}></VideoSearchBar>
-          {/* {renderVideoCard()} */}
+          {renderVideoCard()} 
         </div>
       </div>}
     </>
