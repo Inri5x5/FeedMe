@@ -6,12 +6,15 @@ def register_helper(email, password, username):
     conn = db_connection()
 
     if not email or not password or not username:
+        conn.close()
         raise InputError
     
     if not valid_email(email):
+        conn.close()
         raise InputError("Invalid email")
 
     if email_already_exists(conn, email):
+        conn.close()
         raise InputError("Email already in use")
 
     ruser_id = get_new_user_id(conn)

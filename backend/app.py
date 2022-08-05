@@ -61,6 +61,7 @@ def logout():
 
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
         
     delete_token(conn, token)
@@ -141,11 +142,13 @@ def dash_statistics():
     # Validate token
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Check if user is a contributor
     user_details = decode_token(conn, token)
     if user_details["is_contributor"] is False:
+        conn.close()
         raise AccessError("User is not a Contributor")
     contributor_id = user_details["user_id"]
 
@@ -162,6 +165,7 @@ def dash_saved():
     # Validate token
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     recipes = saved_recipes(token)
@@ -177,6 +181,7 @@ def dash_rated():
     # Validate token
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     one, two, three, four, five = rated_recipes(token)
@@ -200,14 +205,17 @@ def recipe_details_delete():
 
     # Error if blank recipe id
     if recipe_id is None: 
+        conn.close()
         raise InputError("Recipe ID cannot be empty")
 
     # Error if recipe does not exist
     if not valid_recipe_id(conn, recipe_id):
+        conn.close()
         raise InputError("Recipe ID does not exist")
 
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     delete_recipe(recipe_id)
@@ -225,15 +233,17 @@ def save():
     conn = db_connection()
     
     if token == 'null':
-        print('heree')
+        conn.close()
         raise AccessError("User not sign in")
     
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Validate recipe_id
     if not valid_recipe_id(conn, recipe_id):
+        conn.close()
         raise InputError("No such recipe id")
 
     # Get user id
@@ -255,10 +265,12 @@ def rate():
 
      # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Validate recipe_id
     if not valid_recipe_id(conn, recipe_id):
+        conn.close()
         raise InputError("No such recipe id")
     
     # Get user details 
@@ -287,6 +299,7 @@ def recipe_details_view():
 
     # Validate recipe id
     if not valid_recipe_id(conn, recipe_id):
+        conn.close()
         raise InputError("No such recipe id")
     
     # Get recipe details 
@@ -305,6 +318,7 @@ def recipe_details_update():
     req = request.get_json()
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Decode token to get user details
@@ -328,6 +342,7 @@ def dash_my_recipes():
 
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
     
     # Get user_id
@@ -361,6 +376,7 @@ def ingredients_new():
     token = request.headers.get('token')
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
     
     # Get user_id
@@ -368,6 +384,7 @@ def ingredients_new():
 
     # Validate contributor status
     if not user["is_contributor"]:
+        conn.close()
         raise AccessError("Action not permitted.")
     
     # Get Body
@@ -377,9 +394,11 @@ def ingredients_new():
 
     # Check valid category id
     if valid_category_id(category_id) == -1:
+        conn.close()
         raise InputError("Incorrect category id")
 
     if ingredient_exists(ingredient_name) == -1:
+        conn.close()
         raise InputError("Ingredient already exists")
 
     new_ingredient_id = add_new_ingredient(ingredient_name, category_id)
@@ -406,6 +425,7 @@ def skill_videos_contributor():
     
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
     
     # Get user_id
@@ -413,6 +433,7 @@ def skill_videos_contributor():
     
     # Validate contributor status
     if not user["is_contributor"]:
+        conn.close()
         raise AccessError("Action not permitted.")
     
     # contributor_id = user["user_id"]
@@ -431,6 +452,7 @@ def skill_videos_ruser():
     
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Get user_id
@@ -439,6 +461,7 @@ def skill_videos_ruser():
 
     # Validate contributor status
     if user["is_contributor"]:
+        conn.close()
         raise AccessError("Action not permitted.")
     
     video_list = ruser_skill_videos(user)
@@ -456,6 +479,7 @@ def dash_update_details():
 
      # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
     
     user = decode_token(conn, token)
@@ -489,6 +513,7 @@ def skill_videos_add():
 
     user_details = decode_token(conn, token)
     if not user_details["is_contributor"]:
+        conn.close()
         raise AccessError("Do not have permission to upload skill video.")
     
     add_skill_videos(user_details, video_name, url)
@@ -506,12 +531,15 @@ def skill_videos_delete():
 
     user_details = decode_token(conn, token)
     if not user_details["is_contributor"]:
+        conn.close()
         raise AccessError("Do not have permission to delete skill video.")
     
     if not valid_video_id(conn, video_id):
+        conn.close()
         raise InputError("video id does not exist.")
 
     if validate_uploader(user_details, video_id) == -1:
+        conn.close()
         raise AccessError("You cannot delete another contributor's video.")
 
     delete_skill_videos(video_id)
@@ -530,15 +558,18 @@ def save_skill_videos():
 
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Validate recipe_id
     if not valid_video_id(conn, video_id):
+        conn.close()
         raise InputError("No such recipe id")
 
     # Get user id
     user_details = decode_token(conn, token)
     if user_details["is_contributor"]:
+        conn.close()
         raise AccessError["Contributors cannot save skill videos"]
 
     skill_videos_saved(user_details, video_id)
@@ -593,11 +624,13 @@ def search_norecipe():
     # Validate token
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Check if user is a contributor
     user_details = decode_token(conn, token)
     if user_details["is_contributor"] is False:
+        conn.close()
         raise AccessError("User is not a Contributor")
 
     ic_list = no_recipes()
@@ -614,6 +647,7 @@ def check_is_contributor():
     # Get and validate token
     token = request.headers.get('token')
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
     
     # Decode token
@@ -633,6 +667,7 @@ def get_profile_details():
 
     # Validate token
     if not validate_token(conn, token):
+        conn.close()
         raise AccessError("Invalid token")
 
     # Get user id
