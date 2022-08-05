@@ -342,11 +342,6 @@ def dash_my_recipes():
 def get_all_tags():
     conn = db_connection()
 
-    # Validate token
-    # token = request.args.get('req')['token']
-    # if not validate_token(conn, token):
-    #     raise AccessError("Invalid token")
-
     # Get tags
     tags = get_tags_and_categories(conn)
 
@@ -444,22 +439,7 @@ def skill_videos_ruser():
     if user["is_contributor"]:
         raise AccessError("Action not permitted.")
     
-    # c.execute("SELECT skill_video_id FROM SkillVideoSaves WHERE ruser_id = ?", [user_id])
-
-    
-    # videos = c.fetchall()
-    
-    # if videos is None:
-    #     return{"video_list" : []}
-
     video_list = ruser_skill_videos(user)
-    # for v in videos:
-    #     c.execute("SELECT * FROM SkillVideos WHERE id = ?", [v[0]])
-    #     row = c.fetchone()
-    #     c.execute("SELECT * FROM Contributors WHERE id = ?", [row[1]])
-    #     creator_details = c.fetchone()
-    #     prefix = "https://www.youtube.com/"
-    #     video_list.append({"id" : row[0], "title" : row[2], "url" : prefix + row[3], "creator": creator_details[2], "creator_profile_pic" : creator_details[4]})
 
     ret = {"video_list" : video_list}
 
