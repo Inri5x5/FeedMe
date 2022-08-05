@@ -1,8 +1,8 @@
 from werkzeug.exceptions import HTTPException
 
 class AccessError(HTTPException):
-    status = 403
-    statusText = 'No message specified'
+    code = 403
+    massage = 'No message specified'
 
 class InputError(HTTPException):
     code = 400

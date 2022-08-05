@@ -4,55 +4,25 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from './styles/SearchBarRecipe.module.css'
 import CategoryLabel from './CategoryLabel';
 import IngredientLabel from './IngredientLabel';
-import SelectedIngredientLabel from './SelectedIngredientLabel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PropTypes from 'prop-types';
 
 const SearchBarRecipe = (props) => {
     React.useEffect(() => { 
-        let isFetch = true;
-        // console.log(props.preFilled)
-        if(props.preFilled !== {} && props.preFilled !== undefined ) {
-            setInput(props.preFilled.name)
+		let isFetch = true;
+		function isEmpty(ob){
+			for(var i in ob){ return false;}
+		   return true;
+		 }
+        if(!isEmpty(props.preFilled)) {
+			console.log('HEREE')
+			console.log(props.preFilled)
+			console.log(props.preFilled.name)
+			setInput(props.preFilled.name)
         }
         return () => isFetch = false;
-    }, [])
-
-	// Data State
-	// const [listIngredient, setListIngredient] = useState([]);
-	// const [listCategories, setListCategories] = useState([]);
-
-	// const getAllCategories = async() => {
-	// 	let data = []; let temp = [];
-	// 	try {
-	// 		const headers = {
-	// 		  'Content-Type': 'application/json',
-	// 		};
-	// 		data = await APICall(null, '/categories', 'GET', headers);
-	// 		for (let i = 0; i < data.body.categories.length; i++) {
-	// 			temp.push({"c_id": data.body.categories[i].c_id, "name": data.body.categories[i].name})
-	// 		}
-	// 		setListCategories(temp);
-	// 	} catch (err) {
-	// 		alert(err);
-	// 	}
-	// }
-	// const getAllIngredients = async() => {
-	// 	let data = []; let temp = [];
-	// 	try {
-	// 		const headers = {
-	// 			'Content-Type': 'application/json',
-	// 		};
-	// 		data = await APICall(null, `/ingredients?query= `, 'GET', headers);
-	// 		for (let i = 0; i < data.body.suggestions.length; i++) {
-	// 			temp.push({"i_id": data.body.suggestions[i].i_id, "name": data.body.suggestions[i].name, "c_id": data.body.suggestions[i].c_id})
-	// 		}
-	// 		setListIngredient(temp);
-	// 	} catch (err) {
-	// 		alert(err);
-	// 	}
-	// }
-
+    }, [props, props.preFilled])
+	
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
 	//1. Showing Categories
@@ -60,7 +30,11 @@ const SearchBarRecipe = (props) => {
 	//3. Showing Searches
 	const [dropdownState, setDropdownState] = useState('Category');
 	const [showDropdown, setDropdown] = useState(false);
-
+	
+	//Searching Feature
+	const [input, setInput] = useState('');
+	const [found, setFound] = useState([]);
+	
 	const clickDropdown = () => {
 		if (showDropdown === true) {
 			setDropdown(false)
@@ -106,6 +80,7 @@ const SearchBarRecipe = (props) => {
 	}
 	
 	const addIngredientOnClick = (object) => {
+		console.log(object)
 		setSelectedIngredients(object);
 		setInput(object.name);
 		props.updateIngredients(props.index, object);
@@ -116,12 +91,8 @@ const SearchBarRecipe = (props) => {
 		return false;
 	}
 
-	//Searching Feature
-	const [input, setInput] = useState('');
-	const [found, setFound] = useState([]);
 	const onInput = (e) => {
 		setInput(e.target.value);
-		console.log(e.target)
 		searchIngredient(e.target.value, props.listIngredient, category);
 		if (e.target.value === "") {
 			if (category.name !== "Category") {
@@ -136,15 +107,15 @@ const SearchBarRecipe = (props) => {
 	}
   
 	const searchIngredient = (name, list_ingredients, category) => {
+
 		let found = [];
-		// console.log(list_ingredients)
 		for (let i = 0; i < list_ingredients.length; i++) {
+			if (!name) {name = ' '};
 			if (category.name === "Category"){
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase())) {
                     found.push(list_ingredients[i]);
 				}
 			} else {
-                console.log(list_ingredients[i].name.toLowerCase())
                 if (list_ingredients[i].name.toLowerCase().includes(name.toLowerCase()) && list_ingredients[i].c_id === category.c_id) {
 					found.push(list_ingredients[i]);
 				}
@@ -160,16 +131,8 @@ const SearchBarRecipe = (props) => {
 		)
 	}
 
-	// React.useEffect(() => {
-	// 	getAllCategories();
-	// 	getAllIngredients();
-	// },[]);
 	React.useEffect(() => {
-		if ((dropdownState === 'Category') || (dropdownState === "Searches" && category.name === "Category")) {
-			console.log('test')
-		} else {
-			searchIngredient(input, props.listIngredient, category);
-		} 
+		searchIngredient(input, props.listIngredient, category);
 	},[dropdownState]);
 		
 	return (

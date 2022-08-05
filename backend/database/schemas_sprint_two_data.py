@@ -55,7 +55,8 @@ create_recipes_table_query = """
         image text NOT NULL,
         video text,
         time_required integer NOT NULL,
-        servings integer NOT NULL
+        servings integer NOT NULL,
+        original_id integer
 )
 """
 

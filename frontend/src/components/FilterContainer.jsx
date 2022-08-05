@@ -3,6 +3,7 @@ import styles from './styles/FilterContainer.module.css'
 import TagLabel from './TagLabel'
 import SelectedTagLabel from './SelectedTagLabel'
 import { APICall } from '../helperFunc'
+import SquareIcon from '@mui/icons-material/Square';
 
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -19,7 +20,7 @@ const FilterContainer = (props) => {
   const handleClose = () => setOpen(false);
 
   const getAllTags = async() => {
-		let tag_cat_data = []; let tag_data =[]; let temp = [];
+		let tag_cat_data = []; let tag_data =[];
 		try {
 			const headers = {
 			  'Content-Type': 'application/json',
@@ -39,20 +40,15 @@ const FilterContainer = (props) => {
   React.useEffect(() => {
     //Fetch all tags
     getAllTags();
-    let temp = [
-      {"category_id" : 1, "name": "Cuisine", "tags": [{"tag_id" : 1, "name" : "Australian"},{"tag_id" : 2, "name" : "Asian"},{"tag_id" : 3, "name" : "Europe"}]},
-      {"category_id" : 2, "name": "Meal type", "tags": [{"tag_id" : 4, "name" : "Breakfast"},{"tag_id" : 5, "name" : "Lunch"},{"tag_id" : 6, "name" : "Dinner"}]},
-      {"category_id" : 3, "name": "Difficulty", "tags": [{"tag_id" : 7, "name" : "Easy"},{"tag_id" : 8, "name" : "Medium"},{"tag_id" : 9, "name" : "Hard"}]}
-    ]
-    // setTagData(temp)
   }, [])
 
   const renderTags = () => {
     let content = [];
     for (let i = 0; i < tagData.length; i++) {
       let tagsContent = tagData[i].tags.map((object, index) => {
-        const isSelected = checkIfSelected(object);
-        return(<TagLabel object={object} isSelected={isSelected} clickFunction={isSelected ? removeTag : selectTag}></TagLabel>)
+        const isExcluded = checkIfExcluded(object)
+        const isIncluded = checkIfIncluded(object)
+        return(<TagLabel object={object} isExcluded={isExcluded} isIncluded={isIncluded} clickFunction={isExcluded ? removeTag : selectTag}></TagLabel>)
       })
       content.push(
         <div style={{marginTop:'10px'}}>
@@ -64,23 +60,51 @@ const FilterContainer = (props) => {
     return content
   }
 
-  const checkIfSelected = (object) => {
+  const checkIfExcluded = (object) => {
 		for(let i = 0; i < props.selectedTags.length; i++) {
-			if (object.tag_id === props.selectedTags[i].tag_id) return true;
+			if (object.tag_id === props.selectedTags[i].tag_id && props.selectedTags[i].status === 'exclude') return true;
 		}
 		return false;
 	}
+
+  const checkIfIncluded = (object) => {
+		for(let i = 0; i < props.selectedTags.length; i++) {
+			if (object.tag_id === props.selectedTags[i].tag_id && props.selectedTags[i].status === 'include') return true;
+		}
+		return false;
+	}
+
   const selectTag = (object) => {
-    props.setSelectedTags([...props.selectedTags, object])
+    let isIncludeFlag = false
+    let i = 0
+    for(; i < props.selectedTags.length; i++) {
+			if (object.tag_id === props.selectedTags[i].tag_id && props.selectedTags[i].status === 'include') {
+        isIncludeFlag = true
+        break
+      };
+		}
+    if (isIncludeFlag) {
+      const temp = [...props.selectedTags]
+      temp[i].status = 'exclude'
+      props.setSelectedTags(temp)
+    } else {
+      let temp = {...object}
+      temp.status ='include'
+      props.setSelectedTags([...props.selectedTags, temp])
+    }
   }
+
   const removeTag = (object) => {
 		props.setSelectedTags(props.selectedTags.filter(selTag => {
 			return selTag.tag_id !== object.tag_id;
 		}))
 	}
+
   const renderSelectedTags = (list_selected_tags) => {
     let content = list_selected_tags.map((object, index) => {
-			return (<SelectedTagLabel object={object} clickFunction={removeTag} ></SelectedTagLabel>)
+      const isExcluded = checkIfExcluded(object)
+      const isIncluded = checkIfIncluded(object)
+			return (<SelectedTagLabel object={object} clickFunction={removeTag} isExcluded={isExcluded} isIncluded={isIncluded} ></SelectedTagLabel>)
 		})
 		return content;
   }
@@ -102,6 +126,16 @@ const FilterContainer = (props) => {
         >
           <Fade in={open}>
             <Box className={styles.modal}>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                  <SquareIcon sx={{width: 30, height: 30, color: 'rgb(56, 235, 36)'}}/>
+                  <span style={{paddingTop: '5px'}}> Include Tags </span>
+                </div>
+                <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                  <SquareIcon sx={{width: 30, height: 30, color: 'red'}}/>
+                  <span style={{paddingTop: '5px'}}> Exclude Tags </span>
+                </div>
+              </div>
               {renderTags()}
             </Box>
           </Fade>

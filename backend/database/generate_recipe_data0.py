@@ -17,7 +17,7 @@ recipe_data = json.load(fp)
 delete_query = """DELETE FROM recipes WHERE 1"""
 cursor.execute(delete_query)
 
-insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings) VALUES (?, ?, ?, ?, ?, ?, ?)"""
+insert_query = """INSERT INTO recipes (id, title, description, image, video, time_required, servings, original_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
 for recipe in recipe_data:
     cursor.execute('SELECT max(id) from recipes')
     new_id = cursor.fetchone()
@@ -26,7 +26,7 @@ for recipe in recipe_data:
         new_id = 0
     else:
         new_id = new_id[0] + 1
-    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], "", recipe['time'], recipe['servings']))
+    cursor = cursor.execute(insert_query, (new_id, recipe['name'], recipe['description'], recipe['image'], recipe['video'], recipe['time'], recipe['servings'], None))
     conn.commit()
 
 # insert into Steps
@@ -115,7 +115,9 @@ tags_data = [
     {"id": 19, "category_id": 3, "name": "Entree"},
     {"id": 20, "category_id": 3, "name": "Main"},
     {"id": 21, "category_id": 3, "name": "Dessert"},
-    {"id": 22, "category_id": 3, "name": "Snack"}
+    {"id": 22, "category_id": 3, "name": "Snack"},
+    {"id": 23, "category_id": 3, "name": "Drink"},
+    {"id": 24, "category_id": 3, "name": "Sides"}
 ]
 
 insert_into_tags_query = """
@@ -244,8 +246,6 @@ VALUES
 
 cursor = cursor.execute(insert_into_ingredientInRecipe_query)
 conn.commit()
-
-
 
 # insert into TagInRecipe
 insert_into_tagInRecipe_query = """

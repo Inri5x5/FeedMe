@@ -34,11 +34,14 @@
 
 .reviews_breakdown__wrapper {
   margin: 0 auto;
-  width: 80%
+  width: 90%
 }
 
 .reviews__single_star_average {
   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
   margin: 22px 0;
 }
 
@@ -50,7 +53,7 @@
 }
 
 .single_star_average__progress_bar {
-  width: 60%;
+  width: 70%;
   border-radius: 10px;
   background-color: #f5f8ff;
   padding: 1px;

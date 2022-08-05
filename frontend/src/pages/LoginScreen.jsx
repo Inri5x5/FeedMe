@@ -75,7 +75,6 @@ export default function LoginScreen () {
       data = await APICall(requestBody, '/login', 'POST', headers);
       localStorage.setItem('token', data.body['token']);
       localStorage.setItem('is_contributor', data.body['is_contributor']);
-      console.log(data);
       navigate('/')
     } catch (err) {
       alert(err);

@@ -21,3 +21,19 @@ Week 4
 3. Create design and code for HomeScreen Dropdown
 4. Code User Interaction Feature on using both the SearchBar and Dropdown
 5. Integrate Frontend with Backend
+
+Week 5 - 7
+1. Create design and code for user and contributor dashboard
+2. Create necesarry route for dashboard
+3. Create statistic field for contributor recipe card
+4. Implement tag filters for home screen search bar
+5. Integrate front end and backedn prior to demo 2
+
+Week 8 - 9
+1. Create design for TeachMe page and code it
+2. Create VideoCard and VideoFrame for TeachMe page
+3. Modify Tag filter to have include and exclude features
+4. Connect VideoSkill with current contirbutor and user dashboard
+5. Add edit profile features
+6. Implement add ingredient and add video Feature
+7. Include tags on recipe card
