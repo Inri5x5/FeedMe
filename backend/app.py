@@ -312,6 +312,8 @@ def recipe_details_update():
 
     # Get recipe id
     recipe_id = req['recipe_id']
+    print(recipe_id)
+    # print(req['original_id'])
     update_recipe(recipe_id, user_details, req)
 
     return {}

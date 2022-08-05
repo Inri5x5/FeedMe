@@ -117,10 +117,17 @@ def no_recipes():
 
     # From the previous view, order the ingredients by the number of times
     # its search id occurs (descending)
+    # cur.execute('''
+    #     SELECT smr.search_id, s.count
+    #     FROM searches_minus_recipes smr
+    #         JOIN searches s on s.id = smr.search_id
+    #     GROUP BY smr.search_id
+    #     ORDER BY s.count DESC
+    # ''')
     cur.execute('''
         SELECT smr.search_id, s.count
-        FROM searches_minus_recipes smr
-            JOIN searches s on s.id = smr.search_id
+        FROM searches s
+            JOIN searches_minus_recipes smr on s.id = smr.search_id
         GROUP BY smr.search_id
         ORDER BY s.count DESC
     ''')

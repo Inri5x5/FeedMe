@@ -383,7 +383,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     else:
         video = req['video']
     
-    print(req['original_id'])
+    #print(req['original_id'])
     c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings, original_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], video, req['time_required'], req['servings'], req['original_id']))
     
     # Update data in "Ingredient in Recipe"
@@ -433,7 +433,12 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     else:
         video = req['video']
     
-    c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=?, original_id=? WHERE id = ?", (req['title'], req['description'], req['image'], video, req['time_required'], req['servings'], req['original_id'], recipe_id))
+    if not req['original_id']:
+        original_id = None
+    else:
+        original_id = req['original_id']
+    
+    c.execute("UPDATE Recipes SET title=?, description=?, image=?, video=?, time_required=?, servings=?, original_id=? WHERE id = ?", (req['title'], req['description'], req['image'], video, req['time_required'], req['servings'], original_id, recipe_id))
 
     # Update data in "Ingredient in Recipe"
     ingredients = req['ingredients']
