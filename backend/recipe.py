@@ -9,9 +9,14 @@ def update_recipe(recipe_id, user_details, req):
         recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
         insert_recipe_details(conn, user_details, recipe_id, req)
-    else:
-        update_recipe_details(conn, user_details, recipe_id, req)
+    elif recipe_id != -1 and req['public_state'] == "public" and req["original_id"] is not None:
+        c.execute("DELETE FROM Recipes WHERE id=?", [recipe_id])
+        original_id = req["original_id"]
+        req["original_id"] = None
+        update_recipe_details(conn, user_details, original_id, req)
         conn.commit()
+    else:
+        update_recipe_details(conn, user_details, req["original_id"], req)
     
     return {}
 

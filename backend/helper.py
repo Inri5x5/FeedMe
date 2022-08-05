@@ -376,7 +376,7 @@ def has_rated(conn, recipe_id, user_details):
 
 def insert_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
-    print(recipe_id)
+
     # Update data in "Recipe"
     if not req['video']:
         video = None
@@ -409,7 +409,6 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     # if contributor has public_state = private it should go into "Personal Recipes"
     if user_details["is_contributor"]:
         if str(req['public_state']) == "public":
-            print("i am not shy")
             c.execute("INSERT INTO PublicRecipes VALUES (?, ?)", (recipe_id, user_details["user_id"]))
             c.execute("INSERT INTO PersonalRecipes(contributor_id, recipe_id) VALUES (?, ?)", (user_details["user_id"], recipe_id))
         else:
@@ -426,7 +425,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
 
 def update_recipe_details(conn, user_details, recipe_id, req):
     c = conn.cursor()
-    print("i am here")
+
     # Update data in "Recipe"
     if not req['video']:
         video = None
@@ -451,7 +450,6 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     videos = req['skill_videos']
     c.execute("DELETE FROM SkillVideoinRecipe WHERE recipe_id=?", [recipe_id])
     for v in videos:
-
         c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v['video_id']))
     
     # Update data in "Steps"
