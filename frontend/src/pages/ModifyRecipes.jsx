@@ -144,6 +144,7 @@ export default function ModifyRecipes () {
       setSteps(data.steps);
       setRecipeVideos(data.skill_videos);
       setCheckState(data.public_state)
+      console.log(data)
     } catch (err) {
       alert(err);
     }
@@ -240,9 +241,15 @@ export default function ModifyRecipes () {
   
   const handleSave = async (state) => {
     let pass_id;
-    if(Object.keys(id).length === 0 || (is_contributor === 'false' && checkState === 'public')) {
+    let ori_id;
+    if(Object.keys(id).length === 0 || 
+      (is_contributor === 'false' && checkState === 'public') ||
+      (is_contributor === 'true' && state === 'private' && recipe.original_id === null)){
+      console.log("HERE!")
+      ori_id = id;
       pass_id = -1
     } else {
+      ori_id = recipe.original_id
       pass_id = id.id
     }
     const ingredient = recipe.ingredients;
@@ -264,8 +271,10 @@ export default function ModifyRecipes () {
         tags: tags,
         steps: step,
         video: `${recipe.video}`,
-        public_state: state
+        public_state: state,
+        original_id: ori_id
       }
+      console.log(requestBody)
       const data = await APICall(requestBody, `/recipe_details/update`, 'PUT', headers);
       if (data.error) {
         throw new Error(data.error);
