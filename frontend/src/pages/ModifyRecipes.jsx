@@ -113,11 +113,11 @@ export default function ModifyRecipes () {
   React.useEffect(() => { 
     if(!loading) {
       let isFetch = true;
-      if (Object.keys(id).length !== 0) {
-        getDetails();
-      }
       if(localStorage.getItem('token')) {
         checkIfContributor()
+      }
+      if (Object.keys(id).length !== 0) {
+        getDetails();
       }
       getAllCategories();
       getAllIngredients();
@@ -167,7 +167,6 @@ export default function ModifyRecipes () {
     const list = [...ingredients];
     list[index][name] = value;
     setIngredients(list);
-    setSelected(list);
     setRecipe({...recipe, ingredients: list})
   };
 
@@ -176,14 +175,20 @@ export default function ModifyRecipes () {
     const list = [...ingredients];
     list.splice(index, 1);
     setIngredients(list);
-    setSelected(list);
     setRecipe({...recipe, ingredients: list})
   };
-
+  
   const handleIngredientsAdd = (e) => {
     e.preventDefault()
     setIngredients([...ingredients, { description: '', ingredient_id: -1, name: ''}]);
   };
+  
+  const handleUpdateIngredients = (index, dataChange) => {
+    let iUpdate = [...ingredients]
+    iUpdate[index] = dataChange
+    setIngredients(iUpdate);
+    setRecipe({...recipe, ingredients: iUpdate})
+  }
   
   const handleStepsChange = (e, index) => {
     const { name, value } = e.target;
@@ -196,9 +201,14 @@ export default function ModifyRecipes () {
   const handleStepsRemove = (e, index) => {
     e.preventDefault()
     const list = [...steps];
-    list.splice(index, 1);
-    setSteps(list);
-    setRecipe({...recipe, steps: [...steps, ...list]})
+    const deleted = list.splice(index, 1);
+    const deleted_id = deleted[0].step_id
+    const decrement = list.map(function(step) {
+      if(step.step_id < deleted_id) {return step;}
+      return {description: step.description, step_id: step.step_id-1};
+    })
+    setSteps(decrement);
+    setRecipe({...recipe, steps: list})
   };
 
   const handleStepsAdd = (e) => {
@@ -214,12 +224,6 @@ export default function ModifyRecipes () {
       })
   }
   
-  const handleUpdateIngredients = (index, dataChange) => {
-    let iUpdate = [...ingredients]
-    iUpdate[index] = dataChange
-    setIngredients(iUpdate);
-    setSelected(ingredients);
-  }
   
   const handleChanges = (e) => {
     const {name, value} = e.target
@@ -321,7 +325,8 @@ export default function ModifyRecipes () {
       {(!loading) &&<div className={styles.screen_container}>
         <NavigationBarHome style={{ alignSelf: 'start', position: 'absolute' }} isLogin={false}></NavigationBarHome>
         <div className={styles.form_container}>
-          <h2 className={styles.title}> Modify Recipe </h2>
+          {Object.keys(id).length === 0 && <h2 className={styles.title}> Add New Recipe </h2>}
+          {Object.keys(id).length !== 0 && <h2 className={styles.title}> Modify Recipe </h2>}
           <form className={styles.form_control}>
             <label for='dishName' >Dish Name: </label>
             <input name='title' id='dishName' type='text' value={recipe.title} onChange={(e) => handleChanges(e)}/>
