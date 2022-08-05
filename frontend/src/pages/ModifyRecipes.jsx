@@ -242,12 +242,17 @@ export default function ModifyRecipes () {
   const handleSave = async (state) => {
     let pass_id;
     let ori_id;
-    if(Object.keys(id).length === 0 || 
-      (is_contributor === 'false' && checkState === 'public') ||
-      (is_contributor === 'true' && state === 'private' && recipe.original_id === null)){
+    console.log(recipe.original_id)
+    if((is_contributor === 'false' && checkState === 'public') ||     //user creating own copy of public recipe
+      (is_contributor === 'true' && state === 'private' && checkState === 'public')){   //contributor editing private recipe thats never been published before
       console.log("HERE!")
       ori_id = id.id;
       pass_id = -1
+    } else if (Object.keys(id).length === 0) {
+      console.log("NOWHERE!")
+      pass_id = -1
+      ori_id = null
+      //ori_id = recipe.original_id
     } else {
       console.log("THERE!")
       ori_id = recipe.original_id
