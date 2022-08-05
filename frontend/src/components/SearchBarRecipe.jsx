@@ -9,14 +9,20 @@ import PropTypes from 'prop-types';
 
 const SearchBarRecipe = (props) => {
     React.useEffect(() => { 
-        let isFetch = true;
-
-        if(props.preFilled !== {} && props.preFilled !== undefined ) {
-            setInput(props.preFilled.name)
+		let isFetch = true;
+		function isEmpty(ob){
+			for(var i in ob){ return false;}
+		   return true;
+		 }
+        if(!isEmpty(props.preFilled)) {
+			console.log('HEREE')
+			console.log(props.preFilled)
+			console.log(props.preFilled.name)
+			setInput(props.preFilled.name)
         }
         return () => isFetch = false;
-    }, [props])
-
+    }, [props, props.preFilled])
+	
 	//Dropdown Features
 	//There will be 2 state in regards to open dropdown
 	//1. Showing Categories
@@ -24,7 +30,11 @@ const SearchBarRecipe = (props) => {
 	//3. Showing Searches
 	const [dropdownState, setDropdownState] = useState('Category');
 	const [showDropdown, setDropdown] = useState(false);
-
+	
+	//Searching Feature
+	const [input, setInput] = useState('');
+	const [found, setFound] = useState([]);
+	
 	const clickDropdown = () => {
 		if (showDropdown === true) {
 			setDropdown(false)
@@ -70,6 +80,7 @@ const SearchBarRecipe = (props) => {
 	}
 	
 	const addIngredientOnClick = (object) => {
+		console.log(object)
 		setSelectedIngredients(object);
 		setInput(object.name);
 		props.updateIngredients(props.index, object);
@@ -80,9 +91,6 @@ const SearchBarRecipe = (props) => {
 		return false;
 	}
 
-	//Searching Feature
-	const [input, setInput] = useState('');
-	const [found, setFound] = useState([]);
 	const onInput = (e) => {
 		setInput(e.target.value);
 		searchIngredient(e.target.value, props.listIngredient, category);
