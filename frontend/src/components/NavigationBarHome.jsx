@@ -126,12 +126,6 @@ const NavigationBarHome = (props) => {
                 Teach Me
                 </Button>
                 {/* <Divider orientation="vertical" variant="middle" flexItem sx={{ backgroundColor: 'white', borderRightWidth: 3, borderRadius: 5 }}/> */}
-                <Button
-                  sx={{ my: 2, color: 'white', display: 'block', fontFamily: "'Righteous', serif" }}
-                  onClick={() => navigate('/recipe/add')}
-                >
-                About Us
-                </Button>
               </Box>
             </div>
 
