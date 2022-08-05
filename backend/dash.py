@@ -124,3 +124,67 @@ def rated_recipes(token):
             five_star_recipes.append(get_recipe_details(conn, recipe_id, user))
 
     return one_star_recipes, two_star_recipes, three_star_recipes, four_star_recipes, five_star_recipes
+
+def personal_recipes(user):
+    conn = db_connection()
+    c = conn.cursor()
+
+    user_id = user["user_id"]
+    recipes = []
+
+    if user["is_contributor"]:  
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE contributor_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id[0], user))
+    else:
+        c.execute("SELECT recipe_id FROM personalRecipes WHERE ruser_id = ?", [user_id])
+        recipe_ids = c.fetchall()
+        for i in recipe_ids:
+            r_id = i
+            recipes.append(get_recipe_details(conn, r_id[0], user))
+
+    c.close()
+
+    return recipes
+
+def update_details(user, username, dp, email):
+    user_id = user["user_id"]
+    conn = db_connection()
+    c = conn.cursor()
+
+    if user["is_contributor"]:
+        c.execute("UPDATE contributors SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE contributors SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE contributors SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    else:
+        c.execute("UPDATE rusers SET email = ? WHERE id = ?", [email, user_id])
+        c.execute("UPDATE rusers SET username = ? WHERE id = ?", [username, user_id])
+        c.execute("UPDATE rusers SET profile_picture = ? WHERE id = ?", [dp, user_id])
+    
+    conn.commit()
+
+    return {}
+
+def get_user_details(user):
+    conn = db_connection()
+    cur = conn.cursor()
+    user_id = user["user_id"]
+    is_contributor = user["is_contributor"]
+
+    # Get user details from database
+    if is_contributor:
+        cur.execute('SELECT * FROM Contributors WHERE id = ?', [user_id])
+    else:
+        cur.execute('SELECT * FROM Rusers WHERE id = ?', [user_id])
+
+    id, email, username, password, profile_picture = cur.fetchone()
+    user_details = {
+        "user_id": user_id,
+        "email": email,
+        "username": username,
+        "profile_picture": profile_picture
+    }
+
+    return user_details
