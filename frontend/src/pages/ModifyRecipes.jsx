@@ -246,9 +246,10 @@ export default function ModifyRecipes () {
       (is_contributor === 'false' && checkState === 'public') ||
       (is_contributor === 'true' && state === 'private' && recipe.original_id === null)){
       console.log("HERE!")
-      ori_id = id;
+      ori_id = id.id;
       pass_id = -1
     } else {
+      console.log("THERE!")
       ori_id = recipe.original_id
       pass_id = id.id
     }

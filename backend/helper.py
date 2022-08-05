@@ -383,6 +383,7 @@ def insert_recipe_details(conn, user_details, recipe_id, req):
     else:
         video = req['video']
     
+    print(req['original_id'])
     c.execute("INSERT INTO Recipes(id, title, description, image, video, time_required, servings, original_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (recipe_id, req['title'], req['description'], req['image'], video, req['time_required'], req['servings'], req['original_id']))
     
     # Update data in "Ingredient in Recipe"
