@@ -3,20 +3,24 @@ from helper import *
 def update_recipe(recipe_id, user_details, req):
     conn = db_connection()
     c = conn.cursor()
-
-    if recipe_id == -1:
+    print("PLEASE WORK")
+    print(recipe_id)
+    if recipe_id == -1: #If user adds a new recipe or edits a public recipe for the first time
+        print("recipe id = -1")
         c.execute("SELECT * FROM recipes ORDER BY id DESC LIMIT 1")
         recipe_id = c.fetchone()[0]
         recipe_id = recipe_id + 1
         insert_recipe_details(conn, user_details, recipe_id, req)
-    elif recipe_id != -1 and req['public_state'] == "public" and req["original_id"] is not None:
+    elif recipe_id != -1 and req['public_state'] == "public" and req["original_id"] is not None: # If a user publishes a recipe that has been published before
+        print("original id is not null")
         c.execute("DELETE FROM Recipes WHERE id=?", [recipe_id])
         original_id = req["original_id"]
         req["original_id"] = None
         update_recipe_details(conn, user_details, original_id, req)
         conn.commit()
     else:
-        update_recipe_details(conn, user_details, req["original_id"], req)
+        print("everything")
+        update_recipe_details(conn, user_details, recipe_id, req)
     
     return {}
 

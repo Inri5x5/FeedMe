@@ -246,7 +246,7 @@ export default function ModifyRecipes () {
     if((is_contributor === 'false' && checkState === 'public') ||     //user creating own copy of public recipe
       (is_contributor === 'true' && state === 'private' && checkState === 'public')){   //contributor editing private recipe thats never been published before
       console.log("HERE!")
-      ori_id = id.id;
+      ori_id = parseInt(id.id);
       pass_id = -1
     } else if (Object.keys(id).length === 0) {
       console.log("NOWHERE!")
@@ -256,7 +256,7 @@ export default function ModifyRecipes () {
     } else {
       console.log("THERE!")
       ori_id = recipe.original_id
-      pass_id = id.id
+      pass_id = parseInt(id.id)
     }
     const ingredient = recipe.ingredients;
     const step = recipe.steps;

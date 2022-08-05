@@ -433,7 +433,7 @@ def update_recipe_details(conn, user_details, recipe_id, req):
     else:
         video = req['video']
     
-    if not req['original_id']:
+    if req['original_id'] is None:
         original_id = None
     else:
         original_id = req['original_id']
@@ -459,9 +459,14 @@ def update_recipe_details(conn, user_details, recipe_id, req):
         c.execute("INSERT INTO SkillVideoinRecipe VALUES (?, ?)", (recipe_id, v['video_id']))
     
     # Update data in "Steps"
+    print("recipe id type")
+    print(type(recipe_id))
+    print(recipe_id)
     steps = req['steps']
     c.execute("DELETE FROM Steps WHERE recipe_id=?", [recipe_id])
     for s_dict in steps:
+        print(s_dict['step_id'])
+        print(type(s_dict['step_id']))
         c.execute("INSERT INTO Steps VALUES (?, ?, ?, ?)", (recipe_id, s_dict['step_id'], s_dict['description'], ''))
     
     # Update public or private state
