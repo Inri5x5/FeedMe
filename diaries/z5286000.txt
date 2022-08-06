@@ -38,3 +38,4 @@ In this week's lab, we just asked a few questions to Tam about the final demo an
 This week the backend team finished up on our routes and then started working on the database by adding recipes. We're hoping for 150 recipes and so we had to write around 50 each.
 
 Week 10
+On Tuesday, we had our final demo. We were able to finish all functionalities. Unfortunately, during the demo, we realised that we still had a few bugs to be fixed. The database locking, issues with the contributors, and other minor bugs. We worked on it the next couple of days, testing the code on VLAB along with writing the report before the submission on Friday. I worked on the implementation issues of the report. We submitted on Friday right before deadline. 
