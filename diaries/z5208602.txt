@@ -33,3 +33,29 @@ Week 7
 -Wrote a script which added dashboard data to our database (that is, things like recipe saves, recipe ratings, published recipes, etc.) for one contributor and one registered user.
 -Helped the frontend integrate with the backend.
 -Helped test and debug the backend. We were able to test the backend using Postman, which was a game changer as it means that we can test the backend before integrating it with the frontend, instead of only being able to find bugs by playing around with the website interface.
+
+Week 8
+-Manually set up complete data for 3 recipes to be used in our demo B.
+-Prepared and presented for progressive demo B.
+-Ran and submitted retro B.
+-Completed sprint 2 and started sprint 3 in Jira.
+-Created the routes (documentation) for sprint 3 for the backend to work on.
+-(Manually) added YouTube video data to our database for our skills videos (generate_video_data.py).
+-Ran the data generation script for the first 87 recipes (get_json_recipes.py).
+-Tested the sprint 3 (and retested the sprint 2) backend routes using Postman, so that myself and the backend devs could be sure the routes were working as expected before handing them to the frontend.
+
+Week 9
+-Split the manual part of the recipe data upload into 3 parts so that the workload could be shared between Kaylee, Nadya and myself (as the rest of the backend work for sprint 3 was done).
+-Added a large number of (manual) recipes data to the database.
+-Ran the data generation script for the final 63 recipes (get_json_recipes.py).
+
+Week 10
+-Finished adding my manual recipe data to the database.
+-Cleaned up and tested the data from other team members.
+-Helped debug and merge frontend/backend.
+-Prepared final demo runsheet.
+-Participated in the final demo!
+-Helped with final debugging.
+-Completed sprint 3 in Jira.
+-Wrote half of the usage guide in the report.
+-Submitted Report and ReadMe zip file.
