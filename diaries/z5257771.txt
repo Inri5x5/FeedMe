@@ -43,4 +43,12 @@ We comprehensively debugged the backend using postmand and I fixed up the recipe
 Week 9
 I wrote my routes for sprint 3 which included adding ingredients and the skill video routes. We also deugged these routes using postman.
 I started manually entering recipe, ingredient and skill video data to populate out database. 
+This was more tedious than I had hoped it would be. Luckily, it didn't take too long.
+
+Week 10
+I started writing the project report. Since my part was pretty straight forward, I finsihed early and was able to help everyone else.
+The final project demo went well - there were some bugs due to different computers and we ran over time. Still, I thiught it was good.
+We fixed some bugs in the website that were apparant in the demo and some that we found along the way.
+I also started cleanign my code.
+
 
